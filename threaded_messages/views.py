@@ -59,8 +59,9 @@ def search(request, template_name="django_messages/search.html"):
     search_term = request.GET.get("q")
     results = SearchQuerySet().filter(content=search_term,
                                     participants=request.user.pk)\
-                                    .order_by('-last_message').models(Thread)
+                                    .models(Thread)
                     # leads to error in haystack: .order_by("-last_message")
+    print "results: ", results
     return render_to_response(template_name, {
                                   "thread_results": results,
                                   "search_term": search_term,
@@ -86,7 +87,7 @@ def trash(request, template_name='django_messages/trash.html'):
     Displays a list of deleted messages.
     Optional arguments:
         ``template_name``: name of the template to use
-    Hint: A Cron-Job could periodicly clean up old messages, which are deleted
+    Hint: A Cron-Job could periodically clean up old messages, which are deleted
     by sender and recipient.
     """
     message_list = Participant.objects.trash_for(request.user)

@@ -36,10 +36,6 @@
 <div class="row-fluid">
     <div class="span3">
                {% messaging_well_search %}
-        <form action="{% url 'tm:messages_search' %}" method="GET" style="float: right">
-            <label class="inline" for="q">{% if keywords %}{{ keywords }}{% else %}{% trans 'Search Messages' %}{% endif %}</label>
-            <input type="text" title="{% trans 'Search Messages' %}" id="q" name="q" class="message-search forum-search" />
-        </form>
     </div>
 
     <div class="span9">
@@ -55,7 +51,7 @@
               </div>
               <div style="float: right">
                   <button type="submit" name="action" value="read" class="small-green-button">{% trans "mark as read" %}</button>
-                  <button type="submit" name="action" value="delete" class="small-green-button">{% trans "delete messages" %}</button>
+                  <button type="submit" name="action" value="delete" class="small-green-button">{% trans "archive messages" %}</button>
               </div>
         </div>
         <div style="clear: both;"></div>

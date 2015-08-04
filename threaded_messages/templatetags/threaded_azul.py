@@ -30,10 +30,10 @@ def html_cleaner(html):
 
 
 
-@register.inclusion_tag('src/threaded_messages/templates/django_messages/threaded_inclusion_tag_templates/messaging_well.html', takes_context=False)
+@register.inclusion_tag('django_messages/threaded_inclusion_tag_templates/messaging_well.html', takes_context=False)
 def messaging_well(*args, **kwargs):
     return None
 
-@register.inclusion_tag('src/threaded_messages/templates/django_messages/threaded_tag_templates/messaging_well_search.html', takes_context=False)
+@register.inclusion_tag('django_messages/threaded_inclusion_tag_templates/messaging_well_search.html', takes_context=False)
 def messaging_well_search(*args, **kwargs):
     return None

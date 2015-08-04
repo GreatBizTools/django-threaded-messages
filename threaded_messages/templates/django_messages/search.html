@@ -1,9 +1,8 @@
-{% extends "django_messages/base.html" %}
-{% load i18n %}
-{% load truncchar_tag %}
-{% load avatar_tags %}
-{% load pagination_tags %}
-{% block body %}
+{% extends 'azul_cms_custom/cms_basic.html' %}
+{% load i18n avatar_tags pagination_tags truncchar_tag %}
+{% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
+
+{% block content %}
     <!--{_% autopaginate thread_results 10 %}-->
     <div class="page-header-wrapper">
         <h2 class="page-header">
@@ -70,9 +69,13 @@
     </form>
     <div class="messages-footer"><div class="message-pagination">{% paginate %}</div></div>
 
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $("body").highlight("{{ search_term }}", { element: 'span', className: 'highlighted'});
-        })
-    </script>
+{% endblock %}
+{% block js %}
+{% addtoblock 'js' %}
+<script>
+    $(document).ready(function(){
+        $("body").highlight("{{ search_term }}", { element: 'span', className: 'highlighted'});
+    })
+</script>
+{% endaddtoblock  %}
 {% endblock %}
