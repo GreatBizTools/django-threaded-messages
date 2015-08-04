@@ -1,0 +1,186 @@
+{% extends 'azul_cms_custom/cms_basic.html' %}
+{% load i18n avatar_tags pagination_tags truncchar_tag %}
+{% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
+
+{%block title %}{{title}}{% endblock %}
+
+{% block content %}
+<ul class="breadcrumb">
+    <li><i class="icon-chevron-right" style="margin-top: 0;"></i>
+    <li>
+        <a href="/">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{% url 'portal:dashboard_trainee' %}">Dashboard</a><span class="divider">/</span>
+    </li>
+    <li class="active"><a href="{% url 'messaging:inbox' %}">Inbox</a></li>
+</ul>
+{% messages %}
+<div class="page-header">
+
+    <div class="pull-right">
+
+        <a href="{% url 'tm:modal_messages_compose' %}" class="btn btn-success">
+            <i class="icon-plus-sign icon-white"></i> Send message
+        </a>
+
+    </div>
+
+    <div class="row">
+        <div class="span3">
+            <h3>{% trans "Inbox"|upper %}</h3>
+        </div>
+    </div>
+
+</div>
+<div class="row-fluid">
+    <div class="span3">
+               {% messaging_well_search %}
+        <form action="{% url 'tm:messages_search' %}" method="GET" style="float: right">
+            <label class="inline" for="q">{% if keywords %}{{ keywords }}{% else %}{% trans 'Search Messages' %}{% endif %}</label>
+            <input type="text" title="{% trans 'Search Messages' %}" id="q" name="q" class="message-search forum-search" />
+        </form>
+    </div>
+
+    <div class="span9">
+    {% autopaginate thread_list 10 %}
+    <form action="{% url 'tm:messages_batch_update' %}" method="post">
+        {% csrf_token %}
+        <div class="inbox-action-box">
+              <div style="float: left; margin-top: 7px;">
+                  {% trans "show" %}:
+                  {% if only_unread or only_read %}<a href="{% url 'tm:messages_inbox' %}">{% trans "all" %}</a>{% else %}{% trans "all" %}{% endif %} ·
+                  {% if not only_read %}<a href="{% url 'tm:messages_inbox' %}?only_read=1">{% trans "read" %}</a>{% else %}{% trans "read" %}{% endif %} ·
+                  {% if not only_unread %}<a href="{% url 'tm:messages_inbox' %}?only_unread=1">{% trans "unread" %}</a>{% else %}{% trans "unread" %}{% endif %}
+              </div>
+              <div style="float: right">
+                  <button type="submit" name="action" value="read" class="small-green-button">{% trans "mark as read" %}</button>
+                  <button type="submit" name="action" value="delete" class="small-green-button">{% trans "delete messages" %}</button>
+              </div>
+        </div>
+        <div style="clear: both;"></div>
+        <table class="inbox table table-striped table-hover">
+            <thead>
+                <tr class="message message-header">
+                    <th class="sender span5">{% trans "Sender" %}</th>
+                    <th class="subject span6">{% trans "Subject" %}</th>
+                    <th class="subject span1"></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for message in thread_list %}
+              <tr class="message {% if message.new %}unread{% endif %}">
+                  <td class="clickablerow sender span5">
+                    <a href="{{ message.thread.latest_msg.sender.get_absolute_url }}">{{ message.thread.latest_msg.sender }}</a>&nbsp; &nbsp;
+                    <span class="date">{{ message.thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</span>
+                  </td>
+                  <td class="clickablerow subject span6">
+                    <a href="{{message.thread.get_absolute_url }}">{% if message.new %}<b>{% endif %}{{ message.thread.subject|truncchar:45 }}{% if message.new %}</b>{% endif %}</a>
+                    <span class="message-tease">{{message.thread.latest_msg.body|truncatewords:8}}</span>
+                  </td>
+
+                  <td class="clickablerow checkbox span1">
+                    <input name="batchupdateids" type="checkbox" value="{{message.thread.pk}}" />
+                  </td>
+                  {% if message.replied %}{% endif %}
+                  {% if message.new %}{% endif %}
+              </tr>
+            {% empty %}
+                <div class="message unread">
+                    <b class="no-message">{% trans "No messages" %}</b>
+                </div>
+            {% endfor %}
+        </div>
+            </tbody>
+</table>
+    </form>
+    <div class="messages-footer">{% paginate %}</div>
+    </div>
+{% endblock %}
+
+
+{% block js %}
+{% addtoblock "js" %}
+<script>
+    $(document).ready(function () {
+        watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
+    });
+
+    $(document).ready(function() {
+
+
+        $('.thisclickableRow a').click(function(evt){
+            evt.preventDefault();
+        });
+
+
+        $('.clickableRow').click(function(){
+
+            var href = $(this).find('a').attr('href');
+            if(typeof href != 'undefined') {
+                window.location = href;
+            }else{
+                window.location = $(this).siblings().find('a').attr('href');
+            }
+        });
+
+        $('#bulkDelete').click(function () {
+
+            if (window.confirm("Do you want to delete these messages?")) {
+                var selectedCheckBoxes = $('input[name="pks"]:checked').serializeArray();
+
+                $.post('/messaging/delete/', selectedCheckBoxes
+                ).success(function () {
+                            for (var i = 0; i < selectedCheckBoxes.length; i++) {
+                                var item = "#message-" + $.trim(selectedCheckBoxes[i].value);
+                                $(item).remove();
+                            }
+                        }).fail(function () {
+                            alert("There was a problem")
+                        })
+            }
+        });
+
+
+        $('#bulkArchive').click(function () {
+            var selectedCheckBoxes = $('input[name="pks"]:checked').serializeArray();
+            $.post('/messaging/archive/',
+                    selectedCheckBoxes
+            ).success(function () {
+                        for (var i = 0; i < selectedCheckBoxes.length; i++) {
+                            var item = "#message-" + $.trim(selectedCheckBoxes[i].value);
+                            $(item).remove();
+                        }
+                    }).fail(function () {
+                        alert("There was a problem")
+                    });
+        });
+
+
+    });
+
+
+</script>
+{% endaddtoblock %}
+{% endblock %}
+
+{% block css %}
+{% addtoblock "css" %}
+<style>
+    input, button {
+        max-width:100%;
+    }
+    .clickableRow:hover {
+        cursor: pointer;
+        cursor: hand;
+    }
+
+    .clickableRow > a, .thisclickableRow >a {
+        color: inherit;
+        text-decoration: inherit;
+    }
+
+</style>
+
+{% endaddtoblock %}
+{% endblock %}

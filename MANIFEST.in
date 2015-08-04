@@ -1,0 +1,5 @@
+include README.rst
+include LICENSE.txt
+recursive-include threaded_messages/static *.css *.js
+recursive-include threaded_messages/locale/*/LC_MESSAGES *.po *.mo
+recursive-include threaded_messages/templates/django_messages *.html

@@ -1,0 +1,137 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-03-22 11:56+0100\n"
+"PO-Revision-Date: 2011-12-07 02:03-0500\n"
+"Last-Translator: Salvatore Iovene <salvatore@iovene.com>\n"
+"Language-Team: Italian <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Italian\n"
+"X-Poedit-Country: Italy\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: fields.py:56
+#, python-format
+msgid "The following usernames are incorrect: %(users)s"
+msgstr "I seguenti nomi utenti sono incorretti: %(users)s"
+
+#: forms.py:19
+msgid "Recipient"
+msgstr "Destinatario"
+
+#: forms.py:20
+#: models.py:84
+msgid "Subject"
+msgstr "Soggetto"
+
+#: forms.py:21
+msgid "Body"
+msgstr "Messaggio"
+
+#: forms.py:62
+msgid "Reply"
+msgstr "Rispondi"
+
+#: management.py:8
+msgid "Received a Message"
+msgstr "Messaggio ricevuto"
+
+#: management.py:8
+msgid "Someone has sent you a message"
+msgstr "Hai ricevuto un messaggio"
+
+#: models.py:61
+msgid "body"
+msgstr "messaggio"
+
+#: models.py:62
+msgid "sender"
+msgstr "mittente"
+
+#: models.py:63
+msgid "parent message"
+msgstr "messaggio originale"
+
+#: models.py:64
+msgid "sent at"
+msgstr "spedito alle"
+
+#: models.py:76
+msgid "Message"
+msgstr "Messaggio"
+
+#: models.py:77
+#: models.py:86
+msgid "Messages"
+msgstr "Messaggi"
+
+#: models.py:85
+msgid "Latest message"
+msgstr "Ultimo messaggio"
+
+#: models.py:97
+msgid "Thread"
+msgstr "Conversazione"
+
+#: models.py:98
+msgid "Threads"
+msgstr "Conversazioni"
+
+#: models.py:105
+msgid "message thread"
+msgstr "conversazione"
+
+#: models.py:106
+msgid "participant users"
+msgstr "utenti partecipanti"
+
+#: models.py:107
+msgid "read at"
+msgstr "letto alle"
+
+#: models.py:108
+msgid "replied at"
+msgstr "risposto alle"
+
+#: models.py:109
+msgid "deleted at"
+msgstr "cancellato alle"
+
+#: models.py:134
+msgid "participant"
+msgstr "partecipante"
+
+#: models.py:135
+msgid "participants"
+msgstr "partecipanti"
+
+#: utils.py:20
+#, python-format
+msgid "New Message: %(subject)s"
+msgstr "Nuovo messaggio: %(subject)s"
+
+#: views.py:102
+msgid "Message successfully sent."
+msgstr "Messaggio spedito."
+
+#: views.py:143
+msgid "Conversation successfully deleted."
+msgstr "Conversazione cancellata."
+
+#: views.py:164
+msgid "Conversation successfully recovered."
+msgstr "Conversazione ripristinata."
+
+#: views.py:190
+msgid "Reply successfully sent."
+msgstr "Risposta spedita."
+
