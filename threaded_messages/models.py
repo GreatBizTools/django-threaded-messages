@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from account.models import User
 from django.core.cache import cache
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import F, Q
@@ -101,7 +101,7 @@ class Thread(models.Model):
         return self.subject
 
     def get_absolute_url(self):
-        return ('messages_detail', [self.id])
+        return ('tm:messages_detail', [self.id])
     get_absolute_url = models.permalink(get_absolute_url)
 
     class Meta:

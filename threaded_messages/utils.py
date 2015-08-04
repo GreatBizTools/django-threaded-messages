@@ -10,8 +10,9 @@ from django.template.loader import get_template
 from . import settings as tm_settings
 
 
-if "notification" in settings.INSTALLED_APPS:
-    from notification import models as notification
+if "pinax.notifications" in settings.INSTALLED_APPS:
+    from pinax.notifications import models as notification
+    print "notification set in utils.py:", notification
 
 # favour django-mailer but fall back to django.core.mail
 if tm_settings.THREADED_MESSAGES_USE_SENDGRID:

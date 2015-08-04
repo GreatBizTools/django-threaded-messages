@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
 import logging
-import simplejson
+import json
 
 from django.contrib.auth import login, BACKEND_SESSION_KEY
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.contrib.auth.models import User
+from account.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
@@ -68,7 +68,7 @@ def search(request, template_name="django_messages/search.html"):
 
 
 @login_required
-def outbox(request, template_name='django_messages/inbox.html'):
+def outbox(request, template_name='django_messages/outbox.html'):
     """
     Displays a list of sent messages by the current user.
     Optional arguments:
@@ -117,7 +117,7 @@ def compose(request, recipient=None, form_class=ComposeForm,
             form.save(sender=request.user)
             messages.success(request, _(u"Message successfully sent."))
             if success_url is None:
-                success_url = reverse('messages_inbox')
+                success_url = reverse('tm:messages_inbox')
             if request.GET.has_key('next'):
                 success_url = request.GET['next']
             return HttpResponseRedirect(success_url)
@@ -153,7 +153,7 @@ def delete(request, thread_id, success_url=None):
     if request.GET.has_key('next'):
         success_url = request.GET['next']
     elif success_url is None:
-        success_url = reverse('messages_inbox')
+        success_url = reverse('tm:messages_inbox')
 
     user_part.deleted_at = right_now
     user_part.save()
@@ -174,7 +174,7 @@ def undelete(request, thread_id, success_url=None):
     if request.GET.has_key('next'):
         success_url = request.GET['next']
     elif success_url is None:
-        success_url = reverse('messages_inbox')
+        success_url = reverse('tm:messages_inbox')
 
     user_part.deleted_at = None
     user_part.save()
@@ -205,7 +205,7 @@ def view(request, thread_id, form_class=ReplyForm,
             form.save(sender=user, thread=thread)
             messages.success(request, _(u"Reply successfully sent."))
             if success_url is None:
-                success_url = reverse('messages_detail', args=(thread.id,))
+                success_url = reverse('tm:messages_detail', args=(thread.id,))
             return HttpResponseRedirect(success_url)
     else:
         form = form_class()
@@ -264,7 +264,7 @@ def batch_update(request, success_url=None):
         if referer:
             return HttpResponseRedirect(referer)
         else:
-            return HttpResponseRedirect(reverse("messages_inbox"))
+            return HttpResponseRedirect(reverse("tm:messages_inbox"))
 
 
 
@@ -278,6 +278,7 @@ def message_ajax_reply(request, thread_id,
             try:
                 (thread, new_message) = form.save(sender=request.user, thread=thread)
             except Exception, e:
+                print e
                 logging.exception(e)
                 return HttpResponse(status=500, content="Message could not be sent")
 
@@ -300,9 +301,8 @@ def recipient_search(request):
         for user in users:
             avatar_img_url = avatar_url(user, size=50)
             data.append({"id": user.username,
-                         "url": reverse("profile_detail",args=(user.username,)),
                          "name": "%s %s"%(user.first_name, user.last_name),
                          "img": avatar_img_url})
 
-        return HttpResponse(simplejson.dumps(data),
-                            mimetype='application/json')
+        return HttpResponse(json.dumps(data),
+                            content_type='application/json')
