@@ -1,3 +1,1 @@
-*.pyc
-dist/
-*.egg-info
+django_threaded_messages.egg-info/

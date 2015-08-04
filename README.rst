@@ -24,7 +24,7 @@ User Search
 The app comes with a very basic user search component. If you want to extend it or adapt it to your needs
 look at views.recipient_search. Adapt your own version in a seperate app and then
 change the call in your compose templates::
-    $("#id_recipient").tokenInput("{% url recipient_search %}?format=json", parameters)
+    $("#id_recipient").tokenInput("{% url 'tm:recipient_search' %}?format=json", parameters)
 
 to point to your custom view.
 
