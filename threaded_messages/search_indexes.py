@@ -7,7 +7,7 @@ class ThreadIndex(indexes.SearchIndex, indexes.Indexable):
     participants = indexes.MultiValueField()
     last_message = indexes.DateTimeField(model_attr='latest_msg__sent_at')
 
-    def index_queryset(self):
+    def index_queryset(self, using=None):
         return Thread.objects.all()
 
     def prepare_participants(self, object):
