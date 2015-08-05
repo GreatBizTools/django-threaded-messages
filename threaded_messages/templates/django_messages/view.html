@@ -1,43 +1,62 @@
-{% extends "django_messages/base.html" %}
-{% load i18n %}
-{% load avatar_tags %}
+{% extends 'azul_cms_custom/cms_basic.html' %}
+{% load i18n avatar_tags pagination_tags truncchar_tag %}
+{% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
 
-{% block body %}
- <div class="prefix_1 grid_10">
-    <h2>
-        {{ thread.subject }}
-    </h2>
-     <span class="sub-page-header">
+{%block title %}{{ thread.subject }}{% endblock %}
+
+{% block content %}
+<ul class="breadcrumb">
+    <li><i class="icon-chevron-right" style="margin-top: 0;"></i>
+    <li>
+        <a href="/">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{% url 'portal:dashboard_trainee' %}">Dashboard</a><span class="divider">/</span>
+    </li>
+    <li class="active"><a href="{% url 'tm:messages_inbox' %}">Inbox</a><span class="divider">/</span></li>
+    <li class="active"><a href="{% url 'tm:messages_search' %}">Search</a></li>
+</ul>
+{% messages %}
+<div class="page-header">
+
+    <div class="pull-right">
+
+        <a href="{% url 'tm:modal_messages_compose' %}" class="btn btn-success">
+            <i class="icon-plus-sign icon-white"></i> Send new message
+        </a>
+
+    </div>
+
+
+    <div class="row">
+        <div class="span3">
+            <h3>{% trans "View Thread"|upper %}</h3>
+        </div>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span3">
+               {% messaging_well_search %}
+    </div>
+
+    <div class="span9">
+   <h2>
+        {{ thread.subject }}</h2>
+   <a href="{% url 'tm:messages_delete' thread.pk %}" class="btn btn-warning pull-right">
+           <i class="icon-folder-close icon-white"></i>&nbsp;{% trans "Archive thread" %}
+        </a><br />
+           <a href="#reply" class="btn btn-success pull-right">
+           <i class="icon-arrow-left icon-white"></i>&nbsp;{% trans "Reply to thread" %}
+        </a>
+     <div>
         {% blocktrans with participant.user.get_absolute_url as sender_url %}
         A message between <a href="{{ sender_url }}">You</a> and
         {% endblocktrans %}
          {% for participant in participant.others %}
             <a href="{{ participant.user.get_absolute_url }}">{{ participant.user }}</a>
          {% endfor %}
-     </span>
-    <div style="clear: both;"></div>
-    <div class="inbox-bar">
-        <div class="page-search">
-          <form action="{% url 'tm:messages_search' %}" method="GET">
-            <input name="q" type="text" title="{% trans 'Search Messages' %}" />
-            <button type="submit" class="lupe-on-white"></button>
-          </form>
-        </div>
-        <a href="{% url 'tm:modal_messages_compose' %}" class="small-green-button" rel="facebox">
-           {% trans "create message" %}
-        </a>
-
-        <a href="{% url 'tm:messages_delete' thread.pk %}" class="small-green-button">
-           {% trans "delete" %}
-        </a>
-        
-        <div style="clear: left;"></div>
-        <a href="{% url 'tm:messages_inbox' %}" class="back">
-             &lt; {% trans "back to inbox" %}
-        </a>
-        <div style="clear: both;"></div>
-    </div>
-    <hr />
+     </div>
+     <hr />
 
 
     <div class="message-thread">
@@ -48,17 +67,15 @@
           {% endwith %}
         {% endfor %}
       </div>
+        <a name="reply"></a>
       <div class="messageReplyForm message-form">
-        <div class="avatar">{% avatar request.user 50 %}</div>
-        <form method="POST" class="reply-form" action="{% url 'tm:message_reply' thread.pk %}">
+        <form method="POST" class="reply-form" action="{% url 'tm:messages_detail' thread.pk %}">
           {% csrf_token %}
           <h3>{% trans "Reply" %}</h3>
-
-          {{ form.body }}
-          <button class="green-button">{% trans "Reply" %}</button>
-          <div style="clear: both;"></div>
+            <div>{{form.body}}</div>
+            <div>{{form.body.errors}}</div>
+          <button type="submit" class="btn btn-success pull-right">{% trans "Reply" %}</button>
         </form>
-        <div style="clear: both;"></div>
       </div>
       <a href="{% url 'tm:messages_inbox' %}" class="back">
         &lt; {% trans "back to inbox" %}
@@ -67,23 +84,43 @@
 </div>
 {% endblock %}
 
-{% block extra_body %}
-    {{ block.super }}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.5.2.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.form.js"></script>
-     <script type="text/javascript">
-         $(document).ready(function(){
-             $('.reply-form').ajaxForm({
-                 //target: "target",
-                 beforeSubmit: function (){
-                     $('.reply-form').addClass("ajax-form-disabled")
-                 },
-                 success: function(data){
-                     $('.reply-form').removeClass("ajax-form-disabled")
-                     $('.message-list').append(data)
-                     resetForm()
-                 }
-             })
-         })
+{% block js %}
+{% addtoblock "js" %}
+    {{ form.media }}
+    <script>
+        $.ajax({
+            url: $('.reply-form').attr("action"),
+            type: 'POST',
+            data: $('.reply-form').serialize(),
+            beforeSend: function() {
+                $('.reply-form').addClass("ajax-form-disabled")
+            };
+            success: function(e) {
+                $('.reply-form').removeClass("ajax-form-disabled")
+                CKEDITOR.instances['reply-body'].setData('');
+                $('.message-list').append(e);
+            }
+        });
+
      </script>
+{% endaddtoblock %}
 {% endblock %}
+
+
+    {% block css %}
+    {% addtoblock "css" %}
+    <style>
+        h2, h4 {
+            display: inline;
+        }
+
+        .message-sender {
+            margin-bottom: 7px;
+        }
+
+        .django-ckeditor-widget {
+            width: 100%;
+        }
+    </style>
+    {% endaddtoblock %}
+    {% endblock %}

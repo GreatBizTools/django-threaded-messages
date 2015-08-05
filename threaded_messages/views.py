@@ -3,6 +3,7 @@ import logging
 import json
 
 from django.contrib.auth import login, BACKEND_SESSION_KEY
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -21,7 +22,7 @@ from haystack.query import SearchQuerySet, SQ
 from avatar.templatetags.avatar_tags import avatar_url
 
 from .models import *
-from .forms import ComposeForm, ReplyForm
+from .forms import ComposeForm, NewReplyForm
 from .utils import now
 
 
@@ -47,8 +48,18 @@ def inbox(request, template_name='django_messages/inbox.html'):
 
     thread_list = Participant.objects.inbox_for(request.user, read=read, only_unreplied=only_unreplied)
 
+    paginated_messages = Paginator(thread_list, 10)
+    page = request.GET.get('page', 1)
+    try:
+        paginated_list = paginated_messages.page(page)
+    except EmptyPage:
+        paginated_list = paginated_messages.page(paginated_messages.num_pages)
+    except PageNotAnInteger:
+        paginated_list = paginated_messages.page(1)
+
     return render_to_response(template_name, {
-        'thread_list': thread_list,
+        'thread_list': paginated_list,
+        'header': 'Sender',
         'only_read': only_read,
         'only_unread': only_unread,
         'only_unreplied': only_unreplied,
@@ -76,8 +87,19 @@ def outbox(request, template_name='django_messages/outbox.html'):
         ``template_name``: name of the template to use.
     """
     thread_list = Participant.objects.outbox_for(request.user)
+
+    paginated_messages = Paginator(thread_list, 10)
+    page = request.GET.get('page', 1)
+    try:
+        paginated_list = paginated_messages.page(page)
+    except EmptyPage:
+        paginated_list = paginated_messages.page(paginated_messages.num_pages)
+    except PageNotAnInteger:
+        paginated_list = paginated_messages.page(1)
+
     return render_to_response(template_name, {
-        'thread_list': thread_list,
+        'thread_list': paginated_list,
+        'header': 'Participants',
     }, context_instance=RequestContext(request))
 
 
@@ -184,7 +206,7 @@ def undelete(request, thread_id, success_url=None):
 
 
 @login_required
-def view(request, thread_id, form_class=ReplyForm,
+def view(request, thread_id, form_class=NewReplyForm,
         success_url=None, recipient_filter=None, template_name='django_messages/view.html'):
     """
     Shows a single message.``message_id`` argument is required.
@@ -274,7 +296,7 @@ def message_ajax_reply(request, thread_id,
                   template_name="django_messages/message_list_view.html"):
     thread = get_object_or_404(Thread, id=thread_id)
     if request.POST:
-        form = ReplyForm(request.POST)
+        form = NewReplyForm(request.POST)
         if form.is_valid():
             try:
                 (thread, new_message) = form.save(sender=request.user, thread=thread)

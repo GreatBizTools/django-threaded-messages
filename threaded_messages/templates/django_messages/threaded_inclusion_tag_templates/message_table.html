@@ -1,0 +1,74 @@
+{% load i18n avatar_tags pagination_tags truncchar_tag %}
+{% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
+
+    <form action="{% url 'tm:messages_batch_update' %}" method="post">
+        {% csrf_token %}
+        <div class="inbox-action-box">
+              <div style="float: left; margin-top: 7px;">
+                  {% trans "show" %}:
+                  {% if only_unread or only_read %}<a href="{% url 'tm:messages_inbox' %}">{% trans "all" %}</a>{% else %}{% trans "all" %}{% endif %} ·
+                  {% if not only_read %}<a href="{% url 'tm:messages_inbox' %}?only_read=1">{% trans "read" %}</a>{% else %}{% trans "read" %}{% endif %} ·
+                  {% if not only_unread %}<a href="{% url 'tm:messages_inbox' %}?only_unread=1">{% trans "unread" %}</a>{% else %}{% trans "unread" %}{% endif %}
+              </div>
+              <div style="float: right">
+                  <button type="submit" name="action" value="read" class="btn btn-small">{% trans "mark as read" %}</button>
+                  <button type="submit" name="action" value="delete" class="btn btn-small">{% trans "archive messages" %}</button>
+              </div>
+        </div>
+        <div style="clear: both;"></div>
+        <table class="inbox table table-striped table-hover">
+            <thead>
+                <tr class="message message-header">
+                    <th class="sender span5">{{header}}</th>
+                    <th class="subject span6">{% trans "Subject" %}</th>
+                    <th class="subject span1"></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for message in thread_list %}
+              <tr class="{% if message.new %}info{% endif %}">
+                  <td class="clickablerow sender span5">
+                    <a href="{{ message.thread.latest_msg.sender.get_absolute_url }}">{{ message.thread.latest_msg.sender }}</a>&nbsp; &nbsp;
+                    <span class="date">{{ message.thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</span>
+                  </td>
+                  <td class="clickablerow subject span6">
+                    <a href="{{ message.thread.get_absolute_url }}">{% if message.new %}<b>{% endif %}{{ message.thread.subject|truncchar:45 }}{% if message.new %}</b>{% endif %}</a>
+                    <span class="message-tease">{{ message.thread.latest_msg.body|truncatewords:8 }}</span>
+                    <span class="pull-right label">{{ message.thread.all_msgs.count }}</span>
+                  </td>
+
+                  <td class="clickablerow checkbox span1">
+                    <input name="batchupdateids" type="checkbox" value="{{message.thread.pk}}" />
+                  </td>
+                  {% if message.replied %}{% endif %}
+                  {% if message.new %}{% endif %}
+              </tr>
+            {% empty %}
+                <div class="message unread">
+                    <b class="no-message">{% trans "No messages" %}</b>
+                </div>
+            {% endfor %}
+            </tbody>
+</table>
+    </form>
+    <div class="messages-footer">
+        <div class="pagination">
+            <ul>
+                {% if thread_list.has_previous %}
+                <li><a href="?page={{ thread_list.previous_page_number }}"><i class="icon-chevron-left"></i></a>
+                </li>
+                {% else %}
+                <li class="disabled"><a href="#"><i class="icon-chevron-left"></i></a></li>
+                {% endif %}
+                {% for p in thread_list.paginator.num_pages|get_range_plus_one %}
+                <li class="{% if p == thread_list.number %}active{% endif %}"><a href="?page={{ p }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                {% if thread_list.has_next %}
+                <li><a href="?page={{ thread_list.next_page_number }}"><i class="icon-chevron-right"></i></a></li>
+                {% else %}
+                <li class="disabled"><a href="#"><i class="icon-chevron-right"></i></a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>

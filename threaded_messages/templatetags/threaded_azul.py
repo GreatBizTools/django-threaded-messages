@@ -37,3 +37,10 @@ def messaging_well(*args, **kwargs):
 @register.inclusion_tag('django_messages/threaded_inclusion_tag_templates/messaging_well_search.html', takes_context=False)
 def messaging_well_search(*args, **kwargs):
     return None
+
+@register.inclusion_tag('django_messages/threaded_inclusion_tag_templates/message_table.html', takes_context=True)
+def message_table(context, *args, **kwargs):
+    return {
+        'thread_list': context['thread_list'],
+        'header': context['header'],
+    }

@@ -2,6 +2,7 @@ import settings as sendgrid_settings
 from django import forms
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from ckeditor.widgets import CKEditorWidget
 
 from .models import *
 from .fields import CommaSeparatedUserField
@@ -83,9 +84,14 @@ class ReplyForm(forms.Form):
     """
     A simple default form for private messages.
     """
-    body = forms.CharField(label=_(u"Reply"),
-        widget=forms.Textarea(attrs={'rows': '4', 'cols': '55'}))
+    body = forms.CharField(label=_(u"Reply"))
 
     def save(self, sender, thread):
         body = self.cleaned_data['body']
         return reply_to_thread(thread, sender, body)
+
+class NewReplyForm(ReplyForm):
+      def __init__(self, *args, **kwargs):
+        super(NewReplyForm, self).__init__(*args, **kwargs)
+        self.fields['body'].widget = CKEditorWidget()
+        self.fields['body'].widget.attrs.update({'id': 'reply-body', 'name' : 'editor1'})

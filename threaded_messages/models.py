@@ -145,10 +145,10 @@ class Participant(models.Model):
         message = self.thread.all_msgs.exclude(sender=self.user)
         if message:
             return message[0].sender
-        else:
-            others = self.others()
-            if others:
-                return others[0].user
+        #else:
+            # others = self.others()
+            # if others:
+            #     return others[0].user
         return None
 
     def others(self):
