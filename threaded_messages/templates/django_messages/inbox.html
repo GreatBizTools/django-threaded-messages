@@ -50,8 +50,8 @@
                   {% if not only_unread %}<a href="{% url 'tm:messages_inbox' %}?only_unread=1">{% trans "unread" %}</a>{% else %}{% trans "unread" %}{% endif %}
               </div>
               <div style="float: right">
-                  <button type="submit" name="action" value="read" class="small-green-button">{% trans "mark as read" %}</button>
-                  <button type="submit" name="action" value="delete" class="small-green-button">{% trans "archive messages" %}</button>
+                  <button type="submit" name="action" value="read" class="btn btn-small">{% trans "mark as read" %}</button>
+                  <button type="submit" name="action" value="delete" class="btn btn-small">{% trans "archive messages" %}</button>
               </div>
         </div>
         <div style="clear: both;"></div>
@@ -65,7 +65,7 @@
             </thead>
             <tbody>
             {% for message in thread_list %}
-              <tr class="message {% if message.new %}unread{% endif %}">
+              <tr class="{% if message.new %}info{% endif %}">
                   <td class="clickablerow sender span5">
                     <a href="{{ message.thread.latest_msg.sender.get_absolute_url }}">{{ message.thread.latest_msg.sender }}</a>&nbsp; &nbsp;
                     <span class="date">{{ message.thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</span>
@@ -73,6 +73,7 @@
                   <td class="clickablerow subject span6">
                     <a href="{{message.thread.get_absolute_url }}">{% if message.new %}<b>{% endif %}{{ message.thread.subject|truncchar:45 }}{% if message.new %}</b>{% endif %}</a>
                     <span class="message-tease">{{message.thread.latest_msg.body|truncatewords:8}}</span>
+                    <span class="pull-right label">{{ message.thread.all_msgs.count }}</span>
                   </td>
 
                   <td class="clickablerow checkbox span1">
@@ -86,12 +87,11 @@
                     <b class="no-message">{% trans "No messages" %}</b>
                 </div>
             {% endfor %}
-        </div>
             </tbody>
 </table>
     </form>
     <div class="messages-footer">{% paginate %}</div>
-    </div>
+    </div></div>
 {% endblock %}
 
 

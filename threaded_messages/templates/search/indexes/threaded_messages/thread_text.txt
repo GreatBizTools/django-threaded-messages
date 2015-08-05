@@ -1,1 +1,4 @@
-{{ object }}
+<h1>{{ object.subject }}</h1>
+{% for m in object.all_msgs.all %}
+{{ m.body }}
+{% endfor %}

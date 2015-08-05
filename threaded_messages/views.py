@@ -15,6 +15,8 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.conf import settings
 from django.template.loader import render_to_string
+from haystack.query import SearchQuerySet, SQ
+
 
 from avatar.templatetags.avatar_tags import avatar_url
 
@@ -55,10 +57,10 @@ def inbox(request, template_name='django_messages/inbox.html'):
 
 @login_required
 def search(request, template_name="django_messages/search.html"):
-    from haystack.query import SearchQuerySet #include here, so the dependency is only needed when used
     search_term = request.GET.get("q")
-    results = SearchQuerySet().filter(content=search_term, participants=request.user.pk)
-                    # leads to error in haystack: .order_by("-last_message") \.models(Thread)
+    results = SearchQuerySet().filter(participants=request.user.pk).filter(
+        SQ(content=search_term) | SQ(participant_last_names__istartswith=search_term)
+    ).order_by('-last_message')
     print "results: ", results
     return render_to_response(template_name, {
                                   "thread_results": results,

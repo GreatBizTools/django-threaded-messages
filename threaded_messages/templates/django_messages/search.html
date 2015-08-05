@@ -2,80 +2,196 @@
 {% load i18n avatar_tags pagination_tags truncchar_tag %}
 {% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
 
+{%block title %}{{title}}{% endblock %}
+
 {% block content %}
+<ul class="breadcrumb">
+    <li><i class="icon-chevron-right" style="margin-top: 0;"></i>
+    <li>
+        <a href="/">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{% url 'portal:dashboard_trainee' %}">Dashboard</a><span class="divider">/</span>
+    </li>
+    <li class="active"><a href="{% url 'tm:messages_inbox' %}">Inbox</a><span class="divider">/</span></li>
+    <li class="active"><a href="{% url 'tm:messages_search' %}">Search</a></li>
+</ul>
+{% messages %}
+<div class="page-header">
+
+    <div class="pull-right">
+
+        <a href="{% url 'tm:modal_messages_compose' %}" class="btn btn-success">
+            <i class="icon-plus-sign icon-white"></i> Send message
+        </a>
+
+    </div>
+
+    <div class="row">
+        <div class="span3">
+            <h3>{% trans "Search"|upper %}</h3>
+        </div>
+    </div>
+
+</div>
+<div class="row-fluid">
+    <div class="span3">
+               {% messaging_well_search %}
+    </div>
+
+    <div class="span9">
     <!--{_% autopaginate thread_results 10 %}-->
     <div class="page-header-wrapper">
-        <h2 class="page-header">
-            <img class="page-header-icon" src="{{ STATIC_URL }}img/icons/18/message.png"/>
-            {% trans "Inbox"|upper %}
-        </h2>
-        <span class="sub-page-header">{% trans "All messages" %}</span>
-        <div style="clear:both;"></div>
         <div class="inbox-bar">
             <div class="page-search">
                 <form action="{% url 'tm:messages_search' %}" method="GET">
-                    <input name="q" type="text" {% if not search_term %}title="{% trans 'Search Messages' %}"{% endif %}
+                    <input name="q" class="search-input" type="text" {% if not search_term %}title="{% trans 'Search Messages' %}"{% endif %}
                            value="{{ search_term }}" />
-                    <button type="submit" class="lupe-on-white"></button>
-                    
+                    <button type="submit" class="btn btn-success search-submit">Search</button>
                 </form>
             </div>
-            <a href="{% url 'tm:modal_messages_compose' %}" class="green-button" rel='facebox'>
-                 <img src="{{ STATIC_URL }}img/icons/18/add_message.png"/> {% trans "Create message" %}
-            </a>
             <div class="message-pagination">{% paginate %}</div>
             <div style="clear: both;"></div>
         </div>
     </div>
     <form action="{% url 'tm:messages_batch_update' %}" method="post">
-        <h3>{% trans "Searching for" %}: {{ search_term }}</h3>
+        <div><h3>{% trans "Searching for" %}: {{ search_term }}</h3>          <div style="float: right">
+                  <button type="submit" name="action" value="read" class="btn btn-small">{% trans "mark as read" %}</button>
+                  <button type="submit" name="action" value="delete" class="btn btn-small">{% trans "archive messages" %}</button>
+              </div>
+        </div>
         {% csrf_token %}
         <div style="clear: both;"></div>
-        <div class="inbox">
-            <div class="message message-header">
-                <div class="sender"><h3>{% trans "Sender" %}</h3></div>
-                <div class="avatar"></div>
-                <div class="subject"><h3>{% trans "Subject" %}</h3></div>
-            </div>
-            <div style="clear: both;"></div>
+         <table class="inbox table table-striped table-hover">
+            <thead>
+                <tr class="message message-header">
+                    <th class="sender span5">{% trans "Sender" %}</th>
+                    <th class="subject span6">{% trans "Subject" %}</th>
+                    <th class="subject span1"></th>
+                </tr>
+            </thead>
+            <tbody>
             {% for thread in thread_results %}
                 {% with thread.object as thread %}
-                    <div class="message">
-                        <div class="avatar">
-                            <a href="{{ thread.latest_msg.sender.get_absolute_url }}">
-                            {% avatar thread.latest_msg.sender 30 %}</a>
-                        </div>
-                        <div class="sender">
-                            <a href="{{ thread.latest_msg.sender.get_absolute_url }}">
-                                {{ thread.latest_msg.sender }}</a>
-                            <span class="date">{{ thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</span>
-                        </div>
-                        <div class="subject">
-                            <a href="{{thread.get_absolute_url }}">{{ thread.subject|truncchar:45 }}</a>
-                            <span class="message-tease">{{thread.latest_msg.body|truncatewords:8}}</span>
-                        </div>
+              <tr class="{% if message.new %}info{% endif %}">
+                  <td class="clickablerow sender span5">
+                    <a href="{{ thread.latest_msg.sender.get_absolute_url }}">{{ thread.latest_msg.sender }}</a>&nbsp; &nbsp;
+                    <span class="date">{{ thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</span>
+                  </td>
+                  <td class="clickablerow subject span6">
+                    <a href="{{thread.get_absolute_url }}">{% if message.new %}<b>{% endif %}{{ thread.subject|truncchar:45 }}{% if message.new %}</b>{% endif %}</a>
+                    <span class="message-tease">{{thread.latest_msg.body|truncatewords:8}}</span>
+                    <span class="pull-right label">{{ thread.all_msgs.count }}</span>
+                  </td>
 
-                        <div class="checkbox"><input name="batchupdateids" type="checkbox" value="{{thread.pk}}" /></div>
-                        
-                        <div style="clear: both;"></div>
-                    </div>
+                  <td class="clickablerow checkbox span1">
+                    <input name="batchupdateids" type="checkbox" value="{{thread.pk}}" />
+                  </td>
+                  {% if message.replied %}{% endif %}
+                  {% if message.new %}{% endif %}
+              </tr>
                 {% endwith %}
             {% empty %}
                 <div class="message unread">
                     <b class="no-message">{% trans "No messages" %}</b>
                 </div>
-            {% endfor %}
-        </div>
+          {% endfor %}
+            </tbody>
+</table>
     </form>
-    <div class="messages-footer"><div class="message-pagination">{% paginate %}</div></div>
+    <div class="messages-footer">{% paginate %}</div>
+    </div></div>
 
 {% endblock %}
+
 {% block js %}
-{% addtoblock 'js' %}
+{% addtoblock "js" %}
 <script>
-    $(document).ready(function(){
-        $("body").highlight("{{ search_term }}", { element: 'span', className: 'highlighted'});
-    })
+    $(document).ready(function () {
+        watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
+    });
+
+    $(document).ready(function() {
+
+
+        $('.thisclickableRow a').click(function(evt){
+            evt.preventDefault();
+        });
+
+
+        $('.clickableRow').click(function(){
+
+            var href = $(this).find('a').attr('href');
+            if(typeof href != 'undefined') {
+                window.location = href;
+            }else{
+                window.location = $(this).siblings().find('a').attr('href');
+            }
+        });
+
+        $('#bulkDelete').click(function () {
+
+            if (window.confirm("Do you want to delete these messages?")) {
+                var selectedCheckBoxes = $('input[name="pks"]:checked').serializeArray();
+
+                $.post('/messaging/delete/', selectedCheckBoxes
+                ).success(function () {
+                            for (var i = 0; i < selectedCheckBoxes.length; i++) {
+                                var item = "#message-" + $.trim(selectedCheckBoxes[i].value);
+                                $(item).remove();
+                            }
+                        }).fail(function () {
+                            alert("There was a problem")
+                        })
+            }
+        });
+
+
+        $('#bulkArchive').click(function () {
+            var selectedCheckBoxes = $('input[name="pks"]:checked').serializeArray();
+            $.post('/messaging/archive/',
+                    selectedCheckBoxes
+            ).success(function () {
+                        for (var i = 0; i < selectedCheckBoxes.length; i++) {
+                            var item = "#message-" + $.trim(selectedCheckBoxes[i].value);
+                            $(item).remove();
+                        }
+                    }).fail(function () {
+                        alert("There was a problem")
+                    });
+        });
+
+        //$("body").highlight("{{ search_term }}", { element: 'span', className: 'highlighted'});
+
+    });
+
+
 </script>
-{% endaddtoblock  %}
+{% endaddtoblock %}
+{% endblock %}
+
+
+        {% block css %}
+{% addtoblock "css" %}
+<style>
+    input, button {
+        max-width:100%;
+    }
+    .clickableRow:hover {
+        cursor: pointer;
+        cursor: hand;
+    }
+
+    .clickableRow > a, .thisclickableRow >a {
+        color: inherit;
+        text-decoration: inherit;
+    }
+
+    .search-submit {
+        margin-bottom: 10px;
+    }
+
+</style>
+
+{% endaddtoblock %}
 {% endblock %}
