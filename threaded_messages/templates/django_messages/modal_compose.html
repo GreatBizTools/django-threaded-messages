@@ -1,23 +1,116 @@
-{% load i18n %}
-{% load uni_form_tags %}
+{% extends 'azul_cms_custom/cms_basic.html' %}
+{% load i18n avatar_tags pagination_tags truncchar_tag uni_form_tags %}
+{% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
+
+{%block title %}{{ thread.subject }}{% endblock %}
+
+{% block content %}
 <link rel="stylesheet" href="{{ STATIC_URL }}css/token-input.css" type="text/css" />
+<ul class="breadcrumb">
+    <li><i class="icon-chevron-right" style="margin-top: 0;"></i>
+    <li>
+        <a href="/">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{% url 'portal:dashboard_trainee' %}">Dashboard</a><span class="divider">/</span>
+    </li>
+    <li class="active"><a href="{% url 'tm:messages_inbox' %}">Inbox</a><span class="divider">/</span></li>
+    <li class="active"><a href="{% url 'tm:messages_compose' %}">Compose</a></li>
+</ul>
+{% messages %}
+<div class="page-header">
+
+    <div class="pull-right">
+        <a href="{% url 'tm:modal_messages_compose' %}" class="btn btn-success">
+            <i class="icon-plus-sign icon-white"></i> Send new message
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="span3">
+            <h3>{% trans "View Thread"|upper %}</h3>
+        </div>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span3">
+               {% messaging_well_search %}
+    </div>
+
+    <div class="span9">
+        <div class="span8">
+            <form class="form-horizontal" id="compose" method="post" action="{% url 'messaging:compose' %}">
+                <fieldset>
+                    {% csrf_token %}
+
+                    <div class="control-group span12">
+                        <h4>Recipient(s)</h4>
+
+                        <div class="controls">
+                            <span class="control-label"><i class="icon-search"></i></span>
+                            {{ form.recipients }}
+
+                            {% if form.recipients.errors %}
+                            {% for error in form.recipients.errors %}
+                            <div class="alert alert-error">
+                                {{ error | escape }}
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                <div class="control-group span12">
+                    <h4>Subject</h4>
+
+                    <p>{{ form.subject }}</p>
+                    {% if form.subject.errors %}
+                        {% for error in form.subject.errors %}
+                            <div class="alert alert-error">
+                                {{ error | escape }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+</div>
+                    <div class="control-group span12">
+                    <h4>Message</h4>
+
+                    <p>{{ form.body }}</p>
+                    {% if form.body.errors %}
+                        {% for error in form.body.errors %}
+                            <div class="alert alert-error">
+                                {{ error | escape }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+               </fieldset>
+        </div>
+    <div class="form-actions">
+        <a type="submit" class="btn btn-success pull-right" id="composeBtn2" name="send"><i
+                class="icon-ok-circle icon-white"></i> Send</a>
+    </div>
+    </form>
+
 <form id="message-modal-form" 
       action="{% url 'tm:messages_compose' %}" method="post"
-      class="uniForm modal-message-form grey-form">
+      class="modal-message-form grey-form">
     {% csrf_token %}
     <fieldset class="inlineLabels">
         <input type="hidden" name="attachment_id" id="attachment_id" />
         {{ form|as_uni_form }}
     </fieldset>
     <div class="button-bar">
-      <button type="submit" class="small-green-button" onclick="$.facebox.close()">{% trans "Cancel" %}</button>
-  
-      <button id="modal-send-button" class="small-green-button" type="submit" onclick="$('#message-modal-form').submit()">
+      <a class="btn btn-danger" href="{% url 'tm:messages_inbox' %}">{% trans "Cancel" %}</a>
+      <button id="modal-send-button" class="btn btn-success" type="submit" onclick="$('#message-modal-form').submit()">
           {% trans "Send" %}
       </button>
     </div>
 </form>
+        </div>
+{% endblock %}
 
+{% block js %}
+        {% addtoblock 'js' %}
 <!-- remove if you have these dependencies are already satisfied in your app -->
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.5.2.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.form.js"></script>
@@ -74,3 +167,5 @@
 
     });
 </script>
+        {% endaddtoblock %}
+        {% endblock %}

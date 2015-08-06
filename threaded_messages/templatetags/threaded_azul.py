@@ -23,7 +23,7 @@ def date_prettifier(date):
 
 @register.filter(name='clean_with_bleach')
 def html_cleaner(html):
-    allowed_tags = ['p', 'span', 'h1', 'h2', 'h3', 'h4', 'h5','h6','small','tt','u','ul','li','ol','kbd','del','ins','code', 'br', 'b', 'em', 's', 'table', 'hr', 'img', 'pre', 'q', 'cite', 'a', 'div', 'address','thead','th','td','tbody','tr']
+    allowed_tags = ['span', 'h1', 'h2', 'h3', 'h4', 'h5','h6','small','tt','u','ul','li','ol','kbd','del','ins','code', 'br', 'b', 'em', 's', 'table', 'hr', 'img', 'pre', 'q', 'cite', 'a', 'div', 'address','thead','th','td','tbody','tr']
     allowed_attributes = ['style', 'src', 'alt', 'title', 'dir', 'href','border', 'cellpadding', 'cellspacing']
     styles = ['color','background-color','width','height', 'border', 'padding','background']
     return clean(html, tags=allowed_tags, attributes=allowed_attributes, styles=styles,strip=True, strip_comments=True)
@@ -43,4 +43,7 @@ def message_table(context, *args, **kwargs):
     return {
         'thread_list': context['thread_list'],
         'header': context['header'],
+        'only_read': context['only_read'],
+        'only_unread': context['only_unread'],
+        'only_unreplied': context['only_unreplied'],
     }

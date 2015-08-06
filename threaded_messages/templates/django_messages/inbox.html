@@ -48,11 +48,22 @@
 {% addtoblock "js" %}
 <script>
     $(document).ready(function () {
+        var anyChecked = false;
+        var checkboxes = $("input[name='batchupdateids']"),
+                submitButt = $(".bulkaction");
+
+        checkboxes.on('ifChecked', function () {
+            submitButt.attr("disabled", false);
+        });
+
+        checkboxes.on('ifUnchecked', function () {
+            anyChecked = checkboxes.closest('div.icheck-item').hasClass('checked');
+            if (!anyChecked) {
+                submitButt.attr("disabled", true);
+            }
+        });
+
         watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
-    });
-
-    $(document).ready(function() {
-
 
         $('.thisclickableRow a').click(function(evt){
             evt.preventDefault();
@@ -68,39 +79,6 @@
                 window.location = $(this).siblings().find('a').attr('href');
             }
         });
-
-        $('#bulkDelete').click(function () {
-
-            if (window.confirm("Do you want to delete these messages?")) {
-                var selectedCheckBoxes = $('input[name="pks"]:checked').serializeArray();
-
-                $.post('/messaging/delete/', selectedCheckBoxes
-                ).success(function () {
-                            for (var i = 0; i < selectedCheckBoxes.length; i++) {
-                                var item = "#message-" + $.trim(selectedCheckBoxes[i].value);
-                                $(item).remove();
-                            }
-                        }).fail(function () {
-                            alert("There was a problem")
-                        })
-            }
-        });
-
-
-        $('#bulkArchive').click(function () {
-            var selectedCheckBoxes = $('input[name="pks"]:checked').serializeArray();
-            $.post('/messaging/archive/',
-                    selectedCheckBoxes
-            ).success(function () {
-                        for (var i = 0; i < selectedCheckBoxes.length; i++) {
-                            var item = "#message-" + $.trim(selectedCheckBoxes[i].value);
-                            $(item).remove();
-                        }
-                    }).fail(function () {
-                        alert("There was a problem")
-                    });
-        });
-
 
     });
 

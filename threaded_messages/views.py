@@ -50,6 +50,7 @@ def inbox(request, template_name='django_messages/inbox.html'):
 
     paginated_messages = Paginator(thread_list, 10)
     page = request.GET.get('page', 1)
+
     try:
         paginated_list = paginated_messages.page(page)
     except EmptyPage:
@@ -59,10 +60,10 @@ def inbox(request, template_name='django_messages/inbox.html'):
 
     return render_to_response(template_name, {
         'thread_list': paginated_list,
-        'header': 'Sender',
         'only_read': only_read,
         'only_unread': only_unread,
         'only_unreplied': only_unreplied,
+        'header': 'Sender',
     }, context_instance=RequestContext(request))
 
 
