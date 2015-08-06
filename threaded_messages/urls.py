@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     url(r'^undelete/(?P<thread_id>[\d]+)/$', undelete, name='messages_undelete'),
     url(r'^batch-update/$', batch_update, name='messages_batch_update'),
     url(r'^trash/$', trash, name='messages_trash'),
-
+    url(r'^update-navbar/$', update_navbarView, name='messages_update'),
     url(r"^recipient-search/$", recipient_search, name="recipient_search"),
     url(r'^message-reply/(?P<thread_id>[\d]+)/$', message_ajax_reply, name="message_reply"),
 

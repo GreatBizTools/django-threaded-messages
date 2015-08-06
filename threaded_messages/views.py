@@ -18,8 +18,8 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from haystack.query import SearchQuerySet, SQ
 
-
 from avatar.templatetags.avatar_tags import avatar_url
+from azul_shared.utils import ellipsis
 
 from .models import *
 from .forms import ComposeForm, NewReplyForm
@@ -330,3 +330,14 @@ def recipient_search(request):
 
         return HttpResponse(json.dumps(data),
                             content_type='application/json')
+
+def update_navbarView(request):
+    if request.method == 'GET':
+        unread_messages = [(ellipsis(p.thread.latest_msg.body, 10), p.thread.latest_msg.sender.full_name(), p.thread.id) for p in
+                           Participant.objects.inbox_for(request.user,read=False)]
+        unread_message_count = len(unread_messages)
+        print unread_message_count
+        if len(unread_messages) > 3:
+            unread_messages = unread_messages[0:3]
+        unread_messages.reverse()
+        return HttpResponse(json.dumps({'count': unread_message_count, 'unread_messages': unread_messages}))
