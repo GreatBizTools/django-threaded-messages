@@ -48,11 +48,10 @@
 {% addtoblock "js" %}
 <script>
     $(document).ready(function () {
-        watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
-    });
-
-    $(document).ready(function() {
-
+         watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
+         $(function () {
+                    $(document).tooltip();
+                });
 
         $('.thisclickableRow a').click(function(evt){
             evt.preventDefault();
@@ -68,7 +67,7 @@
                 window.location = $(this).siblings().find('a').attr('href');
             }
         });
-
+.
         $('#bulkDelete').click(function () {
 
             if (window.confirm("Do you want to delete these messages?")) {

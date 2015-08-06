@@ -89,7 +89,22 @@ def outbox(request, template_name='django_messages/outbox.html'):
     """
     thread_list = Participant.objects.outbox_for(request.user)
 
-    paginated_messages = Paginator(thread_list, 10)
+    only_read = request.GET.get("only_read", False)
+    only_unread = request.GET.get("only_unread", False)
+    only_unreplied = request.GET.get("only_unreplied", None)
+
+    read = None
+    if only_read:
+        read = True
+    elif only_unread:
+        read = False
+
+    if only_unreplied:
+        only_unreplied = True
+
+    message_list = Participant.objects.inbox_for(request.user, read=read, only_unreplied=only_unreplied)
+
+    paginated_messages = Paginator(message_list, 10)
     page = request.GET.get('page', 1)
     try:
         paginated_list = paginated_messages.page(page)
@@ -101,6 +116,9 @@ def outbox(request, template_name='django_messages/outbox.html'):
     return render_to_response(template_name, {
         'thread_list': paginated_list,
         'header': 'Participants',
+        'only_read': only_read,
+        'only_unread': only_unread,
+        'only_unreplied': only_unreplied,
     }, context_instance=RequestContext(request))
 
 
@@ -114,8 +132,18 @@ def trash(request, template_name='django_messages/trash.html'):
     by sender and recipient.
     """
     message_list = Participant.objects.trash_for(request.user)
+
+    paginated_messages = Paginator(message_list, 10)
+    page = request.GET.get('page', 1)
+    try:
+        paginated_list = paginated_messages.page(page)
+    except EmptyPage:
+        paginated_list = paginated_messages.page(paginated_messages.num_pages)
+    except PageNotAnInteger:
+        paginated_list = paginated_messages.page(1)
+
     return render_to_response(template_name, {
-        'message_list': message_list,
+        'message_list': paginated_list,
     }, context_instance=RequestContext(request))
 
 
@@ -271,6 +299,8 @@ def batch_update(request, success_url=None):
                         participant.deleted_at = now()
                     elif request.POST.get("action") == "unread":
                         participant.read_at = None
+                    elif request.POST.get("action") == "undelete":
+                        participant.deleted_at = None
                     participant.save()
         else:
             raise Http404

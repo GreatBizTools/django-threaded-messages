@@ -69,7 +69,7 @@
                 <tr class="message message-header">
                     <th class="sender span5">{% trans "Sender" %}</th>
                     <th class="subject span6">{% trans "Subject" %}</th>
-                    <th class="subject span1"></th>
+                    <!--<th class="subject span1"></th>-->
                 </tr>
             </thead>
             <tbody>
@@ -77,14 +77,15 @@
                 {% with thread.object as thread %}
               <tr class="{% if thread.participants.new %}info{% endif %}">
                   <td class="clickablerow sender span5">
-                    <a href="{{ thread.latest_msg.sender.get_absolute_url }}">{{ thread.latest_msg.sender }}</a>
-                      &nbsp; &nbsp;
-                    <span class="date">{{ thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</span>
+                        {% for p in thread.participants.all %}
+                        <span class="recipient"><a href="#" title="{{ p.user.full_name }}">{{ p.user.first_name }}</a></span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
+                      {% endfor %}
+                    <span class="date"><em>{{ thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span>
                   </td>
                   <td class="clickablerow subject span6">
                     <a href="{{ thread.get_absolute_url }}">{% if thread.participants.new %}<b>{% endif %}
-                        {{ thread.subject|truncchar:45 }}{% if thread.participants.new %}</b>{% endif %}</a>
-                    <span class="message-tease">{{thread.latest_msg.body|truncatewords:8}}</span>
+                        {{ thread.subject|truncchar:30|clean_with_bleach }}{% if thread.participants.new %}</b>{% endif %}</a>
+                    <span class="message-tease">{{thread.latest_msg.body|truncatewords:8|clean_with_bleach}}</span>
                     <span class="pull-right label">{{ thread.all_msgs.count }}</span>
                   </td>
 

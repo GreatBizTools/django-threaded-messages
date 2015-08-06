@@ -4,7 +4,7 @@
     <form action="{% url 'tm:messages_batch_update' %}" method="post">
         {% csrf_token %}
 
-        {% ifequal header "Sender" %}
+        {% if header == "Sender" %}
         <div class="inbox-action-box">
               <div style="float: left; margin-top: 7px;">
                   {% trans "show" %}:
@@ -17,7 +17,7 @@
                   <button type="submit" disabled=true name="action" value="delete" class="bulkaction btn btn-small btn-warning"><i class="icon-folder-close icon-white"></i>&nbsp;{% trans "archive messages" %}</button>
               </div>
         </div>
-        {% endifequal %}
+        {% endif %}
 
         <div style="clear: both;"></div>
         <table class="inbox table table-striped table-hover">
@@ -30,16 +30,16 @@
             </thead>
             <tbody>
             {% for message in thread_list %}
-              <tr class="{% if message.new %}info{% endif %}">
+              <tr class="{% if message.new %}success{% endif %}">
                   <td class="clickablerow sender span5">
                       {% ifequal header "Sender" %}
                         <a href="{{ message.thread.latest_msg.sender.get_absolute_url }}">{{ message.thread.latest_msg.sender }}</a>&nbsp; &nbsp;
                       {% else %}
-                        {% for p in message.thread.participants.all %}
-                        <span class="recipient"><a href="#">{{ p.user.full_name }}</a></span>
-                        {% endfor %}
+                      {% for p in message.thread.participants.all %}
+                        <span class="recipient"><a href="#" title="{{ p.user.full_name }}">{{ p.user.first_name }}</a></span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
+                      {% endfor %}
                       {% endifequal %}
-                    <span class="date">{{ message.thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</span>
+                    <span class="date"><em>{{ message.thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span>
                   </td>
                   <td class="clickablerow subject span6">
                     <a href="{{ message.thread.get_absolute_url }}">{% if message.new %}<b>{% endif %}{{ message.thread.subject|truncchar:30|safe }}{% if message.new %}</b>{% endif %}</a>
@@ -53,9 +53,9 @@
                   {% if message.new %}{% endif %}
               </tr>
             {% empty %}
-                <div class="message unread">
-                    <b class="no-message">{% trans "No messages" %}</b>
-                </div>
+                  <tr class="message unread">
+                    <td class="no-message"><em>{% trans "No messages found" %}</em></td><td></td><td></td>
+                </tr>
             {% endfor %}
             </tbody>
 </table>

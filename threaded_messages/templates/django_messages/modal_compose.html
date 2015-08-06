@@ -38,75 +38,22 @@
     </div>
 
     <div class="span9">
-        <div class="span8">
-            <form class="form-horizontal" id="compose" method="post" action="{% url 'messaging:compose' %}">
-                <fieldset>
-                    {% csrf_token %}
-
-                    <div class="control-group span12">
-                        <h4>Recipient(s)</h4>
-
-                        <div class="controls">
-                            <span class="control-label"><i class="icon-search"></i></span>
-                            {{ form.recipients }}
-
-                            {% if form.recipients.errors %}
-                            {% for error in form.recipients.errors %}
-                            <div class="alert alert-error">
-                                {{ error | escape }}
-                            </div>
-                            {% endfor %}
-                            {% endif %}
-                        </div>
-                    </div>
-                <div class="control-group span12">
-                    <h4>Subject</h4>
-
-                    <p>{{ form.subject }}</p>
-                    {% if form.subject.errors %}
-                        {% for error in form.subject.errors %}
-                            <div class="alert alert-error">
-                                {{ error | escape }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-</div>
-                    <div class="control-group span12">
-                    <h4>Message</h4>
-
-                    <p>{{ form.body }}</p>
-                    {% if form.body.errors %}
-                        {% for error in form.body.errors %}
-                            <div class="alert alert-error">
-                                {{ error | escape }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                    </div>
-               </fieldset>
-        </div>
-    <div class="form-actions">
-        <a type="submit" class="btn btn-success pull-right" id="composeBtn2" name="send"><i
-                class="icon-ok-circle icon-white"></i> Send</a>
+        <form id="message-modal-form"
+              action="{% url 'tm:messages_compose' %}" method="post"
+              class="modal-message-form grey-form">
+            {% csrf_token %}
+            <fieldset class="inlineLabels">
+                <input type="hidden" name="attachment_id" id="attachment_id" />
+                {{ form|as_uni_form }}
+            </fieldset>
+            <div class="button-bar">
+                <a class="btn btn-danger" href="{% url 'tm:messages_inbox' %}">{% trans "Cancel" %}</a>
+                <button id="modal-send-button" class="btn btn-success" type="submit" onclick="$('#message-modal-form').submit()">
+                    {% trans "Send" %}
+                </button>
+            </div>
+        </form>
     </div>
-    </form>
-
-<form id="message-modal-form" 
-      action="{% url 'tm:messages_compose' %}" method="post"
-      class="modal-message-form grey-form">
-    {% csrf_token %}
-    <fieldset class="inlineLabels">
-        <input type="hidden" name="attachment_id" id="attachment_id" />
-        {{ form|as_uni_form }}
-    </fieldset>
-    <div class="button-bar">
-      <a class="btn btn-danger" href="{% url 'tm:messages_inbox' %}">{% trans "Cancel" %}</a>
-      <button id="modal-send-button" class="btn btn-success" type="submit" onclick="$('#message-modal-form').submit()">
-          {% trans "Send" %}
-      </button>
-    </div>
-</form>
-        </div>
 {% endblock %}
 
 {% block js %}
