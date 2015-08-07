@@ -42,12 +42,17 @@
     <div class="span9">
    <h2>
         {{ thread.subject }}</h2>
-   <a href="{% url 'tm:messages_delete' thread.pk %}" class="btn btn-warning pull-right">
-           <i class="icon-folder-close icon-white"></i>&nbsp;{% trans "Archive thread" %}
-        </a><br />
-           <a href="#reply" class="btn btn-success pull-right">
+
+        {% if participant.deleted_at %}
+        <a href="{% url 'tm:messages_undelete' thread.pk %}" class="btn btn-warning pull-right">
+            <i class="icon icon-inbox icon-white"></i>&nbsp;{% trans "Unarchive thread" %}  </a><br />
+        {% else %}
+        <a href="{% url 'tm:messages_delete' thread.pk %}" class="btn btn-warning pull-right">
+            <i class="icon-folder-close icon-white"></i>&nbsp;{% trans "Archive thread" %}  </a><br />
+        {% endif %}
+        <a href="#reply" class="btn btn-success pull-right">
            <i class="icon-arrow-left icon-white"></i>&nbsp;{% trans "Reply to thread" %}
-        </a>
+        </a><br />
      <div>
         {% blocktrans with participant.user.get_absolute_url as sender_url %}
         A message between <a href="{{ sender_url }}">You</a> and

@@ -3,6 +3,7 @@ from django import forms
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from ckeditor.widgets import CKEditorWidget
+from ajax_select.fields import AutoCompleteSelectMultipleField, AutoCompleteSelectMultipleWidget
 
 from .models import *
 from .fields import CommaSeparatedUserField
@@ -24,7 +25,7 @@ class ComposeForm(forms.Form):
     """
     A simple default form for private messages.
     """
-    recipient = CommaSeparatedUserField(label=_(u"Recipients"), help_text=_("Comma separated"))
+    recipient = CommaSeparatedUserField(label=_(u"Recipients"))
     subject = forms.CharField(label=_(u"Subject"))
     body = forms.CharField(label=_(u"Body"),
         widget=forms.Textarea(attrs={'rows': '12', 'cols': '55'}))
@@ -32,6 +33,11 @@ class ComposeForm(forms.Form):
     def __init__(self, *args, **kwargs):
         recipient_filter = kwargs.pop('recipient_filter', None)
         super(ComposeForm, self).__init__(*args, **kwargs)
+        self.fields['recipient'].widget = AutoCompleteSelectMultipleWidget('all')
+        self.fields['recipient'].widget.attrs.update({'placeholder':'Search by first name, last name, or class number', 'style': 'width: 95.5%;'})
+        self.fields['subject'].widget.attrs.update({'style': 'width: 98.75%'})
+        self.fields['body'].widget = CKEditorWidget(config_name='default')
+        self.fields['body'].widget.attrs.update({'style': 'width: 100%'})
         if recipient_filter is not None:
             self.fields['recipient']._recipient_filter = recipient_filter
 
@@ -40,6 +46,7 @@ class ComposeForm(forms.Form):
         subject = self.cleaned_data['subject']
         body = self.cleaned_data['body']
 
+        recipients = [User.objects.get(pk=key) for key in recipients]
         new_message = Message.objects.create(body=body, sender=sender)
 
         thread = Thread.objects.create(subject=subject,

@@ -149,7 +149,7 @@ def trash(request, template_name='django_messages/trash.html'):
 
 @login_required
 def compose(request, recipient=None, form_class=ComposeForm,
-        template_name='django_messages/compose.html', success_url=None, recipient_filter=None):
+        template_name='django_messages/modal_compose.html', success_url=None, recipient_filter=None):
     """
     Displays and handles the ``form_class`` form to compose new messages.
     Required Arguments: None
@@ -209,7 +209,7 @@ def delete(request, thread_id, success_url=None):
 
     user_part.deleted_at = right_now
     user_part.save()
-    messages.success(request, message=_(u"Conversation successfully deleted."))
+    messages.success(request, message=_(u"Conversation successfully archived."))
     return HttpResponseRedirect(success_url)
 
 

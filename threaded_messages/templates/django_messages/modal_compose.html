@@ -38,7 +38,60 @@
     </div>
 
     <div class="span9">
-        <form id="message-modal-form"
+<form class="form-horizontal" id="compose" method="post" action="{% url 'messaging:compose' %}">
+                <fieldset>
+                    {% csrf_token %}
+
+                    <div class="control-group span12">
+                        <h4>Recipient(s)</h4>
+
+                        <div class="controls searchbar span12">
+                            <span class="control-label"><i class="icon-search"></i></span>
+                            {{ form.recipient }}
+
+                            {% if form.recipient.errors %}
+                            {% for error in form.recipient.errors %}
+                            <div class="alert alert-error">
+                                {{ error | escape }}
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                <div class="control-group span12">
+                    <h4>Subject</h4>
+
+                    <p>{{ form.subject }}</p>
+                    {% if form.subject.errors %}
+                        {% for error in form.subject.errors %}
+                            <div class="alert alert-error">
+                                {{ error | escape }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+</div>
+                    <div class="control-group span12">
+                    <h4>Message</h4>
+
+                    <p>{{ form.body }}</p>
+                    {% if form.body.errors %}
+                        {% for error in form.body.errors %}
+                            <div class="alert alert-error">
+                                {{ error | escape }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+               </fieldset>
+                <div class="button-bar pull-right">
+                    <a class="btn btn-danger" href="{% url 'tm:messages_inbox' %}">{% trans "Cancel" %}</a>
+                    <button id="modal-send-button" class="btn btn-success" type="submit" onclick="$('#message-modal-form').submit()">
+                        {% trans "Send" %}
+                    </button>
+                </form>
+    </div>
+
+      <!--  <form id="message-modal-form"
               action="{% url 'tm:messages_compose' %}" method="post"
               class="modal-message-form grey-form">
             {% csrf_token %}
@@ -52,16 +105,80 @@
                     {% trans "Send" %}
                 </button>
             </div>
-        </form>
-    </div>
+        </form>-->
 {% endblock %}
 
+    {% block css %}
+    {% addtoblock 'css' %}
+    <style>
+        .searchbar {
+            white-space: nowrap;
+        }
+        .results_on_deck div {
+                margin-right: 10px;
+                padding-right: 5px;
+                padding-left: 3px;
+                display: inline-block;
+                border-radius: 7px;
+                background-color: #f5f5f5;
+            }
+
+           #id_recipients_text {
+               width: 95%;
+               margin-bottom: 7px;
+               margin-top: 3px;
+            }
+
+            .django-ckeditor-widget {
+                width: 100%;
+            }
+
+            .form-horizontal .control-group {
+                display: inline-block;
+                margin-left: 0;
+                margin-bottom: 5px;
+            }
+            .form-horizontal .control-label {
+                width: 15px;
+                margin-right: 7px;
+            }
+
+            .form-horizontal .controls {
+                margin-left: 0;
+            }
+
+
+            .class-choice {
+                color: #000000;
+                font-weight: bold;
+                display: inline;
+            }
+
+            .class-dropdown {
+                vertical-align: top;
+                font-weight: bold;
+            }
+
+            .collapse {
+                margin-bottom: 6px;
+            }
+
+            .dropdown-label {
+                border-radius: 15px;
+                padding-bottom: 3px;
+            }
+
+            .dropdown-label:hover {
+                border-width: 1px;
+            }
+    </style>
+    {% endaddtoblock %}
+    {% endblock %}
 {% block js %}
         {% addtoblock 'js' %}
 <!-- remove if you have these dependencies are already satisfied in your app -->
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.5.2.min.js"></script>
+    {{ form.media }}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.form.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tokeninput.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         var recipient =  $("#id_recipient").val();
