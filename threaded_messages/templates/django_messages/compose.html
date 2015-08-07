@@ -2,11 +2,6 @@
 {% load i18n avatar_tags pagination_tags truncchar_tag uni_form_tags %}
 {% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
 
-
-{% block css_block %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/token-input.css" type="text/css" />
-{% endblock %}
-
 {% block content %}
     <h1>{% trans "Compose Message"|upper %}</h1>
     

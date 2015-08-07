@@ -78,7 +78,9 @@
           {% csrf_token %}
           <h3>{% trans "Reply" %}</h3>
             <div>{{form.body}}</div>
-            <div>{{form.body.errors}}</div>
+            {% for e in form.body.errors %}
+            <div class="alert alert-error">{{ e }}</div>
+            {% endfor %}
           <button type="submit" class="btn btn-success pull-right">{% trans "Reply" %}</button>
         </form>
       </div>
@@ -125,6 +127,10 @@
 
         .django-ckeditor-widget {
             width: 100%;
+        }
+
+        .alert {
+            list-style-type: none;
         }
     </style>
     {% endaddtoblock %}

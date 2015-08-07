@@ -69,15 +69,25 @@ def inbox(request, template_name='django_messages/inbox.html'):
 
 @login_required
 def search(request, template_name="django_messages/search.html"):
-    search_term = request.GET.get("q")
+    search_term = request.GET.get("qs")
     results = SearchQuerySet().filter(participants=request.user.pk).filter(
         SQ(content=search_term) | SQ(participant_last_names__istartswith=search_term)
     ).order_by('-last_message')
-    print "results: ", results
+
+    paginated_messages = Paginator(results, 10)
+    page = request.GET.get('page', 1)
+
+    try:
+        paginated_list = paginated_messages.page(page)
+    except EmptyPage:
+        paginated_list = paginated_messages.page(paginated_messages.num_pages)
+    except PageNotAnInteger:
+        paginated_list = paginated_messages.page(1)
+
     return render_to_response(template_name, {
-                                  "thread_results": results,
-                                  "search_term": search_term,
-                                }, context_instance=RequestContext(request))
+        "thread_results": paginated_list,
+        "search_term": search_term,
+        }, context_instance=RequestContext(request))
 
 
 @login_required

@@ -36,7 +36,7 @@
 </div>
 <div class="row-fluid">
     <div class="span3">
-               {% messaging_well_search %}
+               {% messaging_well %}
     </div>
 
     <div class="span9">
@@ -45,12 +45,11 @@
         <div class="inbox-bar">
             <div class="page-search">
                 <form action="{% url 'tm:messages_search' %}" method="GET">
-                    <input name="q" class="search-input" type="text" {% if not search_term %}title="{% trans 'Search Messages' %}"{% endif %}
+                    <input name="qs" class="search-input" type="text" {% if not search_term %}title="{% trans 'Search Messages' %}"{% endif %}
                            value="{{ search_term }}" />
                     <button type="submit" class="btn btn-success search-submit">Search</button>
                 </form>
             </div>
-            <div class="message-pagination">{% paginate %}</div>
             <div style="clear: both;"></div>
         </div>
     </div>
@@ -89,9 +88,9 @@
                     <span class="pull-right label">{{ thread.all_msgs.count }}</span>
                   </td>
 
-                  <td class="clickablerow checkbox span1">
+                  {% if header == "Sender" %} <td class="clickablerow checkbox span1">
                     <input name="batchupdateids" type="checkbox" value="{{thread.pk}}" />
-                  </td>
+                  </td> {% endif %}
                   {% if thread.participants.replied %}{% endif %}
                   {% if thread.participants.new %}{% endif %}
               </tr>
@@ -99,17 +98,14 @@
 
                 {% empty %}
                 <tr class="message unread">
-                    <td class="no-message"><em>{% trans "No messages found" %}</em></td><td></td><td></td>
+                    <td class="no-message"><em>{% trans "No messages found." %}{% if search_term|length < 2 %}<br />Please choose a search term over 1 character long.{% endif %}</em></td><td></em></td><td></td>
                 </tr>
 
             {% endfor %}
             </tbody>
         </table>
-
-
-
     </form>
-    <div class="messages-footer">{% paginate %}</div>
+  <div class="messages-footer">
     </div>
 </div>
 
