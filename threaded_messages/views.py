@@ -102,9 +102,7 @@ def outbox(request, template_name='django_messages/outbox.html'):
     if only_unreplied:
         only_unreplied = True
 
-    message_list = Participant.objects.inbox_for(request.user, read=read, only_unreplied=only_unreplied)
-
-    paginated_messages = Paginator(message_list, 10)
+    paginated_messages = Paginator(thread_list, 10)
     page = request.GET.get('page', 1)
     try:
         paginated_list = paginated_messages.page(page)
