@@ -38,7 +38,7 @@
     </div>
 
     <div class="span9">
-<form class="form-horizontal" id="compose" method="post" action="{% url 'messaging:compose' %}">
+<form class="form-horizontal" id="compose" method="post" action="{% url 'tm:modal_messages_compose' %}">
                 <fieldset>
                     {% csrf_token %}
 
