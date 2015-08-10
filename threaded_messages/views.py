@@ -371,7 +371,7 @@ def recipient_search(request):
 
 def update_navbarView(request):
     if request.method == 'GET':
-        unread_messages = [(ellipsis(p.thread.latest_msg.body, 10), p.thread.latest_msg.sender.full_name(), p.thread.id) for p in
+        unread_messages = [(ellipsis(p.thread.subject, 10), p.thread.latest_msg.sender.full_name(), p.thread.id) for p in
                            Participant.objects.inbox_for(request.user,read=False)]
         unread_message_count = len(unread_messages)
         print unread_message_count

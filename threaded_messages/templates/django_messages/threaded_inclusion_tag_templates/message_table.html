@@ -30,28 +30,30 @@
             </thead>
             <tbody>
             {% for message in thread_list %}
-              <tr class="{% if message.new %}success{% endif %}">
+              <tr class="{% if message.new %}success{% endif %}" data-url="{{ message.thread.get_absolute_url }}">
                   <td class="clickablerow sender span5">
-                      {% ifequal header "Sender" %}
-                        <a href="{{ message.thread.latest_msg.sender.get_absolute_url }}">{{ message.thread.latest_msg.sender }}</a>&nbsp; &nbsp;
+                      {% if header == "Sender" %}
+                        <span class="participant"><a href="{{ message.thread.latest_msg.sender.get_absolute_url }}">{{ message.thread.latest_msg.sender }}</a></span>&nbsp; &nbsp;
                       {% else %}
-                      {% for p in message.thread.participants.all %}
-                          {% if forloop.counter < 3 %}
-                          <span class="participant"><a href="#" title="{{ p.user.full_name }}">{{ p.user.first_name }}</a></span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
-                          {% elif forloop.last %}
-                          <span class="participant"><a href="#" title="{{ p.user.full_name }}">{{ p.user.first_name }}</a>
-                              {% if forloop.counter != 3 %}
-                              <span class="other-recipients"><a href="#"> + {{ forloop.counter|add:"-3" }} others</a></span>
-                              {% endif %}
+                          {% if message.others|length < 1 %}
+                          <span class="participant" title="{{ message.thread.creator.full_name }}">{{ message.thread.creator.first_name }}</span>
                           {% endif %}
-                      {% endfor %}
-                      {% if message.thread.participants.all.length > 1 %}<span class="ellipsis">HELLLOOO????</span>
+                          {% for p in message.others %}
+                              {% if forloop.counter < 3 %}
+                              <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
+                              {% elif forloop.last %}
+                              <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>
+                                  {% if forloop.counter != 3 %}
+                                  <span class="participant others">+ {{ forloop.counter|add:"-3" }} others</span>
+                                  {% endif %}
+                              {% endif %}
+                          {% endfor %}
                       {% endif %}
-                      {% endifequal %}
                     <span class="date"><em>{{ message.thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span>
                   </td>
                   <td class="clickablerow subject span6">
-                    <a href="{{ message.thread.get_absolute_url }}">{% if message.new %}<b>{% endif %}{{ message.thread.subject|truncchar:30|safe }}{% if message.new %}</b>{% endif %}</a>
+                    <a href="{{ message.thread.get_absolute_url }}">{% if message.new %}
+                        <strong>{% endif %}{{ message.thread.subject|truncchar:30|safe }}{% if message.new %}</strong>{% endif %}</a>
                     <span class="message-tease">{{ message.thread.latest_msg.body|truncatewords:8|clean_with_bleach|safe }}</span>
                     <span class="pull-right label">{{ message.thread.all_msgs.count }}</span>
                   </td>

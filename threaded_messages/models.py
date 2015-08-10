@@ -149,6 +149,7 @@ class Participant(models.Model):
             # others = self.others()
             # if others:
             #     return others[0].user
+
         return None
 
     def others(self):

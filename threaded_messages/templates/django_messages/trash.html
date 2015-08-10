@@ -20,7 +20,7 @@
 
     <div class="pull-right">
 
-        <a href="{% url 'tm:modal_messages_compose' %}" class="btn btn-success">
+        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success">
             <i class="icon-plus-sign icon-white"></i> Send message
         </a>
 
@@ -60,9 +60,19 @@
             {% for message in message_list %}
               <tr class="{% if message.new %}success{% endif %}">
                   <td class="clickablerow sender span5">
-                        {% for p in message.thread.participants.all %}
-                        <span class="recipient"><a href="#" title="{{ p.user.full_name }}">{{ p.user.first_name }}</a></span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
-                        {% endfor %}
+                         {% if message.others|length < 1 %}
+                          <span class="participant" title="{{ message.thread.creator.full_name }}">{{ message.thread.creator.first_name }}</span>
+                          {% endif %}
+                          {% for p in message.others %}
+                              {% if forloop.counter < 3 %}
+                              <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
+                              {% elif forloop.last %}
+                              <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>
+                                  {% if forloop.counter != 3 %}
+                                  <span class="participant others">+ {{ forloop.counter|add:"-3" }} others</span>
+                                  {% endif %}
+                              {% endif %}
+                          {% endfor %}
                     <span class="date"><em>{{ message.thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span>
                   </td>
                   <td class="clickablerow subject span6">
@@ -172,6 +182,9 @@
         text-decoration: inherit;
     }
 
+    .participant {
+        color: #309900;
+    }
 </style>
 
 {% endaddtoblock %}

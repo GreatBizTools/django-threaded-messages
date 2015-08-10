@@ -21,7 +21,7 @@
 
     <div class="pull-right">
 
-        <a href="{% url 'tm:modal_messages_compose' %}" class="btn btn-success">
+        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success">
             <i class="icon-plus-sign icon-white"></i> Send message
         </a>
 
@@ -61,9 +61,8 @@
               </div>-->
         </div>
         {% csrf_token %}
-        <div style="clear: both;"></div>
 
-        <table class="inbox table table-striped table-hover">
+        <table class="inbox table table-striped table-hover message-table">
             <thead>
                 <tr class="message message-header">
                     <th class="sender span5">{% trans "Sender" %}</th>
@@ -74,10 +73,17 @@
             <tbody>
             {% for thread in thread_results %}
                 {% with thread.object as thread %}
-              <tr class="{% if thread.participants.new %}info{% endif %}">
+              <tr class="{% if thread.participants.new %}info{% endif %}" data-url="{{ thread.get_absolute_url }}">
                   <td class="clickablerow sender span5">
-                        {% for p in thread.participants.all %}
-                        <span class="recipient"><a href="#" title="{{ p.user.full_name }}">{{ p.user.first_name }}</a></span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
+                       {% for p in thread.participants.all %}
+                          {% if forloop.counter < 3 %}
+                          <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
+                          {% elif forloop.last %}
+                          <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>
+                              {% if forloop.counter != 3 %}
+                              <span class="participant others"> + {{ forloop.counter|add:"-3" }} others</span>
+                              {% endif %}
+                          {% endif %}
                       {% endfor %}
                     <span class="date"><em>{{ thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span>
                   </td>
@@ -120,15 +126,11 @@
 
     $(document).ready(function() {
 
-
-        $('.thisclickableRow a').click(function(evt){
-            evt.preventDefault();
-        });
-
-
-        $('.clickableRow').click(function(){
-
-            var href = $(this).find('a').attr('href');
+        $('.message-table').on('click', 'tr', function(){
+            console.log("Clickable row activated");
+            console.log("this: ", this);
+            var href = $(this).data("url");
+            console.log("href= " + href);
             if(typeof href != 'undefined') {
                 window.location = href;
             }else{
@@ -198,6 +200,9 @@
         margin-bottom: 10px;
     }
 
+    .participant {
+        color: #309900;
+    }
 </style>
 
 {% endaddtoblock %}

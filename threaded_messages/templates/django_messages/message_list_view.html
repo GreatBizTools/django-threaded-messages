@@ -2,7 +2,8 @@
 {% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
 
 <div class="message well">
-        <div class="message-sender"><h4><a href="{{ message.sender.get_absolute_url }}">{{ message.sender }}</a>&nbsp; &nbsp;</h4>
+        <div class="message-sender"><h4><a href="{{ message.sender.get_absolute_url }}">{{ message.sender.first_name }}
+            {{ message.sender.last_name }}</a>&nbsp;</h4>
         <span class="date"><em>{{ message.sent_at|date:_("DATETIME_FORMAT")}}</em></span></div>
         <div class="message-body">{{ message.body|safe }}</div>
     <span class="extra-info">
