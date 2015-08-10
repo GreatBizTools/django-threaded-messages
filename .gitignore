@@ -1,1 +1,2 @@
 django_threaded_messages.egg-info/
+*.pyc

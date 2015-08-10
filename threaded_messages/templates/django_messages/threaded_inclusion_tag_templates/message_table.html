@@ -36,8 +36,17 @@
                         <a href="{{ message.thread.latest_msg.sender.get_absolute_url }}">{{ message.thread.latest_msg.sender }}</a>&nbsp; &nbsp;
                       {% else %}
                       {% for p in message.thread.participants.all %}
-                        <span class="recipient"><a href="#" title="{{ p.user.full_name }}">{{ p.user.first_name }}</a></span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
+                          {% if forloop.counter < 3 %}
+                          <span class="participant"><a href="#" title="{{ p.user.full_name }}">{{ p.user.first_name }}</a></span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
+                          {% elif forloop.last %}
+                          <span class="participant"><a href="#" title="{{ p.user.full_name }}">{{ p.user.first_name }}</a>
+                              {% if forloop.counter != 3 %}
+                              <span class="other-recipients"><a href="#"> + {{ forloop.counter|add:"-3" }} others</a></span>
+                              {% endif %}
+                          {% endif %}
                       {% endfor %}
+                      {% if message.thread.participants.all.length > 1 %}<span class="ellipsis">HELLLOOO????</span>
+                      {% endif %}
                       {% endifequal %}
                     <span class="date"><em>{{ message.thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span>
                   </td>

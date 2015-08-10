@@ -14,7 +14,7 @@
         <a href="{% url 'portal:dashboard_trainee' %}">Dashboard</a><span class="divider">/</span>
     </li>
     <li class="active"><a href="{% url 'tm:messages_inbox' %}">Inbox</a><span class="divider">/</span></li>
-    <li class="active"><a href="{% url 'tm:messages_search' %}">Search</a></li>
+    <li class="active"><a href="{% url 'tm:messages_search' %}">View Thread</a></li>
 </ul>
 {% messages %}
 <div class="page-header">
@@ -55,10 +55,15 @@
         </a><br />
      <div>
         {% blocktrans with participant.user.get_absolute_url as sender_url %}
-        A message between <a href="{{ sender_url }}">You</a> and
-        {% endblocktrans %}
+        A message between <a href="{{ sender_url }}">You</a>
+         {% endblocktrans %}
+         {% if participant.others.length > 1 %} and {% endif %}
          {% for participant in participant.others %}
-            <a href="{{ participant.user.get_absolute_url }}">{{ participant.user }}</a>
+            {% if forloop.last %}
+                <a href="{{ participant.user.get_absolute_url }}">, and {{ participant.user.first_name }} {{ participant.user.last_name }}</a>
+            {% else %}
+                <a href="{{ participant.user.get_absolute_url }}">, {{ participant.user.first_name }} {{ participant.user.last_name }}</a>
+            {% endif %}
          {% endfor %}
      </div>
      <hr />
