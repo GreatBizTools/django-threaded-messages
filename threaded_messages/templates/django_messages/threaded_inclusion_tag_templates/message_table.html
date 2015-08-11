@@ -6,15 +6,17 @@
 
         {% if header == "Sender" %}
         <div class="inbox-action-box">
-              <div style="float: left; margin-top: 7px;" class="btn-group">
-                  <div class="btn btn-small btn-primary"><strong>{% trans "Show" %}:</strong></div>
+              <div style="float: left;" class="btn-group">
+                  <div class="btn btn-small btn-success active"><strong>{% trans "Show" %}:</strong></div>
                   {% if only_unread or only_read %}<a href="{% url 'tm:messages_inbox' %}" class="btn btn-small">{% trans "all" %}</a>{% else %}<div class="btn btn-small active">{% trans "all" %}</div>{% endif %}
                   {% if not only_read %}<a href="{% url 'tm:messages_inbox' %}?only_read=1"  class="btn btn-small">{% trans "read" %}</a>{% else %}<div class="btn btn-small active">{% trans "read" %}</div>{% endif %}
                   {% if not only_unread %}<a href="{% url 'tm:messages_inbox' %}?only_unread=1" class="btn btn-small">{% trans "unread" %}</a>{% else %}<div class="btn btn-small active">{% trans "unread" %}</div>{% endif %}
               </div>
               <div class="btn-group" style="float: right">
-                  <button type="submit" disabled=true name="action" value="read" class="bulkaction btn btn-small btn-success"><i class="icon-envelope icon-white"></i>&nbsp;{% trans "mark as read" %}</button>
-                  <button type="submit" disabled=true name="action" value="delete" class="bulkaction btn btn-small btn-warning"><i class="icon-folder-close icon-white"></i>&nbsp;{% trans "archive" %}</button>
+                  <button type="button"  class="btn btn-small btn-warning active"><strong>{% trans "Update selected:" %}</strong></button>
+                  <button type="submit" disabled=true name="action" value="delete" class="bulkaction btn btn-small btn-default"><i class="icon-folder-close"></i>&nbsp;{% trans "archive" %}</button>
+                  <button type="submit" disabled=true name="action" value="unread" class="bulkaction btn btn-small btn-default"><i class="icon-envelope"></i>&nbsp;{% trans "unread" %}</button>
+                  <button type="submit" disabled=true name="action" value="read" class="bulkaction btn btn-small btn-default"><i class="icon-check"></i>&nbsp;{% trans "read" %}</button>
               </div>
         </div>
         {% endif %}

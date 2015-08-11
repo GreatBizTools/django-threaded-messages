@@ -1,5 +1,3 @@
-{% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
-
 <div class="well">
     <h5><a href="{% url 'tm:messages_inbox' %}"><i class="icon icon-inbox"></i>&nbsp;Inbox</a></h5>
     <h5><a href="{% url 'tm:messages_outbox' %}"><i class="icon-envelope"></i>&nbsp;Sent</a></h5>
@@ -7,7 +5,7 @@
 </div>
 
 <div class="input-append input-prepend">
-     <h4>{% if keywords %}{{ keywords }}{% else %}Search Messages{% endif %}</h4>
+     <h4>{% if keywords %}{{ keywords }}{% else %}Search messages{% endif %}</h4>
     <form action="{% url 'tm:messages_search' %}" method="GET" style="float: left">
          <div class="btn-group" data-toggle="buttons-radio" id="search_chooser_btn_group" style="margin-bottom: 4px;">
             <input type="button" class-toggle="active" class="option btn btn-small active" name="search" value="all"
@@ -20,10 +18,10 @@
                     style="padding-left: 7px; padding-right: 7px;">archive</input>
         </div>
 
-                <label class="hidden" for="filter">Hidden filter input</label><input type="text" class="hidden" id="filter" name="search" value="all" />?
+                <label class="hidden" for="filter">Hidden filter input</label><input type="text" class="hidden" id="filter" name="search" value="all" />
                 <div class="pull-left">
-                    <input type="text" style="width: 65%;" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
-                <input type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success" />
+                   <div style="width: 79%;"> <input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
+                <input type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success" /></div>
         </div>
     </form>
 </div>
