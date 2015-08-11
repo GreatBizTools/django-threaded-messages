@@ -51,8 +51,8 @@
         <table class="inbox table table-striped table-hover">
             <thead>
                 <tr class="message message-header">
-                    <th class="sender span5">{% trans "Participants" %}</th>
-                    <th class="subject span6">{% trans "Subject" %}</th>
+                    <th class="sender span5"><h5>{% trans "Participants" %}</h5></th>
+                    <th class="subject span6"><h5>{% trans "Subject" %}</h5></th>
                     <th class="subject span1"></th>
                 </tr>
             </thead>
@@ -80,7 +80,7 @@
                     <span class="message-tease">{{ message.thread.latest_msg.body|truncatewords:8|clean_with_bleach|safe }}</span>
                     <span class="pull-right label">{{ message.thread.all_msgs.count }}</span>
                   </td>
-                  <td class="clickablerow checkbox span1">
+                  <td class="checkbox span1">
                     <input name="batchupdateids" type="checkbox" value="{{message.thread.pk}}" />
                   </td>
                   {% if message.replied %}{% endif %}
@@ -144,14 +144,11 @@
 
         watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
 
-        $('.thisclickableRow a').click(function(evt){
-            evt.preventDefault();
-        });
-
-
-        $('.clickableRow').click(function(){
-
-            var href = $(this).find('a').attr('href');
+        $('.message-table').on('click', '.clickablerow', function(){
+            console.log("Clickable row activated");
+            console.log("this: ", this);
+            var href = $(this).parent().data("url");
+            console.log("href= " + href);
             if(typeof href != 'undefined') {
                 window.location = href;
             }else{

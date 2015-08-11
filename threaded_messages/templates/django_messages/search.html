@@ -65,8 +65,8 @@
         <table class="inbox table table-striped table-hover message-table">
             <thead>
                 <tr class="message message-header">
-                    <th class="sender span5">{% trans "Sender" %}</th>
-                    <th class="subject span6">{% trans "Subject" %}</th>
+                    <th class="sender span5"><h5>{% trans "Sender" %}</h5></th>
+                    <th class="subject span6"><h5>{% trans "Subject" %}</h5></th>
                     <!--<th class="subject span1"></th>-->
                 </tr>
             </thead>
@@ -144,10 +144,10 @@
 
     $(document).ready(function() {
 
-        $('.message-table').on('click', 'tr', function(){
+        $('.message-table').on('click', '.clickablerow', function(){
             console.log("Clickable row activated");
             console.log("this: ", this);
-            var href = $(this).data("url");
+            var href = $(this).parent().data("url");
             console.log("href= " + href);
             if(typeof href != 'undefined') {
                 window.location = href;

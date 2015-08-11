@@ -6,15 +6,15 @@
 
         {% if header == "Sender" %}
         <div class="inbox-action-box">
-              <div style="float: left; margin-top: 7px;">
-                  {% trans "show" %}:
-                  {% if only_unread or only_read %}<a href="{% url 'tm:messages_inbox' %}">{% trans "all" %}</a>{% else %}{% trans "all" %}{% endif %} ·
-                  {% if not only_read %}<a href="{% url 'tm:messages_inbox' %}?only_read=1">{% trans "read" %}</a>{% else %}{% trans "read" %}{% endif %} ·
-                  {% if not only_unread %}<a href="{% url 'tm:messages_inbox' %}?only_unread=1">{% trans "unread" %}</a>{% else %}{% trans "unread" %}{% endif %}
+              <div style="float: left; margin-top: 7px;" class="btn-group">
+                  <div class="btn btn-small btn-primary"><strong>{% trans "show" %}:</strong></div>
+                  {% if only_unread or only_read %}<a href="{% url 'tm:messages_inbox' %}" class="btn btn-small">{% trans "all" %}</a>{% else %}<div class="btn btn-small active">{% trans "all" %}</div>{% endif %}
+                  {% if not only_read %}<a href="{% url 'tm:messages_inbox' %}?only_read=1"  class="btn btn-small">{% trans "read" %}</a>{% else %}<div class="btn btn-small active">{% trans "read" %}</div>{% endif %}
+                  {% if not only_unread %}<a href="{% url 'tm:messages_inbox' %}?only_unread=1" class="btn btn-small">{% trans "unread" %}</a>{% else %}<div class="btn btn-small active">{% trans "unread" %}</div>{% endif %}
               </div>
-              <div style="float: right">
+              <div class="btn-group" style="float: right">
                   <button type="submit" disabled=true name="action" value="read" class="bulkaction btn btn-small btn-success"><i class="icon-envelope icon-white"></i>&nbsp;{% trans "mark as read" %}</button>
-                  <button type="submit" disabled=true name="action" value="delete" class="bulkaction btn btn-small btn-warning"><i class="icon-folder-close icon-white"></i>&nbsp;{% trans "archive messages" %}</button>
+                  <button type="submit" disabled=true name="action" value="delete" class="bulkaction btn btn-small btn-warning"><i class="icon-folder-close icon-white"></i>&nbsp;{% trans "archive" %}</button>
               </div>
         </div>
         {% endif %}
@@ -23,8 +23,8 @@
         <table class="inbox table table-striped table-hover">
             <thead>
                 <tr class="message message-header">
-                    <th class="sender span5">{{header}}</th>
-                    <th class="subject span6">{% trans "Subject" %}</th>
+                    <th class="sender span5"><h5>{{header}}</h5></th>
+                    <th class="subject span6"><h5>{% trans "Subject" %}</h5></th>
                     {% ifequal header "Sender" %}<th class="subject span1"></th>{% endifequal %}
                 </tr>
             </thead>
@@ -59,7 +59,7 @@
                     <span class="message-tease">{{ message.thread.latest_msg.body|truncatewords:8|clean_with_bleach|safe }}</span>
                     <span class="pull-right label">{{ message.thread.all_msgs.count }}</span>
                   </td>
-                   {% ifequal header "Sender" %}<td class="clickablerow checkbox span1">
+                   {% ifequal header "Sender" %}<td class="checkbox span1">
                     <input name="batchupdateids" type="checkbox" value="{{message.thread.pk}}" />
                   </td>{% endifequal %}
                   {% if message.replied %}{% endif %}

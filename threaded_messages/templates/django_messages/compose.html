@@ -15,20 +15,14 @@
         <a href="{% url 'portal:dashboard_trainee' %}">Dashboard</a><span class="divider">/</span>
     </li>
     <li class="active"><a href="{% url 'tm:messages_inbox' %}">Inbox</a><span class="divider">/</span></li>
-    <li class="active"><a href="{% url 'tm:messages_compose' %}">Compose</a></li>
+    <li class="active"><a href="{% url 'tm:messages_compose' %}">New Message</a></li>
 </ul>
 {% messages %}
 <div class="page-header">
 
-    <div class="pull-right">
-        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success">
-            <i class="icon-plus-sign icon-white"></i> Send new message
-        </a>
-    </div>
-
     <div class="row">
         <div class="span3">
-            <h3>{% trans "Write Message"|upper %}</h3>
+            <h3>{% trans "New Message"|upper %}</h3>
         </div>
     </div>
 </div>

@@ -3,14 +3,14 @@
 <div class="well">
     <h5><a href="{% url 'tm:messages_inbox' %}"><i class="icon icon-inbox"></i>&nbsp;Inbox</a></h5>
     <h5><a href="{% url 'tm:messages_outbox' %}"><i class="icon-envelope"></i>&nbsp;Sent</a></h5>
-    <h5><a href="{% url 'tm:messages_trash' %}"><i class="icon-folder-close"></i>&nbsp;Archives</a></h5>
+    <h5><a href="{% url 'tm:messages_trash' %}"><i class="icon-folder-close"></i>&nbsp;Archived</a></h5>
 
 </div>
 <div class="input-append">
      <form action="{% url 'tm:messages_search' %}" method="GET" style="float: right">
-            <div style="display: table; width: 100%;">
-                <label class="inline" for="qs">{% if keywords %}{{ keywords }}{% else %}Search Messages{% endif %}</label>
-                <input type="text" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
+            <div>
+                <label class="inline" for="qs"><h4>{% if keywords %}{{ keywords }}{% else %}Search Messages{% endif %}</h4></label>
+                <input type="text" title="Search Messages" id="qs" name="qs" class="message-search forum-search" style="width:65%;" />
                 <input type="submit" value="Go" title="Search Messages" id="go" name="go" class="btn btn-success" />
             </div>
         </form>

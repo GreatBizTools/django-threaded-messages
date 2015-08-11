@@ -68,16 +68,10 @@
         });
         watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
 
-
-//        $('.thisclickableRow a').click(function(evt){
-//            console.log("preventDefault activated")
-//            evt.preventDefault();
-//        });
-
-        $('.message-table').on('click', 'tr', function(){
+        $('.message-table').on('click', '.clickablerow', function(){
             console.log("Clickable row activated");
             console.log("this: ", this);
-            var href = $(this).data("url");
+            var href = $(this).parent().data("url");
             console.log("href= " + href);
             if(typeof href != 'undefined') {
                 window.location = href;
