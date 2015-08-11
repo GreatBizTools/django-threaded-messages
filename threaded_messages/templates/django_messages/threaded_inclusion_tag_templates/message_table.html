@@ -33,7 +33,9 @@
               <tr class="{% if message.new %}success{% endif %}" data-url="{{ message.thread.get_absolute_url }}">
                   <td class="clickablerow sender span5">
                       {% if header == "Sender" %}
-                        <span class="participant"><a href="{{ message.thread.latest_msg.sender.get_absolute_url }}">{{ message.thread.latest_msg.sender }}</a></span>&nbsp; &nbsp;
+                      {% with message.thread.latest_msg.sender as sender %}
+                        <span class="participant" title="{{ message.thread.latest_msg.sender }}">{{ sender.first_name }} {{ sender.last_name }}</span>&nbsp; &nbsp;
+                      {% endwith %}
                       {% else %}
                           {% if message.others|length < 1 %}
                           <span class="participant" title="{{ message.thread.creator.full_name }}">{{ message.thread.creator.first_name }}</span>

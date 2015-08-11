@@ -49,6 +49,7 @@ def inbox(request, template_name='django_messages/inbox.html'):
     thread_list = Participant.objects.inbox_for(request.user, read=read, only_unreplied=only_unreplied)
 
     paginated_messages = Paginator(thread_list, 10)
+
     page = request.GET.get('page', 1)
 
     try:
@@ -157,7 +158,7 @@ def trash(request, template_name='django_messages/trash.html'):
 
 @login_required
 def compose(request, recipient=None, form_class=ComposeForm,
-        template_name='django_messages/modal_compose.html', success_url=None, recipient_filter=None):
+        template_name='django_messages/compose.html', success_url=None, recipient_filter=None):
     """
     Displays and handles the ``form_class`` form to compose new messages.
     Required Arguments: None

@@ -111,8 +111,26 @@
             </tbody>
         </table>
     </form>
-  <div class="messages-footer">
-    </div>
+ <div class="messages-footer">
+        <div class="pagination">
+            <ul>
+                {% if thread_results.has_previous %}
+                <li><a href="?page={{ thread_results.previous_page_number }}"><i class="icon-chevron-left"></i></a>
+                </li>
+                {% else %}
+                <li class="disabled"><a href="#"><i class="icon-chevron-left"></i></a></li>
+                {% endif %}
+                {% for p in thread_results.paginator.num_pages|get_range_plus_one%}
+                <li class="{% if p == thread_results.number %}active{% endif %}"><a href="?page={{ p }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                {% if thread_results.has_next %}
+                <li><a href="?page={{ thread_results.next_page_number }}"><i class="icon-chevron-right"></i></a></li>
+                {% else %}
+                <li class="disabled"><a href="#"><i class="icon-chevron-right"></i></a></li>
+                {% endif %}
+            </ul>
+        </div>
 </div>
 
 {% endblock %}
