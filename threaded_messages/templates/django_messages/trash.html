@@ -21,7 +21,7 @@
     <div class="pull-right">
 
         <a href="{% url 'tm:messages_compose' %}" class="btn btn-success">
-            <i class="icon-plus-sign icon-white"></i> Send message
+            <i class="icon-plus-sign icon-white"></i> New message
         </a>
 
     </div>
@@ -42,7 +42,7 @@
          <form action="{% url 'tm:messages_batch_update' %}" method="post">
         {% csrf_token %}
            <div class="inbox-action-box">
-              <div style="float: right; margin-top: 7px;">
+              <div style="float: left; margin-top: 7px;">
                   <button type="submit" disabled=true name="action" value="undelete" class="bulkaction btn btn-small btn-warning"><i class="icon icon-inbox icon-white"></i>&nbsp;{% trans "Unarchive" %}</button>
               </div>
         </div>
@@ -51,14 +51,17 @@
         <table class="inbox table table-striped table-hover">
             <thead>
                 <tr class="message message-header">
+                    <th class="subject span1"></th>
                     <th class="sender span5"><h5>{% trans "Participants" %}</h5></th>
                     <th class="subject span6"><h5>{% trans "Subject" %}</h5></th>
-                    <th class="subject span1"></th>
                 </tr>
             </thead>
             <tbody>
             {% for message in message_list %}
               <tr class="{% if message.new %}success{% endif %}">
+                  <td class="checkbox span1">
+                    <input name="batchupdateids" type="checkbox" value="{{message.thread.pk}}" />
+                  </td>
                   <td class="clickablerow sender span5">
                          {% if message.others|length < 1 %}
                           <span class="participant" title="{{ message.thread.creator.full_name }}">{{ message.thread.creator.first_name }}</span>
@@ -79,9 +82,6 @@
                     <a href="{{ message.thread.get_absolute_url }}">{% if message.new %}<b>{% endif %}{{ message.thread.subject|truncchar:30|safe }}{% if message.new %}</b>{% endif %}</a>
                     <span class="message-tease">{{ message.thread.latest_msg.body|truncatewords:8|clean_with_bleach|safe }}</span>
                     <span class="pull-right label">{{ message.thread.all_msgs.count }}</span>
-                  </td>
-                  <td class="checkbox span1">
-                    <input name="batchupdateids" type="checkbox" value="{{message.thread.pk}}" />
                   </td>
                   {% if message.replied %}{% endif %}
                   {% if message.new %}{% endif %}
@@ -140,6 +140,12 @@
 
         $(function () {
             $(document).tooltip();
+        });
+
+         $('.option').on('click', function() {
+            filterValue = $(this).val();
+            $('#filter').val(filterValue);
+            console.log("filter set to ", filterValue)
         });
 
         watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');

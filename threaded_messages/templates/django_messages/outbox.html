@@ -21,7 +21,7 @@
     <div class="pull-right">
 
         <a href="{% url 'tm:messages_compose' %}" class="btn btn-success">
-            <i class="icon-plus-sign icon-white"></i> Send message
+            <i class="icon-plus-sign icon-white"></i> New message
         </a>
 
     </div>
@@ -65,6 +65,12 @@
             }
         });
 
+
+         $('.option').on('click', function() {
+            filterValue = $(this).val();
+            $('#filter').val(filterValue);
+            console.log("filter set to ", filterValue)
+        });
 
         $('#bulkDelete').click(function () {
 
