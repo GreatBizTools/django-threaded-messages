@@ -71,6 +71,8 @@ def inbox(request, template_name='django_messages/inbox.html'):
 @login_required
 def search(request, template_name="django_messages/search.html"):
     search_term = request.GET.get("qs")
+    search_filter = request.GET.get("search")
+    print("search_filter: ", search_filter)
     results = SearchQuerySet().filter(participants=request.user.pk).filter(
         SQ(content=search_term) | SQ(participant_last_names__istartswith=search_term)
     ).order_by('-last_message')
@@ -98,6 +100,7 @@ def search(request, template_name="django_messages/search.html"):
     return render_to_response(template_name, {
         "thread_results": paginated_list,
         "search_term": search_term,
+        "search_filter": search_filter,
         }, context_instance=RequestContext(request))
 
 

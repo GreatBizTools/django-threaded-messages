@@ -41,19 +41,29 @@
 
     <div class="span9">
     <!--{_% autopaginate thread_results 10 %}-->
-    <div class="page-header-wrapper">
-        <div class="inbox-bar">
-            <div class="page-search">
-                <form action="{% url 'tm:messages_search' %}" method="GET">
+        <div class="page-header-wrapper span12">
+            <form action="{% url 'tm:messages_search' %}" method="GET" style="float: left">
+         <span class="btn-group" data-toggle="buttons-radio" id="search_chooser_btn_group" style="margin-bottom: 10px;">
+            <input type="button" class-toggle="active" class="option btn" name="search" id="filter_all" value="all"
+                    style="padding-left: 7px; padding-right: 7px;">all</input>
+             <input type="button" class-toggle="active" class="option btn" name="search" id="filter_inbox" value="inbox"
+                    style="padding-left: 7px; padding-right: 7px;">inbox</input>
+            <input type="button" class-toggle="active" class="option btn" name="search" id="filter_sent" value="sent"
+                    style="padding-left: 7px; padding-right: 7px;">sent</input>
+            <input type="button" class-toggle="active" class="option btn" name="search" id="filter_archives" value="archives"
+                    style="padding-left: 7px; padding-right: 7px;">archive</input>
+        </span>
+
+
+                <span>
+                    &nbsp;
                     <input name="qs" class="search-input" type="text" {% if not search_term %}title="{% trans 'Search Messages' %}"{% endif %}
                            value="{{ search_term }}" />
                     <button type="submit" class="btn btn-success search-submit">Search</button>
-                </form>
-            </div>
-            <div style="clear: both;"></div>
+                    <label class="hidden" for="filter">Hidden filter input</label><input type="text" class="hidden" id="filter" name="search" value="{{ search_filter }}" />
+                </span>
+             </form>
         </div>
-    </div>
-    <form action="{% url 'tm:messages_batch_update' %}" method="post">
         <div><h3>{% trans "Searching for" %}: {{ search_term }}</h3>
             <!--<div style="float: right">
                   <button type="submit" name="action" value="read" class="btn btn-small">{% trans "mark as read" %}</button>
@@ -115,17 +125,17 @@
         <div class="pagination">
             <ul>
                 {% if thread_results.has_previous %}
-                <li><a href="?page={{ thread_results.previous_page_number }}"><i class="icon-chevron-left"></i></a>
+                <li><a href="?search={{ search_filter }}&qs={{ search_term }}&page={{ thread_results.previous_page_number }}"><i class="icon-chevron-left"></i></a>
                 </li>
                 {% else %}
                 <li class="disabled"><a href="#"><i class="icon-chevron-left"></i></a></li>
                 {% endif %}
                 {% for p in thread_results.paginator.num_pages|get_range_plus_one%}
-                <li class="{% if p == thread_results.number %}active{% endif %}"><a href="?page={{ p }}">{{ p }}</a>
+                <li class="{% if p == thread_results.number %}active{% endif %}"><a href="?search={{ search_filter }}&qs={{ search_term }}&page={{ p }}">{{ p }}</a>
                 </li>
                 {% endfor %}
                 {% if thread_results.has_next %}
-                <li><a href="?page={{ thread_results.next_page_number }}"><i class="icon-chevron-right"></i></a></li>
+                <li><a href="?search={{ search_filter }}?qs={{ search_term }}??page={{ thread_results.next_page_number }}"><i class="icon-chevron-right"></i></a></li>
                 {% else %}
                 <li class="disabled"><a href="#"><i class="icon-chevron-right"></i></a></li>
                 {% endif %}
@@ -139,10 +149,16 @@
 {% addtoblock "js" %}
 <script>
     $(document).ready(function () {
-        watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
-    });
+        existingSearchFilter = $('#filter').val();
+        console.log("existingSearchFilter: ", existingSearchFilter);
+        $('#filter_' + existingSearchFilter).addClass('active');
 
-    $(document).ready(function() {
+        $('.option').on('click', function() {
+            filterValue = $(this).val();
+            $('#filter').val(filterValue);
+            console.log("filter set to ", filterValue)
+        });
+        watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
 
         $('.message-table').on('click', '.clickablerow', function(){
             console.log("Clickable row activated");
@@ -172,7 +188,6 @@
                         })
             }
         });
-
 
         $('#bulkArchive').click(function () {
             var selectedCheckBoxes = $('input[name="pks"]:checked').serializeArray();
