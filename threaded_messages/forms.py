@@ -10,6 +10,7 @@ from .fields import CommaSeparatedUserField
 from .utils import reply_to_thread, now
 from .signals import message_composed
 
+from tms.models import Classroom,Trainee
 
 if sendgrid_settings.THREADED_MESSAGES_USE_SENDGRID:
     from sendgrid_parse_api.utils import create_reply_email
@@ -45,8 +46,21 @@ class ComposeForm(forms.Form):
         recipients = self.cleaned_data['recipient']
         subject = self.cleaned_data['subject']
         body = self.cleaned_data['body']
+        recipients_cleaned = []
+        for r in recipients:
+            if r.split("_")[0]==u"class":
+                class_id = int(r.split("_")[1])
+                classroom_object = Classroom.objects.get(id=class_id)
+                trainers_ids = [int(trainer['id']) for trainer in classroom_object.trainers.values()]
 
-        recipients = [User.objects.get(pk=key) for key in recipients]
+                trainee_ids = [int(trainee.user.id) for trainee in Trainee.objects.filter(classroom_id=class_id)]
+                recipients_cleaned.extend(trainers_ids)
+                recipients_cleaned.extend(trainee_ids)
+            else:
+                user_id = int(r.split("_")[1])
+                recipients_cleaned.append(user_id)
+        recipients_cleaned = list(set(recipients_cleaned))
+        recipients = [User.objects.get(pk=key) for key in recipients_cleaned]
         new_message = Message.objects.create(body=body, sender=sender)
 
         thread = Thread.objects.create(subject=subject,

@@ -37,14 +37,7 @@ class UserLookup(LookupChannel):
 
     def format_item_display(self, obj):
         if isinstance(obj, Classroom):
-            names=[]
-            trainee_List = Trainee.objects.filter(classroom_id=int(obj.id.split("_")[1]))
-            for trainee in trainee_List:
-                if trainee.user.last_name and trainee.user.first_name:
-                    names.append("{},{}".format(trainee.user.last_name, trainee.user.first_name))
-                else:
-                    names.append(trainee.user.username)
-            return "  ".join(names)
+            return "Class: {}".format(obj.id.split("_")[1])
         else:
             if obj.last_name and obj.first_name:
                 return "{},{}".format(obj.last_name, obj.first_name)
