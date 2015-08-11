@@ -6,8 +6,14 @@
     <h5><a href="{% url 'tm:messages_trash' %}"><i class="icon-folder-close"></i>&nbsp;Archives</a></h5>
 
 </div>
-<div class="input-append">
+<div class="input-append input-prepend">
      <form action="{% url 'tm:messages_search' %}" method="GET" style="float: right">
+         <div class="btn-group" data-toggle="buttons-radio" id="search_chooser_btn_group">
+            <button type="button" class-toggle="btn-info" class="btn" name="search" value="all">All</button>
+            <button type="button" class-toggle="btn-info" class="btn" name="search" value="sent">Sent</button>
+            <button type="button" class-toggle="btn-info" class="btn" name="search" value="archives">Archives</button>
+            <button type="button" class-toggle="btn-info" class="btn" name="search" value="inbox">Inbox</button>
+        </div>
             <div style="display: table; width: 100%;">
                 <label class="inline" for="qs">{% if keywords %}{{ keywords }}{% else %}Search Messages{% endif %}</label>
                 <input type="text" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
