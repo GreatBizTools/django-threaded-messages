@@ -8,8 +8,10 @@
 </div>
 <div class="input-append">
      <form action="{% url 'tm:messages_search' %}" method="GET" style="float: right">
-            <label class="inline" for="qs">{% if keywords %}{{ keywords }}{% else %}Search Messages{% endif %}</label>
-            <input type="text" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
-            <input type="submit" value="Go" title="Search Messages" id="go" name="go" class="btn btn-success" />
+            <div style="display: table; width: 100%;">
+                <label class="inline" for="qs">{% if keywords %}{{ keywords }}{% else %}Search Messages{% endif %}</label>
+                <input type="text" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
+                <input type="submit" value="Go" title="Search Messages" id="go" name="go" class="btn btn-success" />
+            </div>
         </form>
 </div>
