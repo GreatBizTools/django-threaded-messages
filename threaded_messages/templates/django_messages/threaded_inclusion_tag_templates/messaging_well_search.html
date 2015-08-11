@@ -6,11 +6,17 @@
     <h5><a href="{% url 'tm:messages_trash' %}"><i class="icon-folder-close"></i>&nbsp;Archived</a></h5>
 
 </div>
-<div class="input-append">
+<div class="input-append input-prepend">
      <form action="{% url 'tm:messages_search' %}" method="GET" style="float: right">
-            <div>
-                <label class="inline" for="qs"><h4>{% if keywords %}{{ keywords }}{% else %}Search Messages{% endif %}</h4></label>
-                <input type="text" title="Search Messages" id="qs" name="qs" class="message-search forum-search" style="width:65%;" />
+         <div class="btn-group" data-toggle="buttons-radio" id="search_chooser_btn_group">
+            <button type="button" class-toggle="btn-info" class="btn" name="search" value="all">All</button>
+            <button type="button" class-toggle="btn-info" class="btn" name="search" value="sent">Sent</button>
+            <button type="button" class-toggle="btn-info" class="btn" name="search" value="archives">Archives</button>
+            <button type="button" class-toggle="btn-info" class="btn" name="search" value="inbox">Inbox</button>
+        </div>
+            <div style="display: table; width: 100%;">
+                <label class="inline" for="qs">{% if keywords %}{{ keywords }}{% else %}Search Messages{% endif %}</label>
+                <input type="text" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
                 <input type="submit" value="Go" title="Search Messages" id="go" name="go" class="btn btn-success" />
             </div>
         </form>

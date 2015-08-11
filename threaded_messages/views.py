@@ -75,6 +75,16 @@ def search(request, template_name="django_messages/search.html"):
         SQ(content=search_term) | SQ(participant_last_names__istartswith=search_term)
     ).order_by('-last_message')
 
+    if request.GET.get('search')=='sent':
+        results = results.filter(sent=True)
+    elif request.GET.get('search')=='inbox':
+        results = results.filter(archived=False)
+    elif request.GET.get('search')=='archives':
+        results = results.filter(archived=True)
+    else:
+        pass
+
+
     paginated_messages = Paginator(results, 10)
     page = request.GET.get('page', 1)
 
