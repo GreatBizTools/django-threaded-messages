@@ -76,15 +76,15 @@ def search(request, template_name="django_messages/search.html"):
     ).order_by('-last_message')
 
     if request.GET.get('search')=='sent':
-        results = results.filter(sent=True)
+        results = results.filter(participant_sent=u"{}-{}".format(request.user.pk, True))
     elif request.GET.get('search')=='inbox':
-        results = results.filter(archived=False)
+        results = results.filter(participant_archived=u"{}-{}".format(request.user.pk, False))
     elif request.GET.get('search')=='archives':
-        results = results.filter(archived=True)
+        results = results.filter(participant_archived=u"{}-{}".format(request.user.pk, True))
     else:
         pass
 
-
+    results = results
     paginated_messages = Paginator(results, 10)
     page = request.GET.get('page', 1)
 

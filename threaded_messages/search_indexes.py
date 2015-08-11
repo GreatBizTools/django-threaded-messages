@@ -6,9 +6,8 @@ class ThreadIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     participants = indexes.MultiValueField()
     participant_last_names = indexes.MultiValueField()
-    archived = indexes.MultiValueField()
-    read = indexes.MultiValueField()
-    sent = indexes.MultiValueField()
+    participant_archived = indexes.MultiValueField()
+    participant_sent = indexes.MultiValueField()
     last_message = indexes.DateTimeField(model_attr='latest_msg__sent_at')
 
     def index_queryset(self, using=None):
@@ -20,14 +19,11 @@ class ThreadIndex(indexes.SearchIndex, indexes.Indexable):
     def prepare_participant_last_names(self, object):
         return [p.user.last_name for p in object.participants.all()]
 
-    def prepare_archived(self, object):
-        return [p.deleted_at is not None for p in object.participants.all()]
+    def prepare_participant_archived(self, object):
+        return ["{}-{}".format(p.user.pk,p.deleted_at is not None) for p in object.participants.all()]
 
-    def prepare_read(self, object):
-        return [p.read_at is not None for p in object.participants.all()]
-
-    def prepare_sent(self, object):
-        return [p.replied_at is not None for p in object.participants.all()]
+    def prepare_participant_sent(self, object):
+        return ["{}-{}".format(p.user.pk, p.replied_at is not None) for p in object.participants.all()]
 
     def get_model(self):
         return Thread
