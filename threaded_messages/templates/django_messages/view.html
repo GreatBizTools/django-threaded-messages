@@ -21,7 +21,7 @@
 
     <div class="pull-right">
 
-        <a href="{% url 'tm:modal_messages_compose' %}" class="btn btn-success">
+        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success">
             <i class="icon-plus-sign icon-white"></i> Send new message
         </a>
 
@@ -53,18 +53,15 @@
         <a href="#reply" class="btn btn-success pull-right">
            <i class="icon-arrow-left icon-white"></i>&nbsp;{% trans "Reply to thread" %}
         </a><br />
+
      <div>
+         <!-- Line breaks in this div are commented out to avoid being rendered as whitespace -->
         {% blocktrans with participant.user.get_absolute_url as sender_url %}
-        A message between <a href="{{ sender_url }}">You</a>
-         {% endblocktrans %}
-         {% if participant.others.length > 1 %} and {% endif %}
-         {% for participant in participant.others %}
-            {% if forloop.last %}
-                <a href="{{ participant.user.get_absolute_url }}">, and {{ participant.user.first_name }} {{ participant.user.last_name }}</a>
-            {% else %}
-                <a href="{{ participant.user.get_absolute_url }}">, {{ participant.user.first_name }} {{ participant.user.last_name }}</a>
-            {% endif %}
-         {% endfor %}
+        A message between <a href="{{ sender_url }}">You</a>{% endblocktrans %}<!--
+        -->{% for participant in participant.others %}<!--
+           -->{% if forloop.last %} and <a href="{{ participant.user.get_absolute_url }}">{{ participant.user.first_name }} {{ participant.user.last_name }}</a><!--
+           -->{% else %}<span>, <a href="{{ participant.user.get_absolute_url }}">{{ participant.user.first_name }} {{ participant.user.last_name }}</a></span><!--
+        -->{% endif %}{% endfor %}
      </div>
      <hr />
 
@@ -98,23 +95,9 @@
 
 {% block js %}
 {% addtoblock "js" %}
-    {{ form.media }}
-    <script>
-        $.ajax({
-            url: $('.reply-form').attr("action"),
-            type: 'POST',
-            data: $('.reply-form').serialize(),
-            beforeSend: function() {
-                $('.reply-form').addClass("ajax-form-disabled")
-            };
-            success: function(e) {
-                $('.reply-form').removeClass("ajax-form-disabled")
-                CKEDITOR.instances['reply-body'].setData('');
-                $('.message-list').append(e);
-            }
-        });
 
-     </script>
+    {{ form.media }}
+
 {% endaddtoblock %}
 {% endblock %}
 

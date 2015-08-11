@@ -21,14 +21,14 @@
 <div class="page-header">
 
     <div class="pull-right">
-        <a href="{% url 'tm:modal_messages_compose' %}" class="btn btn-success">
+        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success">
             <i class="icon-plus-sign icon-white"></i> Send new message
         </a>
     </div>
 
     <div class="row">
         <div class="span3">
-            <h3>{% trans "Compose Message"|upper %}</h3>
+            <h3>{% trans "Write Message"|upper %}</h3>
         </div>
     </div>
 </div>
@@ -38,7 +38,7 @@
     </div>
 
     <div class="span9">
-<form class="form-horizontal" id="compose" method="post" action="{% url 'tm:modal_messages_compose' %}">
+<form class="form-horizontal" id="compose" method="post" action="{% url 'tm:messages_compose' %}">
                 <fieldset>
                     {% csrf_token %}
 
@@ -202,7 +202,7 @@
             hintText: "{% trans "Type in a search term" %}",
             noResultsText: "{% trans "No results" %}",
             searchingText: "{% trans "Searching" %}...",
-            queryParam: "term",
+            queryParam: "term"
         };
 
         if(recipient){

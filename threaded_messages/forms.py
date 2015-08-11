@@ -2,6 +2,7 @@ import settings as sendgrid_settings
 from django import forms
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.utils.html import strip_tags
 from ckeditor.widgets import CKEditorWidget
 from ajax_select.fields import AutoCompleteSelectMultipleField, AutoCompleteSelectMultipleWidget
 

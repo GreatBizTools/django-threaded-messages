@@ -20,7 +20,7 @@
 
     <div class="pull-right">
 
-        <a href="{% url 'tm:modal_messages_compose' %}" class="btn btn-success">
+        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success">
             <i class="icon-plus-sign icon-white"></i> Send message
         </a>
 
@@ -67,7 +67,7 @@
                 window.location = $(this).siblings().find('a').attr('href');
             }
         });
-.
+
         $('#bulkDelete').click(function () {
 
             if (window.confirm("Do you want to delete these messages?")) {
@@ -122,6 +122,10 @@
     .clickableRow > a, .thisclickableRow >a {
         color: inherit;
         text-decoration: inherit;
+    }
+
+    .participant {
+        color: #309900;
     }
 
 </style>

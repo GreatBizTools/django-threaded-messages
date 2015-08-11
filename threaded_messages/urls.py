@@ -18,12 +18,4 @@ urlpatterns = patterns('',
     url(r'^update-navbar/$', update_navbarView, name='messages_update'),
     url(r"^recipient-search/$", recipient_search, name="recipient_search"),
     url(r'^message-reply/(?P<thread_id>[\d]+)/$', message_ajax_reply, name="message_reply"),
-
-    url(r'^modal-compose/$', compose, {
-        "template_name": "django_messages/modal_compose.html",
-    }, name='modal_messages_compose'),
-
-    url(r'^modal-compose/(?P<recipient>[\w.+-_]+)/$', compose, {
-        "template_name": "django_messages/modal_compose.html",
-    }, name='modal_messages_compose_to'),
 )
