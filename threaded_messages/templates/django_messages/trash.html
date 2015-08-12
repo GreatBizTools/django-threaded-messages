@@ -43,7 +43,7 @@
         {% csrf_token %}
            <div class="inbox-action-box">
                <div class="btn-group" style="float: right">
-                  <button type="button"  class="btn btn-small btn-warning active"><strong>{% trans "Update selected:" %}</strong></button>
+                  <div class="btn btn-small btn-success active unclickable"><strong>{% trans "Update selected:" %}</strong></div>
                   <button type="submit" disabled=true name="action" value="undelete" class="bulkaction btn btn-small btn-default"><i class="icon icon-inbox"></i>&nbsp;{% trans "Unarchive" %}</button>
               </div>
                    </div>
@@ -188,6 +188,11 @@
 
     .participant {
         color: #309900;
+    }
+
+
+    .unclickable:hover {
+          cursor: default;
     }
 </style>
 

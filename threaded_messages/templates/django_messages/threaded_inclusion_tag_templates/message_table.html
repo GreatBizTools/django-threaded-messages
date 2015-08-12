@@ -13,7 +13,7 @@
                   {% if not only_unread %}<a href="{% url 'tm:messages_inbox' %}?only_unread=1" class="btn btn-small">{% trans "unread" %}</a>{% else %}<div class="btn btn-small active">{% trans "unread" %}</div>{% endif %}
               </div>
               <div class="btn-group" style="float: right">
-                  <button type="button"  class="btn btn-small btn-warning active"><strong>{% trans "Update selected:" %}</strong></button>
+                  <div class="btn btn-small btn-success active unclickable"><strong>{% trans "Update selected:" %}</strong></div>
                   <button type="submit" disabled=true name="action" value="delete" class="bulkaction btn btn-small btn-default"><i class="icon-folder-close"></i>&nbsp;{% trans "archive" %}</button>
                   <button type="submit" disabled=true name="action" value="unread" class="bulkaction btn btn-small btn-default"><i class="icon-envelope"></i>&nbsp;{% trans "unread" %}</button>
                   <button type="submit" disabled=true name="action" value="read" class="bulkaction btn btn-small btn-default"><i class="icon-check"></i>&nbsp;{% trans "read" %}</button>
