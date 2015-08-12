@@ -77,11 +77,11 @@ def search(request, template_name="django_messages/search.html"):
         SQ(content=search_term) | SQ(participant_last_names__istartswith=search_term)
     ).order_by('-last_message')
 
-    if request.GET.get('search')=='sent':
+    if request.GET.get('search')==u'sent':
         results = results.filter(participant_sent=u"{}-{}".format(request.user.pk, True))
-    elif request.GET.get('search')=='inbox':
+    elif request.GET.get('search')==u'inbox':
         results = results.filter(participant_archived=u"{}-{}".format(request.user.pk, False))
-    elif request.GET.get('search')=='archives':
+    elif request.GET.get('search')==u'archives':
         results = results.filter(participant_archived=u"{}-{}".format(request.user.pk, True))
     else:
         pass
@@ -388,8 +388,7 @@ def update_navbarView(request):
         unread_messages = [(ellipsis(p.thread.subject, 10), p.thread.latest_msg.sender.full_name(), p.thread.id) for p in
                            Participant.objects.inbox_for(request.user,read=False)]
         unread_message_count = len(unread_messages)
-        print unread_message_count
         if len(unread_messages) > 3:
             unread_messages = unread_messages[0:3]
         unread_messages.reverse()
-        return HttpResponse(json.dumps({'count': unread_message_count, 'unread_messages': unread_messages}))
+        return HttpResponse(json.dumps({'count': unread_message_count, 'unread_messages': unread_messages}), content_type='application/json')
