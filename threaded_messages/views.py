@@ -252,6 +252,7 @@ def delete(request, thread_id, success_url=None):
 
     user_part.deleted_at = right_now
     user_part.save()
+    thread.save()
     messages.success(request, message=_(u"Conversation successfully archived."))
     return HttpResponseRedirect(success_url)
 
@@ -273,6 +274,7 @@ def undelete(request, thread_id, success_url=None):
 
     user_part.deleted_at = None
     user_part.save()
+    thread.save()
     messages.success(request, _(u"Conversation successfully recovered."))
     return HttpResponseRedirect(success_url)
 
@@ -345,6 +347,7 @@ def batch_update(request, success_url=None):
                     elif request.POST.get("action") == "undelete":
                         participant.deleted_at = None
                     participant.save()
+                    thread.save()
         else:
             raise Http404
 
