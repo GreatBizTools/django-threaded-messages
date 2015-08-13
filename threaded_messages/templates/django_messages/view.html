@@ -40,7 +40,8 @@
     </div>
 
     <div class="span9">
-   <h2>
+   <div class="thread-info well well-success">
+       <h2>
         {{ thread.subject }}</h2>
 
         {% if participant.deleted_at %}
@@ -63,8 +64,7 @@
            -->{% else %}<span>, <a href="{{ participant.user.get_absolute_url }}">{{ participant.user.first_name }} {{ participant.user.last_name }}</a></span><!--
         -->{% endif %}{% endfor %}
      </div>
-     <hr />
-
+       </div>
 
     <div class="message-thread">
       <div class="message-list">
@@ -120,6 +120,11 @@
         .alert {
             list-style-type: none;
         }
+
+        .thread-info {
+            color: #000000;
+        }
+
     </style>
     {% endaddtoblock %}
     {% endblock %}

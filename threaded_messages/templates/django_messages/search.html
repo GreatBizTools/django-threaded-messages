@@ -57,9 +57,9 @@
 
                 <span>
                     &nbsp;
-                    <input name="qs" class="search-input" type="text" {% if not search_term %}title="{% trans 'Search Messages' %}"{% endif %}
+                    <div class="input-append"><input name="qs" class="search-input" type="text" {% if not search_term %}title="{% trans 'Search Messages' %}"{% endif %}
                            value="{{ search_term }}" />
-                    <button type="submit" class="btn btn-success search-submit">Search</button>
+                    <button type="submit" class="btn btn-success search-submit"><i class="icon-search icon-white"></i></button></div>
                     <label class="hidden" for="filter">Hidden filter input</label><input type="text" class="hidden" id="filter" name="search" value="{{ search_filter }}" />
                 </span>
              </form>
