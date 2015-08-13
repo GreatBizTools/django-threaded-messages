@@ -3,15 +3,6 @@
 
     <form id="batch-update" action="{% url 'tm:messages_batch_update' %}" method="post">
         {% csrf_token %}
-        <div class="inbox-action-box">
-            <div style="float: left;" class="btn-group">
-                <div class="btn btn-small btn-success active"><strong>{% trans "Show" %}:</strong></div>
-                {% if only_unread or only_read %}<a href="{% url 'tm:messages_inbox' %}" class="btn btn-small">{% trans "all" %}</a>{% else %}<div class="btn btn-small active">{% trans "all" %}</div>{% endif %}
-                {% if not only_read %}<a href="{% url 'tm:messages_inbox' %}?only_read=1"  class="btn btn-small">{% trans "read" %}</a>{% else %}<div class="btn btn-small active">{% trans "read" %}</div>{% endif %}
-                {% if not only_unread %}<a href="{% url 'tm:messages_inbox' %}?only_unread=1" class="btn btn-small">{% trans "unread" %}</a>{% else %}<div class="btn btn-small active">{% trans "unread" %}</div>{% endif %}
-            </div>
-        </div>
-
         <table class="inbox table table-striped table-hover">
             <thead>
                 <tr class="message message-header">

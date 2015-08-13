@@ -2,10 +2,22 @@
   <li class="active"><a href="{% url 'tm:messages_inbox' %}"><h3 style="display: inline; width">Inbox</h3></a></li>
   <li><a href="{% url 'tm:messages_outbox' %}"><h3 style="display: inline;">Outbox</h3></a></li>
   <li><a href="{% url 'tm:messages_trash' %}"><h3 style="display: inline;">Archive</h3></a></li>
-    <div class="pull-right">
-        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success">
-            <i class="icon-plus-sign icon-white"></i> New message
-        </a>
+    <div class="pull-right" style="margin-top: 13px;">
+         <span class="inbox-action-box">
+            <div style="float: left;" class="btn-group">
+                <div class="btn-group dropdown">
+                <button class="btn btn-small btn-default dropdown-toggle bulkaction"><strong>Show <span class="caret"></span></strong></button>
+                {% if only_unread or only_read %}<a href="{% url 'tm:messages_inbox' %}" class="btn btn-small">all</a>
+                    {% else %}<div class="btn btn-small active">all</div>{% endif %}
+                {% if not only_read %}<a href="{% url 'tm:messages_inbox' %}?only_read=1"  class="btn btn-small">read</a>
+                    {% else %}<div class="btn btn-small active">read</div>{% endif %}
+                {% if not only_unread %}<a href="{% url 'tm:messages_inbox' %}?only_unread=1" class="btn btn-small">unread</a>
+                    {% else %}<div class="btn btn-small active">unread</div>{% endif %}
+                </div>
+            </div>
+        </span>&nbsp;
+        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success btn-small">
+            <i class="icon-plus-sign icon-white"></i> New message</a>
     </div>
 </ul>
 

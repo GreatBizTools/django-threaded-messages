@@ -17,17 +17,13 @@
 </ul>
 {% messages %}
 <div>
-
-
     <div class="navWrapper">
             {% messaging_well_search %}
     </div>
-
 </div>
-<div class="row-fluid">
-    <div class="message-table">
-        {% message_table %}
-    </div></div>
+<div class="message-table row-fluid">
+    {% message_table %}
+</div></div>
 {% endblock %}
 
 
@@ -98,7 +94,7 @@
 {% addtoblock "css" %}
 <style>
     .navWrapper {
-        padding: 0px;
+        height: 60px;
     }
     input, button {
         max-width:100%;
