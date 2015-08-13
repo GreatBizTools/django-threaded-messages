@@ -232,7 +232,7 @@ def delete(request, thread_id, success_url=None):
     """
     Marks a message as deleted by sender or recipient. The message is not
     really removed from the database, because two users must delete a message
-    before it's save to remove it completely.
+    before it's safe to remove it completely.
     A cron-job should prune the database and remove old messages which are
     deleted by both users.
     As a side effect, this makes it easy to implement a trash with undelete.
