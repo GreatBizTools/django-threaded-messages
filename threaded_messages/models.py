@@ -26,7 +26,7 @@ class MessageManager(models.Manager):
             if read == True:
                 # read messages have read_at set to a later value then last message of the thread
                 inbox = inbox.exclude(read_at__isnull=True)\
-                            .filter(read_at__gt=F("thread__latest_msg__sent_at"))
+                        .filter(read_at__gt=F("thread__latest_msg__sent_at"))
             else:
                 # unread threads are the ones that either have not been read at all or before the last message arrived
                 inbox = inbox.filter(Q(read_at__isnull=True)
@@ -39,26 +39,61 @@ class MessageManager(models.Manager):
 
         return inbox
 
-    def outbox_for(self, user):
+    def outbox_for(self, user, read=None, only_unreplied=None):
         """
         Returns all messages that were sent by the given user and are not
         marked as deleted.
         """
-        return self.filter(
+        outbox = self.filter(
             user=user,
             replied_at__isnull=False,
             deleted_at__isnull=True,
-        )
 
-    def trash_for(self, user):
+        )
+        if read != None:
+            if read == True:
+                # read messages have read_at set to a later value then last message of the thread
+                outbox = inbox.exclude(read_at__isnull=True)\
+                            .filter(read_at__gt=F("thread__latest_msg__sent_at"))
+            else:
+                # unread threads are the ones that either have not been read at all or before the last message arrived
+                outbox = inbox.filter(Q(read_at__isnull=True)
+                                    | Q(read_at__lt=F("thread__latest_msg__sent_at")))
+
+        if only_unreplied != None:
+            if only_unreplied == True:
+                inbox = inbox.filter(Q(replied_at__isnull=True)
+                                    | Q(replied_at__lt=F("thread__latest_msg__sent_at")))
+
+        return outbox
+
+
+    def trash_for(self, user, read=None, only_unreplied=None):
         """
         Returns all messages that were either received or sent by the given
         user and are marked as deleted.
         """
-        return self.filter(
+        trash = self.filter(
             user=user,
             deleted_at__isnull=False,
         )
+
+        if read != None:
+            if read == True:
+                # read messages have read_at set to a later value then last message of the thread
+                trash = inbox.exclude(read_at__isnull=True)\
+                            .filter(read_at__gt=F("thread__latest_msg__sent_at"))
+            else:
+                # unread threads are the ones that either have not been read at all or before the last message arrived
+                trash = inbox.filter(Q(read_at__isnull=True)
+                                    | Q(read_at__lt=F("thread__latest_msg__sent_at")))
+
+        if only_unreplied != None:
+            if only_unreplied == True:
+                trash = inbox.filter(Q(replied_at__isnull=True)
+                                    | Q(replied_at__lt=F("thread__latest_msg__sent_at")))
+
+        return trash
 
 
 class Message(models.Model):

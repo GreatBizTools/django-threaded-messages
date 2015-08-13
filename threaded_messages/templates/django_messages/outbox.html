@@ -17,7 +17,6 @@
 </ul>
 {% messages %}
 <div class="page-header">
-
     <div class="pull-right">
 
         <a href="{% url 'tm:messages_compose' %}" class="btn btn-success">
@@ -48,62 +47,56 @@
 {% addtoblock "js" %}
 <script>
     $(document).ready(function () {
-         watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
-         $(function () {
-                    $(document).tooltip();
-                });
+        /* Enable batch update options (dropdown button) only when at least one checkbox has been checked */
+        var anyChecked = false;
+        var checkboxes = $("input[name='batchupdateids']"),
+                submitButt = $(".bulkaction");
 
+        checkboxes.on('ifChecked', function () {
+            submitButt.attr("disabled", false);
+        });
+
+        checkboxes.on('ifUnchecked', function () {
+            anyChecked = checkboxes.closest('div.icheck-item').hasClass('checked');
+            if (!anyChecked) {
+                submitButt.attr("disabled", true);
+            }
+        });
+
+        /* Enable jQuery tooltips */
+        $(function () {
+            $(document).tooltip();
+        });
+
+        /* What was this code doing? TODO: Ask Peter */
+        //watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
+
+
+        /* On click of batch action dropdown option (archive, mark as read) click corresponding hidden submit button.
+        * Convention for dropdown & button IDs is (respectively): delete-li, delete-btn. */
+        var liId;
+        var btnId;
+        $('.message-table').on('click', '.batch-action', function() {
+            liId = $(this).attr('id');
+            btnId  = '#' + liId.split('-')[0] + '-btn';
+            $(btnId).click();
+        });
+
+        /* On click of a clickable row, locate corresponding message URL and */
         $('.message-table').on('click', '.clickablerow', function(){
             console.log("Clickable row activated");
             console.log("this: ", this);
             var href = $(this).parent().data("url");
-            console.log("href= " + href);
             if(typeof href != 'undefined') {
                 window.location = href;
-            }else{
-                window.location = $(this).siblings().find('a').attr('href');
             }
         });
 
-
-         $('.option').on('click', function() {
+        /* Ensure that active search filter is passed to search page on search */
+        $('.search-filter').on('click', function() {
             filterValue = $(this).val();
             $('#filter').val(filterValue);
-            console.log("filter set to ", filterValue)
         });
-
-        $('#bulkDelete').click(function () {
-
-            if (window.confirm("Do you want to delete these messages?")) {
-                var selectedCheckBoxes = $('input[name="pks"]:checked').serializeArray();
-
-                $.post('/messaging/delete/', selectedCheckBoxes
-                ).success(function () {
-                            for (var i = 0; i < selectedCheckBoxes.length; i++) {
-                                var item = "#message-" + $.trim(selectedCheckBoxes[i].value);
-                                $(item).remove();
-                            }
-                        }).fail(function () {
-                            alert("There was a problem")
-                        })
-            }
-        });
-
-
-        $('#bulkArchive').click(function () {
-            var selectedCheckBoxes = $('input[name="pks"]:checked').serializeArray();
-            $.post('/messaging/archive/',
-                    selectedCheckBoxes
-            ).success(function () {
-                        for (var i = 0; i < selectedCheckBoxes.length; i++) {
-                            var item = "#message-" + $.trim(selectedCheckBoxes[i].value);
-                            $(item).remove();
-                        }
-                    }).fail(function () {
-                        alert("There was a problem")
-                    });
-        });
-
 
     });
 

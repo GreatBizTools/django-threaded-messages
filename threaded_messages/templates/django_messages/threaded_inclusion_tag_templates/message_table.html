@@ -1,74 +1,86 @@
 {% load i18n avatar_tags pagination_tags truncchar_tag %}
 {% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
 
-    <form action="{% url 'tm:messages_batch_update' %}" method="post">
+    <form id="batch-update" action="{% url 'tm:messages_batch_update' %}" method="post">
         {% csrf_token %}
-
-        {% if header == "Sender" %}
         <div class="inbox-action-box">
-              <div style="float: left;" class="btn-group">
-                  <div class="btn btn-small btn-success active"><strong>{% trans "Show" %}:</strong></div>
-                  {% if only_unread or only_read %}<a href="{% url 'tm:messages_inbox' %}" class="btn btn-small">{% trans "all" %}</a>{% else %}<div class="btn btn-small active">{% trans "all" %}</div>{% endif %}
-                  {% if not only_read %}<a href="{% url 'tm:messages_inbox' %}?only_read=1"  class="btn btn-small">{% trans "read" %}</a>{% else %}<div class="btn btn-small active">{% trans "read" %}</div>{% endif %}
-                  {% if not only_unread %}<a href="{% url 'tm:messages_inbox' %}?only_unread=1" class="btn btn-small">{% trans "unread" %}</a>{% else %}<div class="btn btn-small active">{% trans "unread" %}</div>{% endif %}
-              </div>
-              <div class="btn-group" style="float: right">
-                  <div class="btn btn-small btn-success active unclickable"><strong>{% trans "Update selected:" %}</strong></div>
-                  <button type="submit" disabled=true name="action" value="delete" class="bulkaction btn btn-small btn-default"><i class="icon-folder-close"></i>&nbsp;{% trans "archive" %}</button>
-                  <button type="submit" disabled=true name="action" value="unread" class="bulkaction btn btn-small btn-default"><i class="icon-envelope"></i>&nbsp;{% trans "unread" %}</button>
-                  <button type="submit" disabled=true name="action" value="read" class="bulkaction btn btn-small btn-default"><i class="icon-check"></i>&nbsp;{% trans "read" %}</button>
-              </div>
+            <div style="float: left;" class="btn-group">
+                <div class="btn btn-small btn-success active"><strong>{% trans "Show" %}:</strong></div>
+                {% if only_unread or only_read %}<a href="{% url 'tm:messages_inbox' %}" class="btn btn-small">{% trans "all" %}</a>{% else %}<div class="btn btn-small active">{% trans "all" %}</div>{% endif %}
+                {% if not only_read %}<a href="{% url 'tm:messages_inbox' %}?only_read=1"  class="btn btn-small">{% trans "read" %}</a>{% else %}<div class="btn btn-small active">{% trans "read" %}</div>{% endif %}
+                {% if not only_unread %}<a href="{% url 'tm:messages_inbox' %}?only_unread=1" class="btn btn-small">{% trans "unread" %}</a>{% else %}<div class="btn btn-small active">{% trans "unread" %}</div>{% endif %}
+            </div>
         </div>
-        {% endif %}
 
-        <div style="clear: both;"></div>
         <table class="inbox table table-striped table-hover">
             <thead>
                 <tr class="message message-header">
+                    <!--Row table headers: (1)Bulk action dropdown, (2)Participants/Sender, (3)Date/Time, (4)Subject -->
+                    <th class="span1" style="padding-left: 0;">
+                        <div class="btn-group dropdown">
+                            <button class="btn btn-small btn-default dropdown-toggle bulkaction" style="padding: 2px 7px;"
+                                    data-toggle="dropdown" disabled=true>
+                                <i class="icon-cog"></i><span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                {% if page_type == "archive" %}
+                                <li id="undelete-li" class="batch-action"><i class="icon-inbox"></i>&nbsp;{% trans "unarchive" %}</li>
+                                {% else %}
+                                <li id="delete-li" class="batch-action"><i class="icon-folder-close"></i>&nbsp;{% trans "archive" %}</li>
+                                {% endif %}
+                                <li id="unread-li" class="batch-action"><i class="icon-envelope"></i>&nbsp;{% trans "unread" %}</li>
+                                <li id="read-li" class="batch-action"><i class="icon-check"></i>&nbsp;{% trans "read" %}</li>
+                            </ul>
+                        </div>
+                        <button id="unread-btn" type="submit" name="action" value="unread" class="hidden"></button>
+                        <button id="read-btn" type="submit" name="action" value="read" class="hidden"></button>
+                        <button id="delete-btn" type="submit" name="action" value="delete" class="hidden"></button>
+                        <button id="undelete-btn" type="submit" name="action" value="undelete" class="hidden"></button>
+                    </th>
                     <th class="sender span5"><h5>{{header}}</h5></th>
                     <th class="subject span6"><h5>{% trans "Subject" %}</h5></th>
-                    {% ifequal header "Sender" %}<th class="subject span1"></th>{% endifequal %}
                 </tr>
             </thead>
             <tbody>
             {% for message in thread_list %}
               <tr class="{% if message.new %}success{% endif %}" data-url="{{ message.thread.get_absolute_url }}">
+                  <td class="checkbox span1">
+                    <input name="batchupdateids" type="checkbox" value="{{message.thread.pk}}" />
+                  </td>
                   <td class="clickablerow sender span5">
                       {% if header == "Sender" %}
-                      {% with message.thread.latest_msg.sender as sender %}
-                        <span class="participant" title="{{ message.thread.latest_msg.sender }}">{{ sender.first_name }} {{ sender.last_name }}</span>&nbsp; &nbsp;
-                      {% endwith %}
+                        {% with message.thread.latest_msg.sender as sender %}
+                            <span class="participant" title="{{ message.thread.latest_msg.sender }}">{{ sender.first_name }} {{ sender.last_name }}</span>&nbsp; &nbsp;
+                        {% endwith %}
                       {% else %}
-                          {% if message.others|length < 1 %}
+                        {% if message.others|length < 1 %}
                           <span class="participant" title="{{ message.thread.creator.full_name }}">{{ message.thread.creator.first_name }}</span>
-                          {% endif %}
-                          {% for p in message.others %}
-                              {% if forloop.counter < 3 %}
+                        {% endif %}
+                        {% for p in message.others %}
+                            {% if forloop.counter < 3 %}
                               <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
-                              {% elif forloop.last %}
+                            {% elif forloop.last %}
                               <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>
                                   {% if forloop.counter != 3 %}
                                   <span class="participant others">+ {{ forloop.counter|add:"-3" }} others</span>
                                   {% endif %}
-                              {% endif %}
-                          {% endfor %}
+                            {% endif %}
+                        {% endfor %}
                       {% endif %}
-                    <span class="date"><em>{{ message.thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span>
+                      <span class="date"><em>{{ message.thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span>
                   </td>
+
                   <td class="clickablerow subject span6">
                     <a href="{{ message.thread.get_absolute_url }}">{% if message.new %}
                         <strong>{% endif %}{{ message.thread.subject|truncchar:30|safe }}{% if message.new %}</strong>{% endif %}</a>
-                    <span class="message-tease">{{ message.thread.latest_msg.body|truncatewords:8|clean_with_bleach|safe }}</span>
+                    <span class="message-tease muted">{{ message.thread.latest_msg.body|truncatewords:6|clean_with_bleach|safe }}</span>
                     <span class="pull-right label">{{ message.thread.all_msgs.count }}</span>
                   </td>
-                   {% ifequal header "Sender" %}<td class="checkbox span1">
-                    <input name="batchupdateids" type="checkbox" value="{{message.thread.pk}}" />
-                  </td>{% endifequal %}
+
                   {% if message.replied %}{% endif %}
                   {% if message.new %}{% endif %}
               </tr>
             {% empty %}
-                  <tr class="message unread">
+                <tr class="message unread">
                     <td class="no-message"><em>{% trans "No messages found" %}</em></td><td></td><td></td>
                 </tr>
             {% endfor %}

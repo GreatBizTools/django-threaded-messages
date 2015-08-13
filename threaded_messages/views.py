@@ -65,6 +65,7 @@ def inbox(request, template_name='django_messages/inbox.html'):
         'only_unread': only_unread,
         'only_unreplied': only_unreplied,
         'header': 'Sender',
+        'page_type': 'inbox',
     }, context_instance=RequestContext(request))
 
 
@@ -111,7 +112,6 @@ def outbox(request, template_name='django_messages/outbox.html'):
     Optional arguments:
         ``template_name``: name of the template to use.
     """
-    thread_list = Participant.objects.outbox_for(request.user)
 
     only_read = request.GET.get("only_read", False)
     only_unread = request.GET.get("only_unread", False)
@@ -126,6 +126,8 @@ def outbox(request, template_name='django_messages/outbox.html'):
     if only_unreplied:
         only_unreplied = True
 
+    thread_list = Participant.objects.outbox_for(request.user, read=read, only_unreplied=only_unreplied)
+
     paginated_messages = Paginator(thread_list, 10)
     page = request.GET.get('page', 1)
     try:
@@ -137,10 +139,11 @@ def outbox(request, template_name='django_messages/outbox.html'):
 
     return render_to_response(template_name, {
         'thread_list': paginated_list,
-        'header': 'Participants',
+        'header': 'Sent Participants',
         'only_read': only_read,
         'only_unread': only_unread,
         'only_unreplied': only_unreplied,
+        'page_type': 'outbox',
     }, context_instance=RequestContext(request))
 
 
@@ -153,9 +156,22 @@ def trash(request, template_name='django_messages/trash.html'):
     Hint: A Cron-Job could periodically clean up old messages, which are deleted
     by sender and recipient.
     """
-    message_list = Participant.objects.trash_for(request.user)
+    only_read = request.GET.get("only_read", False)
+    only_unread = request.GET.get("only_unread", False)
+    only_unreplied = request.GET.get("only_unreplied", None)
 
-    paginated_messages = Paginator(message_list, 10)
+    read = None
+    if only_read:
+        read = True
+    elif only_unread:
+        read = False
+
+    if only_unreplied:
+        only_unreplied = True
+
+    thread_list = Participant.objects.trash_for(request.user, read=read, only_unreplied=only_unreplied)
+
+    paginated_messages = Paginator(thread_list, 10)
     page = request.GET.get('page', 1)
     try:
         paginated_list = paginated_messages.page(page)
@@ -165,7 +181,12 @@ def trash(request, template_name='django_messages/trash.html'):
         paginated_list = paginated_messages.page(1)
 
     return render_to_response(template_name, {
-        'message_list': paginated_list,
+        'thread_list': paginated_list,
+        'only_read': only_read,
+        'only_unread': only_unread,
+        'only_unreplied': only_unreplied,
+        'header': 'Participants',
+        'page_type': 'archive',
     }, context_instance=RequestContext(request))
 
 

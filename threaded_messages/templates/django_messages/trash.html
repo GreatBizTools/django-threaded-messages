@@ -38,85 +38,9 @@
                {% messaging_well_search %}
     </div>
 
-    <div class="span9">
-         <form action="{% url 'tm:messages_batch_update' %}" method="post">
-        {% csrf_token %}
-           <div class="inbox-action-box">
-               <div class="btn-group" style="float: right">
-                  <div class="btn btn-small btn-success active unclickable"><strong>{% trans "Update selected:" %}</strong></div>
-                  <button type="submit" disabled=true name="action" value="undelete" class="bulkaction btn btn-small btn-default"><i class="icon icon-inbox"></i>&nbsp;{% trans "Unarchive" %}</button>
-              </div>
-                   </div>
-
-        <div style="clear: both;"></div>
-        <table class="inbox table table-striped table-hover">
-            <thead>
-                <tr class="message message-header">
-                    <th class="sender span5"><h5>{% trans "Participants" %}</h5></th>
-                    <th class="subject span6"><h5>{% trans "Subject" %}</h5></th>
-                    <th class="subject span1"></th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for message in message_list %}
-              <tr class="{% if message.new %}success{% endif %}">
-                  <td class="clickablerow sender span5">
-                         {% if message.others|length < 1 %}
-                          <span class="participant" title="{{ message.thread.creator.full_name }}">{{ message.thread.creator.first_name }}</span>
-                          {% endif %}
-                          {% for p in message.others %}
-                              {% if forloop.counter < 3 %}
-                              <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
-                              {% elif forloop.last %}
-                              <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>
-                                  {% if forloop.counter != 3 %}
-                                  <span class="participant others">+ {{ forloop.counter|add:"-3" }} others</span>
-                                  {% endif %}
-                              {% endif %}
-                          {% endfor %}
-                    <span class="date"><em>{{ message.thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span>
-                  </td>
-                  <td class="clickablerow subject span6">
-                    <a href="{{ message.thread.get_absolute_url }}">{% if message.new %}<b>{% endif %}{{ message.thread.subject|truncchar:30|safe }}{% if message.new %}</b>{% endif %}</a>
-                    <span class="message-tease">{{ message.thread.latest_msg.body|truncatewords:8|clean_with_bleach|safe }}</span>
-                    <span class="pull-right label">{{ message.thread.all_msgs.count }}</span>
-                  </td>
-                  <td class="checkbox span1">
-                    <input name="batchupdateids" type="checkbox" value="{{message.thread.pk}}" />
-                  </td>
-                  {% if message.replied %}{% endif %}
-                  {% if message.new %}{% endif %}
-              </tr>
-            {% empty %}
-                <tr class="message unread">
-                    <td class="no-message"><em>{% trans "No messages found" %}</em></td><td></td><td></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-</table>
-    </form>
-    <div class="messages-footer">
-        <div class="pagination">
-            <ul>
-                {% if message_list.has_previous %}
-                <li><a href="?page={{ message_list.previous_page_number }}"><i class="icon-chevron-left"></i></a>
-                </li>
-                {% else %}
-                <li class="disabled"><a href="#"><i class="icon-chevron-left"></i></a></li>
-                {% endif %}
-                {% for p in message_list.paginator.num_pages|get_range_plus_one %}
-                <li class="{% if p == message_list.number %}active{% endif %}"><a href="?page={{ p }}">{{ p }}</a>
-                </li>
-                {% endfor %}
-                {% if message_list.has_next %}
-                <li><a href="?page={{ message_list.next_page_number }}"><i class="icon-chevron-right"></i></a></li>
-                {% else %}
-                <li class="disabled"><a href="#"><i class="icon-chevron-right"></i></a></li>
-                {% endif %}
-            </ul>
-        </div>
+    <div class="span9 message-table">
+         {% message_table %}
     </div>
-    </div></div>
 {% endblock %}
 
 
@@ -124,6 +48,7 @@
 {% addtoblock "js" %}
 <script>
     $(document).ready(function () {
+        /* Enable batch update options (dropdown button) only when at least one checkbox has been checked*/
         var anyChecked = false;
         var checkboxes = $("input[name='batchupdateids']"),
                 submitButt = $(".bulkaction");
@@ -139,28 +64,39 @@
             }
         });
 
+        /* Enable jQuery tooltips */
         $(function () {
             $(document).tooltip();
         });
 
-         $('.option').on('click', function() {
-            filterValue = $(this).val();
-            $('#filter').val(filterValue);
-            console.log("filter set to ", filterValue)
+        /* What was this code doing? TODO: Ask Peter */
+        //watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
+
+
+        /* On click of batch action dropdown option (archive, mark as read) click corresponding hidden submit button.
+        * Convention for dropdown & button IDs is (respectively): delete-li, delete-btn. */
+        var liId;
+        var btnId;
+        $('.message-table').on('click', '.batch-action', function() {
+            liId = $(this).attr('id');
+            btnId  = '#' + liId.split('-')[0] + '-btn';
+            $(btnId).click();
         });
 
-        watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
-
+        /* On click of a clickable row, locate corresponding message URL and */
         $('.message-table').on('click', '.clickablerow', function(){
             console.log("Clickable row activated");
             console.log("this: ", this);
             var href = $(this).parent().data("url");
-            console.log("href= " + href);
             if(typeof href != 'undefined') {
                 window.location = href;
-            }else{
-                window.location = $(this).siblings().find('a').attr('href');
             }
+        });
+
+        /* Ensure that active search filter is passed to search page on search */
+        $('.search-filter').on('click', function() {
+            filterValue = $(this).val();
+            $('#filter').val(filterValue);
         });
 
     });

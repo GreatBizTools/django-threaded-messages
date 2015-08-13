@@ -1,27 +1,41 @@
-<div class="well">
-    <h5><a href="{% url 'tm:messages_inbox' %}"><i class="icon icon-inbox"></i>&nbsp;Inbox</a></h5>
-    <h5><a href="{% url 'tm:messages_outbox' %}"><i class="icon-envelope"></i>&nbsp;Sent</a></h5>
-    <h5><a href="{% url 'tm:messages_trash' %}"><i class="icon-folder-close"></i>&nbsp;Archive</a></h5>
-</div>
+<ul class="nav nav-tabs" style="display: inline-block; width: 100%;">
+  <li class="active"><a href="{% url 'tm:messages_inbox' %}"><h3 style="display: inline; width">Inbox</h3></a></li>
+  <li><a href="{% url 'tm:messages_outbox' %}"><h3 style="display: inline;">Outbox</h3></a></li>
+  <li><a href="{% url 'tm:messages_trash' %}"><h3 style="display: inline;">Archive</h3></a></li>
+    <div class="pull-right">
+        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success">
+            <i class="icon-plus-sign icon-white"></i> New message
+        </a>
+    </div>
+</ul>
 
-<div class="input-append input-prepend">
-     <h4>{% if keywords %}{{ keywords }}{% else %}Search messages{% endif %}</h4>
-    <form action="{% url 'tm:messages_search' %}" method="GET" style="float: left">
-         <div class="btn-group" data-toggle="buttons-radio" id="search_chooser_btn_group" style="margin-bottom: 4px;">
-            <input type="button" class-toggle="active" class="option btn btn-small active" name="search" value="all"
-                    style="padding-left: 7px; padding-right: 7px;">all</input>
-             <input type="button" class-toggle="active" class="option btn btn-small" name="search" value="inbox"
-                    style="padding-left: 7px; padding-right: 7px;">inbox</input>
-            <input type="button" class-toggle="active" class="option btn btn-small" name="search" value="sent"
-                    style="padding-left: 7px; padding-right: 7px;">sent</input>
-            <input type="button" class-toggle="active" class="option btn btn-small" name="search" value="archives"
-                    style="padding-left: 7px; padding-right: 7px;">archive</input>
-        </div>
 
-                <label class="hidden" for="filter">Hidden filter input</label><input type="text" class="hidden" id="filter" name="search" value="all" />
-                <div class="pull-left">
-                   <div style="width: 79%;"> <input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
-                <button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button></div>
-        </div>
-    </form>
-</div>
+
+
+<!--<div class="well">-->
+    <!--<h5><a href="{% url 'tm:messages_inbox' %}"><i class="icon icon-inbox"></i>&nbsp;Inbox</a></h5>-->
+    <!--<h5><a href="{% url 'tm:messages_outbox' %}"><i class="icon-envelope"></i>&nbsp;Sent</a></h5>-->
+    <!--<h5><a href="{% url 'tm:messages_trash' %}"><i class="icon-folder-close"></i>&nbsp;Archive</a></h5>-->
+<!--</div>-->
+
+<!--<div class="input-append input-prepend">-->
+     <!--<h4>{% if keywords %}{{ keywords }}{% else %}Search messages{% endif %}</h4>-->
+    <!--<form action="{% url 'tm:messages_search' %}" method="GET" style="float: left">-->
+         <!--<div class="btn-group" data-toggle="buttons-radio" id="search_chooser_btn_group" style="margin-bottom: 4px;">-->
+            <!--<input type="button" class-toggle="active" class="search-filter btn btn-small active" name="search" value="all"-->
+                    <!--style="padding-left: 7px; padding-right: 7px;">all</input>-->
+             <!--<input type="button" class-toggle="active" class="search-filter btn btn-small" name="search" value="inbox"-->
+                    <!--style="padding-left: 7px; padding-right: 7px;">inbox</input>-->
+            <!--<input type="button" class-toggle="active" class="search-filter btn btn-small" name="search" value="sent"-->
+                    <!--style="padding-left: 7px; padding-right: 7px;">sent</input>-->
+            <!--<input type="button" class-toggle="active" class="search-filter btn btn-small" name="search" value="archives"-->
+                    <!--style="padding-left: 7px; padding-right: 7px;">archive</input>-->
+        <!--</div>-->
+
+                <!--<label class="hidden" for="filter">Hidden filter input</label><input type="text" class="hidden" id="filter" name="search" value="all" />-->
+                <!--<div class="pull-left">-->
+                   <!--<div style="width: 79%;"> <input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />-->
+                <!--<button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button></div>-->
+        <!--</div>-->
+    <!--</form>-->
+<!--</div>-->
