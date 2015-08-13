@@ -12,19 +12,28 @@ class UserLookup(LookupChannel):
     model = User
 
     def get_query(self, q, request):
-        if request.user.is_staff:
+        if request.user.user_type=='admin':
             try:
                 query = int(q)
-                result = Classroom.objects.filter(pk=query)
+                result = Classroom.objects.filter(trainers=request.user).filter(pk=query)
                 for r in result:
                     r.id = "class_{}".format(r.id)
             except ValueError:
-                result = list(User.objects.filter(Q(first_name__icontains=q) | Q(last_name__icontains=q)))
+                result = list(User.objects.active_by_company(request.user.company).filter(Q(first_name__icontains=q) | Q(last_name__icontains=q)))
                 for r in result:
                     r.id = "user_{}".format(r.id)
             return result
         else:
-            return list(User.objects.active_by_company(request.user.company).filter(Q(first_name__icontains=q) | Q(last_name__icontains=q)))
+            trainees_classroom = Trainee.objects.get(user=request.user).classroom
+            trainers = trainees_classroom.trainers.all()
+            trainees = Trainee.objects.filter(classroom=trainees_classroom)
+            trainees = [t.user for t in trainees]
+            result = list(trainees) + list(trainers)
+            for r in result:
+                r.id = "user_{}".format(r.id)
+            return result
+
+
 
     def format_match(self, obj):
         if isinstance(obj,Classroom):
@@ -44,19 +53,6 @@ class UserLookup(LookupChannel):
             else:
                 return obj.username
 
-    def get_objects(self, ids):
-        objects = []
-        for id in ids:
-            id_list = id.split("_")
-            print type(id_list[0])
-            if u"user"==id_list[0]:
-                print "We've got a user!"
-                objects.append(User.objects.get(pk=id_list[1]))
-            else:
-                print "We don't have a user?"
-                trainee_objects = Trainee.objects.filter(classroom_pk=id_list[1])
-                objects.append([t.user for t in trainee_objects])
-        return objects
 
     def check_auth(self,request):
         if not request.user.is_authenticated():

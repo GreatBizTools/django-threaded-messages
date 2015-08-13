@@ -10,5 +10,5 @@ class SendingMessages(TestCase):
         self.verde = User.objects.get(id=1)
 
     def send_a_message(self):
-
+        pass
 
