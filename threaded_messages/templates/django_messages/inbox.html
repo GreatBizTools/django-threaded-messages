@@ -16,29 +16,16 @@
     <li class="active"><a href="{% url 'tm:messages_inbox' %}">Inbox</a></li>
 </ul>
 {% messages %}
-<div class="page-header">
+<div>
 
-    <div class="pull-right">
 
-        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success">
-            <i class="icon-plus-sign icon-white"></i> New message
-        </a>
-
-    </div>
-
-    <div class="row">
-        <div class="span3">
-            <h3>{% trans "Inbox"|upper %}</h3>
-        </div>
+    <div class="navWrapper">
+            {% messaging_well_search %}
     </div>
 
 </div>
 <div class="row-fluid">
-    <div class="span3">
-               {% messaging_well_search %}
-    </div>
-
-    <div class="span9 message-table">
+    <div class="message-table">
         {% message_table %}
     </div></div>
 {% endblock %}
@@ -46,8 +33,10 @@
 
 {% block js %}
 {% addtoblock "js" %}
+
 <script>
     $(document).ready(function () {
+        /* Enable batch update options (dropdown button) only when at least one checkbox has been checked*/
         var anyChecked = false;
         var checkboxes = $("input[name='batchupdateids']"),
                 submitButt = $(".bulkaction");
@@ -63,27 +52,39 @@
             }
         });
 
-         $(function () {
+        /* Enable jQuery tooltips */
+        $(function () {
             $(document).tooltip();
         });
-        watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
 
-        $('.option').on('click', function() {
-            filterValue = $(this).val();
-            $('#filter').val(filterValue);
-            console.log("filter set to ", filterValue)
+        /* What was this code doing? TODO: Ask Peter */
+        //watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
+
+
+        /* On click of batch action dropdown option (archive, mark as read) click corresponding hidden submit button.
+        * Convention for dropdown & button IDs is (respectively): delete-li, delete-btn. */
+        var liId;
+        var btnId;
+        $('.message-table').on('click', '.batch-action', function() {
+            liId = $(this).attr('id');
+            btnId  = '#' + liId.split('-')[0] + '-btn';
+            $(btnId).click();
         });
 
+        /* On click of a clickable row, locate corresponding message URL and */
         $('.message-table').on('click', '.clickablerow', function(){
             console.log("Clickable row activated");
             console.log("this: ", this);
             var href = $(this).parent().data("url");
-            console.log("href= " + href);
             if(typeof href != 'undefined') {
                 window.location = href;
-            }else{
-                window.location = $(this).siblings().find('a').attr('href');
             }
+        });
+
+        /* Ensure that active search filter is passed to search page on search */
+        $('.search-filter').on('click', function() {
+            filterValue = $(this).val();
+            $('#filter').val(filterValue);
         });
 
     });
@@ -96,6 +97,9 @@
 {% block css %}
 {% addtoblock "css" %}
 <style>
+    .navWrapper {
+        padding: 0px;
+    }
     input, button {
         max-width:100%;
     }
@@ -114,6 +118,11 @@
     }
     .unclickable:hover {
           cursor: default;
+    }
+
+    .unbutton, .unbutton:hover, .unbutton:active: {
+        border: none;
+        background-color: transparent;
     }
 
 </style>

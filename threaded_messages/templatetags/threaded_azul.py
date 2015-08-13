@@ -43,6 +43,7 @@ def message_table(context, *args, **kwargs):
     return {
         'thread_list': context['thread_list'],
         'header': context['header'],
+        'page_type': context['page_type'],
         'only_read': context['only_read'],
         'only_unread': context['only_unread'],
         'only_unreplied': context['only_unreplied'],
