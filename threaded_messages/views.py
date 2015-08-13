@@ -324,6 +324,7 @@ def batch_update(request, success_url=None):
                     elif request.POST.get("action") == "undelete":
                         participant.deleted_at = None
                     participant.save()
+                    thread.save()
         else:
             raise Http404
 
