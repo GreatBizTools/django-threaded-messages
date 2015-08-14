@@ -17,38 +17,39 @@
     <li class="active"><a href="{% url 'tm:messages_search' %}">View Thread</a></li>
 </ul>
 {% messages %}
-<div class="row-fluid">
+<div>
     <div class="navWrapper">
-               {% messaging_nav_nofilter %}
+        {% messaging_nav_nofilter %}
+        <div class="threadactions pull-left">
+            {% if participant.deleted_at %}
+            <a href="{% url 'tm:messages_undelete' thread.pk %}"><button class="btn btn-default btn-small">
+                <i class="icon icon-inbox"></i>&nbsp;{% trans "Unarchive thread" %}</button></a>
+            {% else %}
+            <a href="{% url 'tm:messages_delete' thread.pk %}"><button class="btn btn-default btn-small">
+                <i class="icon-folder-close"></i>&nbsp;{% trans "Archive thread" %}</button></a>
+            {% endif %}
+            &nbsp;<a href="#reply"><button class="btn btn-default btn-small">
+               <i class="icon-arrow-left"></i>&nbsp;{% trans "Reply to thread" %}</button></a>
+        </div>
     </div>
 
     <div class="message">
-   <div class="thread-info well well-success">
-       <h2>
-        {{ thread.subject }}</h2>
-
-        {% if participant.deleted_at %}
-        <a href="{% url 'tm:messages_undelete' thread.pk %}" class="btn btn-warning pull-right">
-            <i class="icon icon-inbox icon-white"></i>&nbsp;{% trans "Unarchive thread" %}  </a><br />
-        {% else %}
-        <a href="{% url 'tm:messages_delete' thread.pk %}" class="btn btn-warning pull-right">
-            <i class="icon-folder-close icon-white"></i>&nbsp;{% trans "Archive thread" %}  </a><br />
-        {% endif %}
-        <a href="#reply" class="btn btn-success pull-right">
-           <i class="icon-arrow-left icon-white"></i>&nbsp;{% trans "Reply to thread" %}
-        </a><br />
-
-     <div>
-         <!-- Line breaks in this div are commented out to avoid being rendered as whitespace -->
-        {% blocktrans with participant.user.get_absolute_url as sender_url %}
-        A message between <a href="{{ sender_url }}">You</a>{% endblocktrans %}<!--
-        -->{% for participant in participant.others %}<!--
-           -->{% if forloop.last %} and <a href="{{ participant.user.get_absolute_url }}">{{ participant.user.first_name }} {{ participant.user.last_name }}</a><!--
-           -->{% else %}<span>, <a href="{{ participant.user.get_absolute_url }}">{{ participant.user.first_name }} {{ participant.user.last_name }}</a></span><!--
-        -->{% endif %}{% endfor %}
-     </div>
-       </div>
-
+        <div class="thread-info">
+           <table width="100%">
+               <tr><td style="vertical-align: text-top"><h3 class="muted">Subject&nbsp;&nbsp;</h3></td>
+               <td><h3>{{ thread.subject }}</h3></td></tr>
+               <tr><td><h4 class="muted">Participants&nbsp;&nbsp;</h4></td>
+               <td><h4>
+                   <!-- Line breaks in this div are commented out to avoid being rendered as whitespace -->
+            {% blocktrans with participant.user.get_absolute_url as sender_url %}
+            <a href="#">You</a>{% endblocktrans %}<!--
+            -->{% for participant in participant.others %}<!--
+               -->{% if forloop.last %} and <a href="#">{{ participant.user.first_name }} {{ participant.user.last_name }}</a><!--
+               -->{% else %}<span>, <a href="#">{{ participant.user.first_name }} {{ participant.user.last_name }}</a></span><!--
+            -->{% endif %}{% endfor %}
+               </h4></td></tr>
+           </table>
+         </div>
     <div class="message-thread">
       <div class="message-list">
         {% for message_tuple in message_list %}
@@ -74,6 +75,7 @@
       </a>
     </div>
 </div>
+    </div>
 {% endblock %}
 
 {% block js %}
@@ -115,6 +117,14 @@
 
         .thread-info {
             color: #000000;
+        }
+
+        .navWrapper {
+            height: 60px;
+        }
+
+        .thread-info {
+            margin-bottom: 20px;
         }
 
     </style>

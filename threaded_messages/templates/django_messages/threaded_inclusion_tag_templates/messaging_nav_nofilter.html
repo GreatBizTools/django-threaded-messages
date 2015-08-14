@@ -1,64 +1,36 @@
 {% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
 <!-- This template has no read/unread/all filter and is used in the Search, Compose and Thread View pages.-->
-<ul class="nav nav-pills" style="display: inline-block; width: 100%;">
-    <li id="inbox-tab"><a href="{% url 'tm:messages_inbox' %}"><h3 style="display: inline;">INBOX</h3></a></li>
-    <li id="sent-tab"><a href="{% url 'tm:messages_outbox' %}"><h3 style="display: inline;">SENT</h3></a></li>
-    <li id="archive-tab"><a href="{% url 'tm:messages_trash' %}"><h3 style="display: inline;">ARCHIVE</h3></a></li>
-    <li class="active"><a href="#"><h3 style="display: inline;">{{ page_type|upper }}</h3></a></li>
-    <span class="pull-right">
-    <span class="input-append input-prepend" style="margin: 0;">
-        <form action="{% url 'tm:messages_search' %}" method="GET">
-            <input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
-            <span class="btn-group">
-                <button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>
-                <span class="dropdown btn-group">
-                    <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">
-                        <span class="caret" style="border-top-color: #ffffff; border-bottom-color: #ffffff;"></span>
-                    </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="search-filter" name="search" id="all">all</a></li>
-                            <li><a class="search-filter" name="search" id="inbox">inbox</a></li>
-                            <li><a class="search-filter" name="search" id="sent">sent</a></li>
-                            <li><a class="search-filter" name="search" id="archives">archive</a></li>
-                        </ul>
-                </span>
-            </span>
-            <label class="hidden" for="filter">Hidden filter input</label>
-            <input type="text" class="hidden" id="filter" name="search" value="all" />
-        </form>
-    </span>&nbsp;
-        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success btn-small">
-            <i class="icon-plus-sign icon-white"></i> New message</a>
-</span>
+<ul class="nav nav-pills" style="display: inline-block; width: 100%; margin-bottom:0;">
+    <li id="inbox-tab"><a href="{% url 'tm:messages_inbox' %}"><h4 style="display: inline;">INBOX</h4></a></li>
+    <li id="sent-tab"><a href="{% url 'tm:messages_outbox' %}"><h4 style="display: inline;">SENT</h4></a></li>
+    <li id="archive-tab"><a href="{% url 'tm:messages_trash' %}"><h4 style="display: inline;">ARCHIVE</h4></a></li>
+    <li class="active"><a href="#"><h4 style="display: inline;">{{ page_type|upper }}</h4></a></li>
 </ul>
+ <span class="nav-buttons" style="margin-top: 10px; width: 100%;">
+        <span class="pull-right">
+            <span class="input-append input-prepend" style="margin: 0;">
+                <form class="msg-nav-search" action="{% url 'tm:messages_search' %}" method="GET">
+                     <label class="hidden" for="filter"></label><input type="text" class="hidden" id="filter" name="search" value="all" />
+                    <span class="btn-group">
+                        <input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
+                        <button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>
+                        <span class="dropdown btn-group">
+                            <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret" style="border-top-color: #ffffff; border-bottom-color: #ffffff;"></span>
+                            </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="search-filter" name="search" id="all">all</a></li>
+                                    <li><a class="search-filter" name="search" id="inbox">inbox</a></li>
+                                    <li><a class="search-filter" name="search" id="sent">sent</a></li>
+                                    <li><a class="search-filter" name="search" id="archives">archive</a></li>
+                                </ul>
+                        </span>
+                    </span>
+                </form>
+            </span>
+                   <a href="{% url 'tm:messages_compose' %}" class="btn btn-success pull-right">
+            <i class="icon-plus-sign icon-white"></i>&nbsp;New message</a>
+        </span>&nbsp;
+    </span>
 
 
-
-
-<!--<div class="well">-->
- <!--<h5><a href="{% url 'tm:messages_inbox' %}"><i class="icon icon-inbox"></i>&nbsp;Inbox</a></h5>-->
- <!--<h5><a href="{% url 'tm:messages_outbox' %}"><i class="icon-envelope"></i>&nbsp;Sent</a></h5>-->
- <!--<h5><a href="{% url 'tm:messages_trash' %}"><i class="icon-folder-close"></i>&nbsp;Archive</a></h5>-->
-<!--</div>-->
-
-<!--<div class="input-append input-prepend">-->
- <!--<h4>{% if keywords %}{{ keywords }}{% else %}Search messages{% endif %}</h4>-->
- <!--<form action="{% url 'tm:messages_search' %}" method="GET" style="float: left">-->
- <!--<div class="btn-group" data-toggle="buttons-radio" id="search_chooser_btn_group" style="margin-bottom: 4px;">-->
- <!--<input type="button" class-toggle="active" class="search-filter btn btn-small active" name="search" value="all"-->
- <!--style="padding-left: 7px; padding-right: 7px;">all</input>-->
- <!--<input type="button" class-toggle="active" class="search-filter btn btn-small" name="search" value="inbox"-->
- <!--style="padding-left: 7px; padding-right: 7px;">inbox</input>-->
- <!--<input type="button" class-toggle="active" class="search-filter btn btn-small" name="search" value="sent"-->
- <!--style="padding-left: 7px; padding-right: 7px;">sent</input>-->
- <!--<input type="button" class-toggle="active" class="search-filter btn btn-small" name="search" value="archives"-->
- <!--style="padding-left: 7px; padding-right: 7px;">archive</input>-->
- <!--</div>-->
-
- <!--<label class="hidden" for="filter">Hidden filter input</label><input type="text" class="hidden" id="filter" name="search" value="all" />-->
- <!--<div class="pull-left">-->
- <!--<div style="width: 79%;"> <input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />-->
- <!--<button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button></div>-->
- <!--</div>-->
- <!--</form>-->
-<!--</div>-->

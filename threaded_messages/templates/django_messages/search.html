@@ -22,31 +22,8 @@
         {% messaging_nav_nofilter %}
     </div>
 
-    <div class="span9">
+    <div class="messages">
     <!--{_% autopaginate thread_results 10 %}-->
-        <div class="page-header-wrapper span12">
-            <form action="{% url 'tm:messages_search' %}" method="GET" style="float: left">
-         <span class="btn-group" data-toggle="buttons-radio" id="search_chooser_btn_group" style="margin-bottom: 10px;">
-            <input type="button" class-toggle="active" class="option btn" name="search" id="filter_all" value="all"
-                    style="padding-left: 7px; padding-right: 7px;">all</input>
-             <input type="button" class-toggle="active" class="option btn" name="search" id="filter_inbox" value="inbox"
-                    style="padding-left: 7px; padding-right: 7px;">inbox</input>
-            <input type="button" class-toggle="active" class="option btn" name="search" id="filter_sent" value="sent"
-                    style="padding-left: 7px; padding-right: 7px;">sent</input>
-            <input type="button" class-toggle="active" class="option btn" name="search" id="filter_archives" value="archives"
-                    style="padding-left: 7px; padding-right: 7px;">archive</input>
-        </span>
-
-
-                <span>
-                    &nbsp;
-                    <div class="input-append"><input name="qs" class="search-input" type="text" {% if not search_term %}title="{% trans 'Search Messages' %}"{% endif %}
-                           value="{{ search_term }}" />
-                    <button type="submit" class="btn btn-success search-submit"><i class="icon-search icon-white"></i></button></div>
-                    <label class="hidden" for="filter">Hidden filter input</label><input type="text" class="hidden" id="filter" name="search" value="{{ search_filter }}" />
-                </span>
-             </form>
-        </div>
         <div><h3>{% trans "Searching for" %}: {{ search_term }}</h3>
             <!--<div style="float: right">
                   <button type="submit" name="action" value="read" class="btn btn-small">{% trans "mark as read" %}</button>
@@ -219,6 +196,11 @@
     .participant {
         color: #309900;
     }
+
+    .navWrapper {
+            height: 60px;
+    }
+
 </style>
 
 {% endaddtoblock %}
