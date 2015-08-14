@@ -22,8 +22,8 @@
             </ul>
         </span>&nbsp;
     </span>
-    <span class="pull-right">
-    <span class="input-append input-prepend">
+    <span>
+    <span class="input-append input-prepend pull-right">
         <form action="{% url 'tm:messages_search' %}" method="GET">
             <input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
             <span class="btn-group">
@@ -44,7 +44,7 @@
             <input type="text" class="hidden" id="filter" name="search" value="all" />
         </form>
     </span>&nbsp;
-        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success btn-small">
+        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success btn-small pull-right">
             <i class="icon-plus-sign icon-white"></i> New message</a>
 </span>
 </ul>
