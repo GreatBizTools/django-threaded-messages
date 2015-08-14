@@ -4,9 +4,13 @@ from django.core.cache import cache
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import F, Q
 
+from json import dumps, loads
+
 from .listeners import start_listening
 
-from .settings import INBOX_COUNT_CACHE, INBOX_COUNT_CACHE_TIME
+from .settings import INBOX_MESSAGE_CACHE, INBOX_MESSAGE_CACHE_TIME
+
+from azul_shared.utils import ellipsis
 
 start_listening()
 
@@ -53,16 +57,16 @@ class MessageManager(models.Manager):
         if read != None:
             if read == True:
                 # read messages have read_at set to a later value then last message of the thread
-                outbox = inbox.exclude(read_at__isnull=True)\
+                outbox = outbox.exclude(read_at__isnull=True)\
                             .filter(read_at__gt=F("thread__latest_msg__sent_at"))
             else:
                 # unread threads are the ones that either have not been read at all or before the last message arrived
-                outbox = inbox.filter(Q(read_at__isnull=True)
+                outbox = outbox.filter(Q(read_at__isnull=True)
                                     | Q(read_at__lt=F("thread__latest_msg__sent_at")))
 
         if only_unreplied != None:
             if only_unreplied == True:
-                inbox = inbox.filter(Q(replied_at__isnull=True)
+                inbox = outbox.filter(Q(replied_at__isnull=True)
                                     | Q(replied_at__lt=F("thread__latest_msg__sent_at")))
 
         return outbox
@@ -81,16 +85,16 @@ class MessageManager(models.Manager):
         if read != None:
             if read == True:
                 # read messages have read_at set to a later value then last message of the thread
-                trash = inbox.exclude(read_at__isnull=True)\
+                trash = trash.exclude(read_at__isnull=True)\
                             .filter(read_at__gt=F("thread__latest_msg__sent_at"))
             else:
                 # unread threads are the ones that either have not been read at all or before the last message arrived
-                trash = inbox.filter(Q(read_at__isnull=True)
+                trash = trash.filter(Q(read_at__isnull=True)
                                     | Q(read_at__lt=F("thread__latest_msg__sent_at")))
 
         if only_unreplied != None:
             if only_unreplied == True:
-                trash = inbox.filter(Q(replied_at__isnull=True)
+                trash = trash.filter(Q(replied_at__isnull=True)
                                     | Q(replied_at__lt=F("thread__latest_msg__sent_at")))
 
         return trash
@@ -216,10 +220,16 @@ class Participant(models.Model):
         """
         Marks thread as read and refill count cache
         """
-        from .utils import fill_count_cache, now
+        from .utils import fill_message_cache, now
         self.read_at = now()
         self.save()
-        fill_count_cache(self.user)
+        fill_message_cache(self.user)
+
+    def unread_thread(self):
+        from .utils import fill_message_cache
+        self.read_at = None
+        self.save()
+        fill_message_cache(self.user)
 
     def __unicode__(self):
         return "%s - %s" % (str(self.user), self.thread.subject)
@@ -229,22 +239,35 @@ class Participant(models.Model):
         verbose_name = _("participant")
         verbose_name_plural = _("participants")
 
-
-def cached_inbox_count_for(user):
-    """
-    returns the number of unread messages for the given user but does not
-    mark them seen
-    """
-    count = cache.get(INBOX_COUNT_CACHE % user.pk)
-    if count:
-        return count
-    else:
-        count = inbox_count_for(user)
-        cache.set(INBOX_COUNT_CACHE % user.pk,
-            count,
-            INBOX_COUNT_CACHE_TIME)
-        return count
-
-
 def inbox_count_for(user):
     return Participant.objects.inbox_for(user, read=False).count()
+
+
+def inbox_messages_for(user):
+    count = inbox_count_for(user)
+    unread_messages = [{'subject': ellipsis(p.thread.subject, 10), 'sender': p.thread.latest_msg.sender.full_name(),'thread_id': p.thread.id, 'message_count':count} for p in
+                           Participant.objects.inbox_for(user,read=False)[0:3]]#having the indexing on the Model object causes the ORM to issue a LIMIT sql query
+
+    unread_messages.reverse()
+    return unread_messages
+
+
+def cached_inbox_messages_for(user):
+    """
+    The messages displayed in the navbar dropdown but cached if available
+    :param user: a user object
+    :return:messages: a json string with 'subject', 'sender', 'thread_id', and 'count' keys
+    """
+    messages = cache.get(INBOX_MESSAGE_CACHE % user.pk)
+    if messages:
+        return messages
+    else:
+        messages = inbox_messages_for(user)
+        cache.set(INBOX_MESSAGE_CACHE % user.pk, dumps(messages), INBOX_MESSAGE_CACHE_TIME)
+        return messages
+
+
+
+
+
+

@@ -30,10 +30,11 @@ except ImportError:
     now = datetime.datetime.now
 
 
-def fill_count_cache(user):
-    from .models import inbox_count_for
-    cache.set(tm_settings.INBOX_COUNT_CACHE % user.pk,
-              inbox_count_for(user), tm_settings.INBOX_COUNT_CACHE_TIME)
+
+def fill_message_cache(user):
+    from .models import inbox_messages_for
+    cache.set(tm_settings.INBOX_MESSAGE_CACHE % user.pk, inbox_messages_for(user), tm_settings.INBOX_MESSAGE_CACHE_TIME)
+
 
 
 def open_message_thread(recipients, subject, template,
@@ -147,4 +148,4 @@ def strip_mail(body):
 def invalidate_count_cache(sender, message, recipients=None, **kwargs):
     for thread in message.thread.select_related().all():
         for participant in thread.participants.exclude(user=message.sender):
-            fill_count_cache(participant.user)
+            fill_message_cache(participant.user)
