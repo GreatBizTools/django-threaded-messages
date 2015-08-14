@@ -27,17 +27,18 @@
                         <button id="delete-btn" type="submit" name="action" value="delete" class="hidden"></button>
                         <button id="undelete-btn" type="submit" name="action" value="undelete" class="hidden"></button>
                     </th>
-                    <th class="sender span5"><h5>{{header}}</h5></th>
-                    <th class="subject span6"><h5>{% trans "Subject" %}</h5></th>
+                    <th class="sender span2"><h5>{{header}}</h5></th>
+                    <th class="span2"><h5>Date</h5></th>
+                    <th class="subject span7"><h5>{% trans "Subject" %}</h5></th>
                 </tr>
             </thead>
             <tbody>
             {% for message in thread_list %}
               <tr class="{% if message.new %}success{% endif %}" data-url="{{ message.thread.get_absolute_url }}">
-                  <td class="checkbox span1">
+                  <td class="checkbox">
                     <input name="batchupdateids" type="checkbox" value="{{message.thread.pk}}" />
                   </td>
-                  <td class="clickablerow sender span5">
+                  <td class="clickablerow sender">
                       {% if header == "Sender" %}
                         {% with message.thread.latest_msg.sender as sender %}
                             <span class="participant" title="{{ message.thread.latest_msg.sender }}">{{ sender.first_name }} {{ sender.last_name }}</span>&nbsp; &nbsp;
@@ -57,10 +58,9 @@
                             {% endif %}
                         {% endfor %}
                       {% endif %}
-                      <span class="date"><em>{{ message.thread.latest_msg.sent_at|pretty_date }}</em></span>
                   </td>
-
-                  <td class="clickablerow subject span6">
+                    <td><span class="date"><em>{{ message.thread.latest_msg.sent_at|pretty_date }}</em></span></td>
+                  <td class="clickablerow subject">
                     <a href="{{ message.thread.get_absolute_url }}">{% if message.new %}
                         <strong>{% endif %}{{ message.thread.subject|truncchar:30|safe }}{% if message.new %}</strong>{% endif %}</a>
                     <span class="message-tease muted">{{ message.thread.latest_msg.body|truncatewords:6|clean_with_bleach|safe }}</span>

@@ -342,11 +342,11 @@ def batch_update(request, success_url=None):
                 if participant:
                     participant = participant[0]
                     if request.POST.get("action") == "read":
-                        participant.read_at = now()
+                        participant.read_thread()
                     elif request.POST.get("action") == "delete":
                         participant.deleted_at = now()
                     elif request.POST.get("action") == "unread":
-                        participant.read_at = None
+                        participant.unread_thread()
                     elif request.POST.get("action") == "undelete":
                         participant.deleted_at = None
                     participant.save()
@@ -412,10 +412,6 @@ def recipient_search(request):
 
 def update_navbarView(request):
     if request.method == 'GET':
-        unread_messages = [(ellipsis(p.thread.subject, 10), p.thread.latest_msg.sender.full_name(), p.thread.id) for p in
-                           Participant.objects.inbox_for(request.user,read=False)]
-        unread_message_count = len(unread_messages)
-        if len(unread_messages) > 3:
-            unread_messages = unread_messages[0:3]
-        unread_messages.reverse()
-        return HttpResponse(json.dumps({'count': unread_message_count, 'unread_messages': unread_messages}), content_type='application/json')
+        unread_messages = cached_inbox_messages_for(request.user)
+
+        return HttpResponse(dumps(unread_messages), content_type='application/json')
