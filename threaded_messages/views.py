@@ -102,6 +102,7 @@ def search(request, template_name="django_messages/search.html"):
         "thread_results": paginated_list,
         "search_term": search_term,
         "search_filter": search_filter,
+        'page_type': 'search',
         }, context_instance=RequestContext(request))
 
 
@@ -143,7 +144,7 @@ def outbox(request, template_name='django_messages/outbox.html'):
         'only_read': only_read,
         'only_unread': only_unread,
         'only_unreplied': only_unreplied,
-        'page_type': 'outbox',
+        'page_type': 'sent',
     }, context_instance=RequestContext(request))
 
 
@@ -224,6 +225,7 @@ def compose(request, recipient=None, form_class=ComposeForm,
     return render_to_response(template_name, {
         'form': form,
         'recipients': recipients,
+        'page_type': 'new message',
     }, context_instance=RequestContext(request))
 
 
@@ -321,6 +323,7 @@ def view(request, thread_id, form_class=NewReplyForm,
         'message_list': message_list,
         'form': form,
         'participant': participant,
+        'page_type': 'view thread',
     }, context_instance=RequestContext(request))
 
 

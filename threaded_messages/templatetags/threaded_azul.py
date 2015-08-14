@@ -34,9 +34,21 @@ def html_cleaner(html):
 def messaging_well(*args, **kwargs):
     return None
 
-@register.inclusion_tag('django_messages/threaded_inclusion_tag_templates/messaging_well_search.html', takes_context=False)
-def messaging_well_search(*args, **kwargs):
-    return None
+@register.inclusion_tag('django_messages/threaded_inclusion_tag_templates/messaging_nav_readfilter.html', takes_context=True)
+def messaging_nav_readfilter(context, *args, **kwargs):
+    return {
+        'page_type': context['page_type'],
+        'only_read': context['only_read'],
+        'only_unread': context['only_unread'],
+        'only_unreplied': context['only_unreplied'],
+    }
+
+@register.inclusion_tag('django_messages/threaded_inclusion_tag_templates/messaging_nav_nofilter.html', takes_context=True)
+def messaging_nav_nofilter(context, *args, **kwargs):
+    return {
+        'page_type': context['page_type'],
+    }
+
 
 @register.inclusion_tag('django_messages/threaded_inclusion_tag_templates/message_table.html', takes_context=True)
 def message_table(context, *args, **kwargs):

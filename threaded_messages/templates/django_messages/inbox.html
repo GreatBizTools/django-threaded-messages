@@ -17,8 +17,8 @@
 </ul>
 {% messages %}
 <div>
-    <div class="navWrapper">
-            {% messaging_well_search %}
+    <div>
+            {% messaging_nav_readfilter %}
     </div>
 </div>
 <div class="message-table row-fluid">
@@ -32,6 +32,9 @@
 
 <script>
     $(document).ready(function () {
+        /* set appropriate active tab */
+        $('#inbox-tab').addClass('active');
+
         /* Enable batch update options (dropdown button) only when at least one checkbox has been checked*/
         var anyChecked = false;
         var checkboxes = $("input[name='batchupdateids']"),
@@ -78,9 +81,12 @@
         });
 
         /* Ensure that active search filter is passed to search page on search */
+        $('#qs').attr('placeholder', "Search messages");
         $('.search-filter').on('click', function() {
-            filterValue = $(this).val();
+            filterValue = $(this).attr('id');
             $('#filter').val(filterValue);
+            $('#qs').attr('placeholder', "Search " + filterValue);
+            console.log("filtervalue set to " + filterValue);
         });
 
     });
@@ -93,9 +99,14 @@
 {% block css %}
 {% addtoblock "css" %}
 <style>
+    .form {
+        margin: 0;
+    }
+
     .navWrapper {
         height: 60px;
     }
+
     input, button {
         max-width:100%;
     }
@@ -114,11 +125,6 @@
     }
     .unclickable:hover {
           cursor: default;
-    }
-
-    .unbutton, .unbutton:hover, .unbutton:active: {
-        border: none;
-        background-color: transparent;
     }
 
 </style>

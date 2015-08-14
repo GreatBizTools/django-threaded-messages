@@ -16,29 +16,12 @@
     <li class="active"><a href="{% url 'tm:messages_trash' %}">Archive</a></li>
 </ul>
 {% messages %}
-<div class="page-header">
-
-    <div class="pull-right">
-
-        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success">
-            <i class="icon-plus-sign icon-white"></i> New message
-        </a>
-
-    </div>
-
-    <div class="row">
-        <div class="span3">
-            <h3>{% trans "Archive"|upper %}</h3>
-        </div>
-    </div>
-
-</div>
 <div class="row-fluid">
-    <div class="span3">
-               {% messaging_well_search %}
+    <div class="navWrapper">
+        {% messaging_nav_readfilter %}
     </div>
 
-    <div class="span9 message-table">
+    <div class="message-table">
          {% message_table %}
     </div>
 {% endblock %}
@@ -48,6 +31,9 @@
 {% addtoblock "js" %}
 <script>
     $(document).ready(function () {
+        /* Make current nav tab active */
+        $('#archive-tab').addClass('active');
+
         /* Enable batch update options (dropdown button) only when at least one checkbox has been checked*/
         var anyChecked = false;
         var checkboxes = $("input[name='batchupdateids']"),
@@ -94,11 +80,13 @@
         });
 
         /* Ensure that active search filter is passed to search page on search */
+        $('#qs').attr('placeholder', "Search messages");
         $('.search-filter').on('click', function() {
-            filterValue = $(this).val();
+            filterValue = $(this).attr('id');
             $('#filter').val(filterValue);
+            $('#qs').attr('placeholder', "Search " + filterValue);
+            console.log("filtervalue set to " + filterValue);
         });
-
     });
 
 
@@ -109,6 +97,10 @@
 {% block css %}
 {% addtoblock "css" %}
 <style>
+    .navWrapper {
+        height: 60px;
+    }
+
     input, button {
         max-width:100%;
     }

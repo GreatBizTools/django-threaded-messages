@@ -1,12 +1,10 @@
 {% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
+<!-- This template has an read/unread/all filter and is used in the Inbox, Sent, and Archive pages.-->
 
-<ul class="nav nav-tabs" style="display: inline-block; width: 100%;">
+<ul class="nav nav-pills" style="width: 100%; margin-bottom: 0;">
     <li id="inbox-tab"><a href="{% url 'tm:messages_inbox' %}"><h3 style="display: inline;">INBOX</h3></a></li>
-    <li id="sent-tab"><a href="{% url 'tm:messages_outbox' %}"><h3 style="display: inline;">OUTBOX</h3></a></li>
+    <li id="sent-tab"><a href="{% url 'tm:messages_outbox' %}"><h3 style="display: inline;">SENT</h3></a></li>
     <li id="archive-tab"><a href="{% url 'tm:messages_trash' %}"><h3 style="display: inline;">ARCHIVE</h3></a></li>
-    {% if page_type == 'search' or page_type == 'message view' or page_type == 'new message' %}
-    <li class="active"><a href="#"><h3 style="display: inline;">{{ page_type|upper }}</h3></a></li>
-    {% endif %}
     <span style="margin-top: 13px; width=100%">
         <span class="btn-group dropdown pull-left">
             <button class="btn btn-small btn-default dropdown-toggle" data-toggle="dropdown">Show<strong>
@@ -23,7 +21,7 @@
         </span>&nbsp;
     </span>
     <span class="pull-right">
-    <span class="input-append input-prepend">
+    <span class="input-append input-prepend" style="margin: 0;">
         <form action="{% url 'tm:messages_search' %}" method="GET">
             <input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
             <span class="btn-group">
