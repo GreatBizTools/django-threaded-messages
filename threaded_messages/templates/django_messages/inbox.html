@@ -19,11 +19,12 @@
 <div>
     <div>
             {% messaging_nav_readfilter %}
-    </div>
+    </div>  <div style="clear: both"></div>
 </div>
 <div class="message-table row-fluid">
     {% message_table %}
-</div></div>
+</div>
+</div>
 {% endblock %}
 
 
@@ -83,7 +84,7 @@
         /* Ensure that active search filter is passed to search page on search */
         $('#qs').attr('placeholder', "Search messages");
         $('.search-filter').on('click', function() {
-            filterValue = $(this).attr('id');
+            var filterValue = $(this).attr('id');
             $('#filter').val(filterValue);
             $('#qs').attr('placeholder', "Search " + filterValue);
             console.log("filtervalue set to " + filterValue);

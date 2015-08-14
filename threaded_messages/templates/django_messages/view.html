@@ -22,23 +22,23 @@
         {% messaging_nav_nofilter %}
         <div class="threadactions pull-left">
             {% if participant.deleted_at %}
-            <a href="{% url 'tm:messages_undelete' thread.pk %}"><button class="btn btn-default btn-small">
+            <a href="{% url 'tm:messages_undelete' thread.pk %}"><button class="btn btn-default">
                 <i class="icon icon-inbox"></i>&nbsp;{% trans "Unarchive thread" %}</button></a>
             {% else %}
-            <a href="{% url 'tm:messages_delete' thread.pk %}"><button class="btn btn-default btn-small">
+            <a href="{% url 'tm:messages_delete' thread.pk %}"><button class="btn btn-default">
                 <i class="icon-folder-close"></i>&nbsp;{% trans "Archive thread" %}</button></a>
             {% endif %}
-            &nbsp;<a href="#reply"><button class="btn btn-default btn-small">
+            &nbsp;<a href="#reply"><button class="btn btn-default">
                <i class="icon-arrow-left"></i>&nbsp;{% trans "Reply to thread" %}</button></a>
         </div>
-    </div>
+    </div><div style="clear: both"></div>
 
-    <div class="message">
+    <div class="message" style="margin-top: 10px;">
         <div class="thread-info">
            <table width="100%">
-               <tr><td style="vertical-align: text-top"><h3 class="muted">Subject&nbsp;&nbsp;</h3></td>
+               <tr><td width="110" style="vertical-align: text-top"><h3 class="muted">Subject&nbsp;&nbsp;</h3></td>
                <td><h3>{{ thread.subject }}</h3></td></tr>
-               <tr><td><h4 class="muted">Participants&nbsp;&nbsp;</h4></td>
+               <tr><td width="110"><h4 class="muted">Participants&nbsp;&nbsp;</h4></td>
                <td><h4>
                    <!-- Line breaks in this div are commented out to avoid being rendered as whitespace -->
             {% blocktrans with participant.user.get_absolute_url as sender_url %}

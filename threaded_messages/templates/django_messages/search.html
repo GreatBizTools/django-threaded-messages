@@ -17,19 +17,17 @@
     <li class="active"><a href="{% url 'tm:messages_search' %}">Search</a></li>
 </ul>
 {% messages %}
+<div id="existing-filter" class="hidden" data-filter="{{ search_filter }}"></div>
 <div class="row-fluid">
     <div class="navWrapper">
         {% messaging_nav_nofilter %}
-    </div>
+        <div class="pull-left"><h3 style="margin-top: 4px;">{% trans "Searching for" %}: &ldquo;{{ search_term }}&rdquo; in {{ search_filter }}</h3>
+        </div>
+    </div><div style="clear: both"></div>
 
     <div class="messages">
     <!--{_% autopaginate thread_results 10 %}-->
-        <div><h3>{% trans "Searching for" %}: {{ search_term }}</h3>
-            <!--<div style="float: right">
-                  <button type="submit" name="action" value="read" class="btn btn-small">{% trans "mark as read" %}</button>
-                  <button type="submit" name="action" value="delete" class="btn btn-small">{% trans "archive messages" %}</button>
-              </div>-->
-        </div>
+
         {% csrf_token %}
 
         <table class="inbox table table-striped table-hover message-table">
@@ -109,16 +107,23 @@
 {% addtoblock "js" %}
 <script>
     $(document).ready(function () {
-        existingSearchFilter = $('#filter').val();
+       /* Identify any existing search filter and display accordingly */
+        existingSearchFilter = $('#existing-filter').data('filter');
         console.log("existingSearchFilter: ", existingSearchFilter);
-        $('#filter_' + existingSearchFilter).addClass('active');
+        //$('#filter_' + existingSearchFilter).addClass('active');
+        $('#qs').attr('placeholder', "Search " + existingSearchFilter);
+        $('#filter').val(existingSearchFilter);
 
-        $('.option').on('click', function() {
-            filterValue = $(this).val();
+        /* Ensure that active search filter is passed to search page on search */
+        $('.search-filter').on('click', function() {
+            var filterValue = $(this).attr('id');
             $('#filter').val(filterValue);
-            console.log("filter set to ", filterValue)
+            $('#qs').attr('placeholder', "Search " + filterValue);
+            console.log("filtervalue set to " + filterValue);
         });
-        watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
+
+
+        //watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
 
         $('.message-table').on('click', '.clickablerow', function(){
             console.log("Clickable row activated");

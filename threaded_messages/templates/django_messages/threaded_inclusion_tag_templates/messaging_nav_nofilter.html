@@ -10,12 +10,16 @@
         <span class="pull-right">
             <span class="input-append input-prepend" style="margin: 0;">
                 <form class="msg-nav-search" action="{% url 'tm:messages_search' %}" method="GET">
-                     <label class="hidden" for="filter"></label><input type="text" class="hidden" id="filter" name="search" value="all" />
+                     <label class="hidden" for="filter"></label><input type="text" class="hidden" id="filter"
+                                                                       name="search" value="all" />
                     <span class="btn-group">
-                        <input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
-                        <button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>
+                        <input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs"
+                               class="message-search forum-search" />
+                        <button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success">
+                            <i class="icon-search icon-white"></i></button>
                         <span class="dropdown btn-group">
-                            <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                            <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+                                    style="padding-left: 4px; padding-right: 4px;">
                                 <span class="caret" style="border-top-color: #ffffff; border-bottom-color: #ffffff;"></span>
                             </button>
                                 <ul class="dropdown-menu">
