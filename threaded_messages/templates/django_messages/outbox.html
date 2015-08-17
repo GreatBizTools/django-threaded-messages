@@ -35,6 +35,41 @@
         /* Make current nav tab active */
         $('#sent-tab').addClass('active');
 
+        /* Enable sorting headers */
+        var readFilter;
+        var sort_href;
+
+        if ($('#message_table-table').data("read") == 1) {
+            readFilter = "?only_read=1&";
+        } else if ($('#message_table-table').data("unread") == 1) {
+            readFilter = "?only_unread=1&";
+        } else {
+            readFilter = "?"
+        }
+
+        $('#sort-sent').on('click', function() {
+            console.log("this data sort = " + $(this).data('sort'));
+            if ($(this).data('sort') == 'sent_descending') {
+                sort_href = "{% url 'tm:messages_outbox' %}" + readFilter + "sort_sent=1";
+            } else {
+                sort_href = "{% url 'tm:messages_outbox' %}" + readFilter
+            }
+
+            window.location = sort_href;
+        });
+
+        $('#sort-subject').on('click', function() {
+            console.log("this data sort = " + $(this).data('sort'));
+            if ($(this).data('sort') == 'subject_descending') {
+                sort_href = "{% url 'tm:messages_outbox' %}" + readFilter + "sort_subject=1";
+            } else {
+                sort_href = "{% url 'tm:messages_outbox' %}" + readFilter + "sort_subject=2";
+            }
+
+            window.location = sort_href;
+        });
+
+
         /* Enable batch update options (dropdown button) only when at least one checkbox has been checked */
         var anyChecked = false;
         var checkboxes = $("input[name='batchupdateids']"),
@@ -99,6 +134,10 @@
 {% block css %}
 {% addtoblock "css" %}
 <style>
+    h5 a {
+        color: #000000;
+    }
+
     .navWrapper {
         height: 60px;
     }

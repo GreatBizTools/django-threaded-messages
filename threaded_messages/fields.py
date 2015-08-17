@@ -28,31 +28,31 @@ class CommaSeparatedUserField(forms.Field):
         self._recipient_filter = recipient_filter
         super(CommaSeparatedUserField, self).__init__(*args, **kwargs)
 
-    def clean(self, value):
-        super(CommaSeparatedUserField, self).clean(value)
-        if not value:
-            return ''
-        if isinstance(value, (list, tuple)):
-            return value
-
-        #test if last char is a seperator, some tokenizers are not that smart
-        if value[-1] == ',':
-            value = value[0:-1]
-
-        names = set(value.split(','))
-        names_set = set([name.strip() for name in names if name.strip()])
-        users = list(User.objects.filter(username__in=names_set))
-        unknown_names = names_set ^ set([user.username for user in users])
-
-        recipient_filter = self._recipient_filter
-        invalid_users = []
-        if recipient_filter is not None:
-            for r in users:
-                if recipient_filter(r) is False:
-                    users.remove(r)
-                    invalid_users.append(r.username)
-
-        if unknown_names or invalid_users:
-            raise forms.ValidationError(_(u"The following usernames are incorrect: %(users)s") % {'users': ', '.join(list(unknown_names)+invalid_users)})
-
-        return users
+    # def clean(self, value):
+    #     super(CommaSeparatedUserField, self).clean(value)
+    #     if not value:
+    #         return ''
+    #     if isinstance(value, (list, tuple)):
+    #         return value
+    #
+    #     #test if last char is a seperator, some tokenizers are not that smart
+    #     if value[-1] == ',':
+    #         value = value[0:-1]
+    #
+    #     names = set(value.split(','))
+    #     names_set = set([name.strip() for name in names if name.strip()])
+    #     users = list(User.objects.filter(username__in=names_set))
+    #     unknown_names = names_set ^ set([user.username for user in users])
+    #
+    #     recipient_filter = self._recipient_filter
+    #     invalid_users = []
+    #     if recipient_filter is not None:
+    #         for r in users:
+    #             if recipient_filter(r) is False:
+    #                 users.remove(r)
+    #                 invalid_users.append(r.username)
+    #
+    #     if unknown_names or invalid_users:
+    #         raise forms.ValidationError(_(u"The following usernames are incorrect: %(users)s") % {'users': ', '.join(list(unknown_names)+invalid_users)})
+    #
+    #     return users

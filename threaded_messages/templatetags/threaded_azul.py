@@ -41,6 +41,7 @@ def messaging_nav_readfilter(context, *args, **kwargs):
         'only_read': context['only_read'],
         'only_unread': context['only_unread'],
         'only_unreplied': context['only_unreplied'],
+        'django_url': context['django_url'],
     }
 
 @register.inclusion_tag('django_messages/threaded_inclusion_tag_templates/messaging_nav_nofilter.html', takes_context=True)
@@ -59,4 +60,5 @@ def message_table(context, *args, **kwargs):
         'only_read': context['only_read'],
         'only_unread': context['only_unread'],
         'only_unreplied': context['only_unreplied'],
+        'active_sort': context['active_sort'],
     }

@@ -33,6 +33,7 @@ def inbox(request, template_name='django_messages/inbox.html'):
     Optional Arguments:
         ``template_name``: name of the template to use.
     """
+    django_url = reverse("tm:messages_inbox")
     only_read = request.GET.get("only_read", False)
     only_unread = request.GET.get("only_unread", False)
     only_unreplied = request.GET.get("only_unreplied", None)
@@ -47,6 +48,20 @@ def inbox(request, template_name='django_messages/inbox.html'):
         only_unreplied = True
 
     thread_list = Participant.objects.inbox_for(request.user, read=read, only_unreplied=only_unreplied)
+    active_sort = 'sent_descending'
+
+    sort_sent = int(request.GET.get("sort_sent", False))
+    sort_subject = int(request.GET.get("sort_subject", False))
+
+    if sort_sent == 1:
+        thread_list = thread_list.order_by("thread__latest_msg__sent_at")
+        active_sort = 'sent_ascending'
+    elif sort_subject == 1:
+        thread_list = thread_list.order_by("thread__subject")
+        active_sort = 'subject_ascending'
+    elif sort_subject == 2:
+        thread_list = thread_list.order_by("-thread__subject")
+        active_sort = 'subject_descending'
 
     paginated_messages = Paginator(thread_list, 10)
 
@@ -66,6 +81,8 @@ def inbox(request, template_name='django_messages/inbox.html'):
         'only_unreplied': only_unreplied,
         'header': 'Sender',
         'page_type': 'inbox',
+        'active_sort': active_sort,
+        'django_url': django_url,
     }, context_instance=RequestContext(request))
 
 
@@ -113,7 +130,7 @@ def outbox(request, template_name='django_messages/outbox.html'):
     Optional arguments:
         ``template_name``: name of the template to use.
     """
-
+    django_url = reverse("tm:messages_outbox")
     only_read = request.GET.get("only_read", False)
     only_unread = request.GET.get("only_unread", False)
     only_unreplied = request.GET.get("only_unreplied", None)
@@ -128,6 +145,20 @@ def outbox(request, template_name='django_messages/outbox.html'):
         only_unreplied = True
 
     thread_list = Participant.objects.outbox_for(request.user, read=read, only_unreplied=only_unreplied)
+    active_sort = 'sent_descending'
+
+    sort_sent = int(request.GET.get("sort_sent", False))
+    sort_subject = int(request.GET.get("sort_subject", False))
+
+    if sort_sent == 1:
+        thread_list = thread_list.order_by("thread__latest_msg__sent_at")
+        active_sort = 'sent_ascending'
+    elif sort_subject == 1:
+        thread_list = thread_list.order_by("thread__subject")
+        active_sort = 'subject_ascending'
+    elif sort_subject == 2:
+        thread_list = thread_list.order_by("-thread__subject")
+        active_sort = 'subject_descending'
 
     paginated_messages = Paginator(thread_list, 10)
     page = request.GET.get('page', 1)
@@ -145,6 +176,8 @@ def outbox(request, template_name='django_messages/outbox.html'):
         'only_unread': only_unread,
         'only_unreplied': only_unreplied,
         'page_type': 'sent',
+        'active_sort': active_sort,
+        'django_url': django_url,
     }, context_instance=RequestContext(request))
 
 
@@ -157,6 +190,7 @@ def trash(request, template_name='django_messages/trash.html'):
     Hint: A Cron-Job could periodically clean up old messages, which are deleted
     by sender and recipient.
     """
+    django_url = reverse("tm:messages_trash")
     only_read = request.GET.get("only_read", False)
     only_unread = request.GET.get("only_unread", False)
     only_unreplied = request.GET.get("only_unreplied", None)
@@ -171,6 +205,20 @@ def trash(request, template_name='django_messages/trash.html'):
         only_unreplied = True
 
     thread_list = Participant.objects.trash_for(request.user, read=read, only_unreplied=only_unreplied)
+    active_sort = 'sent_descending'
+
+    sort_sent = int(request.GET.get("sort_sent", False))
+    sort_subject = int(request.GET.get("sort_subject", False))
+
+    if sort_sent == 1:
+        thread_list = thread_list.order_by("thread__latest_msg__sent_at")
+        active_sort = 'sent_ascending'
+    elif sort_subject == 1:
+        thread_list = thread_list.order_by("thread__subject")
+        active_sort = 'subject_ascending'
+    elif sort_subject == 2:
+        thread_list = thread_list.order_by("-thread__subject")
+        active_sort = 'subject_descending'
 
     paginated_messages = Paginator(thread_list, 10)
     page = request.GET.get('page', 1)
@@ -188,6 +236,8 @@ def trash(request, template_name='django_messages/trash.html'):
         'only_unreplied': only_unreplied,
         'header': 'Participants',
         'page_type': 'archive',
+        'active_sort': active_sort,
+        'django_url': django_url,
     }, context_instance=RequestContext(request))
 
 

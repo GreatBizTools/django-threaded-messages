@@ -1,10 +1,10 @@
 {% load i18n avatar_tags pagination_tags truncchar_tag %}
 {% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
-
     <form id="batch-update" action="{% url 'tm:messages_batch_update' %}" method="post">
         {% csrf_token %}
-        <table class="inbox table table-striped table-hover">
+        <table id="message_table-table" class="inbox table table-striped table-hover" data-read="{{ only_read }}" data-unread="{{ only_unread }}">
             <thead>
+
                 <tr class="message message-header">
                     <!--Row table headers: (1)Bulk action dropdown, (2)Participants/Sender, (3)Date/Time, (4)Subject -->
                     <th class="span1" style="padding-left: 0;">
@@ -28,8 +28,21 @@
                         <button id="undelete-btn" type="submit" name="action" value="undelete" class="hidden"></button>
                     </th>
                     <th class="sender span2"><h5>{{header}}</h5></th>
-                    <th class="span2"><h5>Date</h5></th>
-                    <th class="subject span7"><h5>{% trans "Subject" %}</h5></th>
+                    <th class="span2">
+                        <h5><a href="#" id="sort-sent" data-sort="{{ active_sort }}">Date</a>
+                        {% if active_sort == 'sent_ascending' %}
+                        <i class="icon-arrow-up"></i>
+                        {% elif active_sort == 'sent_descending' %}
+                        <i class="icon-arrow-down"></i>
+                        {% endif %}</h5></th>
+
+                    <th class="subject span7">
+                        <h5><a href="#"  id="sort-subject" data-sort="{{ active_sort }}">Subject</a>
+                        {% if active_sort == 'subject_ascending' %}
+                        <i class="icon-arrow-up"></i>
+                        {% elif active_sort == 'subject_descending' %}
+                        <i class="icon-arrow-down"></i>
+                        {% endif %}</h5></th>
                 </tr>
             </thead>
             <tbody>
@@ -43,18 +56,17 @@
                         {% with message.thread.latest_msg.sender as sender %}
                             <span class="participant" title="{{ message.thread.latest_msg.sender }}">{{ sender.first_name }} {{ sender.last_name }}</span>&nbsp; &nbsp;
                         {% endwith %}
+
                       {% else %}
                         {% if message.others|length < 1 %}
                           <span class="participant" title="{{ message.thread.creator.full_name }}">{{ message.thread.creator.first_name }}</span>
                         {% endif %}
+
                         {% for p in message.others %}
-                            {% if forloop.counter < 3 %}
-                              <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
-                            {% elif forloop.last %}
-                              <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>
-                                  {% if forloop.counter != 3 %}
+                            {% if forloop.counter < 4 %}
+                              <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>{% if forloop.last or forloop.counter == 3 %} {% else %}, {% endif %}
+                            {% elif forloop.counter == 4 %}
                                   <span class="participant others">+ {{ forloop.counter|add:"-3" }} others</span>
-                                  {% endif %}
                             {% endif %}
                         {% endfor %}
                       {% endif %}
@@ -66,7 +78,6 @@
                     <span class="message-tease muted">{{ message.thread.latest_msg.body|truncatewords:6|clean_with_bleach|safe }}</span>
                     <span class="pull-right label">{{ message.thread.all_msgs.count }}</span>
                   </td>
-
                   {% if message.replied %}{% endif %}
                   {% if message.new %}{% endif %}
               </tr>

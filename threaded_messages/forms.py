@@ -1,6 +1,7 @@
 import settings as sendgrid_settings
 from django import forms
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import strip_tags
 from ckeditor.widgets import CKEditorWidget
@@ -21,7 +22,6 @@ notification = None
 if "pinax.notifications" in settings.INSTALLED_APPS:
     from pinax.notifications import models as notification
     print "notification set in forms.py:", notification
-
 
 class ComposeForm(forms.Form):
     """

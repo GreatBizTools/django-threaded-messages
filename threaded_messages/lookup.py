@@ -53,10 +53,24 @@ class UserLookup(LookupChannel):
             else:
                 return obj.username
 
-
     def check_auth(self,request):
         if not request.user.is_authenticated():
             raise PermissionDenied
+
+    def get_objects(self, ids):
+        objects = []
+        for id in ids:
+            id_list = id.split("_")
+            if u"user" == id_list[0]:
+                u = User.objects.get(pk=id_list[1])
+                u.id = id
+                objects.append(u)
+            else:
+                c = Classroom.objects.get(pk=id_list[1])
+                c.id = id
+                objects.append(c)
+
+        return objects
 
 AJAX_LOOKUP_CHANNELS = {
     'all' : ('threaded_messages.lookup', 'UserLookup'),

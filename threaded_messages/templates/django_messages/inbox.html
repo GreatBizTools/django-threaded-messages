@@ -24,7 +24,6 @@
 <div class="message-table row-fluid">
     {% message_table %}
 </div>
-</div>
 {% endblock %}
 
 
@@ -35,6 +34,40 @@
     $(document).ready(function () {
         /* set appropriate active tab */
         $('#inbox-tab').addClass('active');
+
+        /* Enable sorting headers */
+        var readFilter;
+        var sort_href;
+
+        if ($('#message_table-table').data("read") == 1) {
+            readFilter = "?only_read=1&";
+        } else if ($('#message_table-table').data("unread") == 1) {
+            readFilter = "?only_unread=1&";
+        } else {
+            readFilter = "?"
+        }
+
+        $('#sort-sent').on('click', function() {
+            console.log("this data sort = " + $(this).data('sort'));
+            if ($(this).data('sort') == 'sent_descending') {
+                sort_href = "{% url 'tm:messages_inbox' %}" + readFilter + "sort_sent=1";
+            } else {
+                sort_href = "{% url 'tm:messages_inbox' %}" + readFilter
+            }
+
+            window.location = sort_href;
+        });
+
+        $('#sort-subject').on('click', function() {
+            console.log("this data sort = " + $(this).data('sort'));
+            if ($(this).data('sort') == 'subject_descending') {
+                sort_href = "{% url 'tm:messages_inbox' %}" + readFilter + "sort_subject=1";
+            } else {
+                sort_href = "{% url 'tm:messages_inbox' %}" + readFilter + "sort_subject=2";
+            }
+
+            window.location = sort_href;
+        });
 
         /* Enable batch update options (dropdown button) only when at least one checkbox has been checked*/
         var anyChecked = false;
@@ -73,8 +106,6 @@
 
         /* On click of a clickable row, locate corresponding message URL and */
         $('.message-table').on('click', '.clickablerow', function(){
-            console.log("Clickable row activated");
-            console.log("this: ", this);
             var href = $(this).parent().data("url");
             if(typeof href != 'undefined') {
                 window.location = href;
@@ -87,6 +118,7 @@
             var filterValue = $(this).attr('id');
             $('#filter').val(filterValue);
             $('#qs').attr('placeholder', "Search " + filterValue);
+            $('#search-filter-text').text(filterValue);
             console.log("filtervalue set to " + filterValue);
         });
 
@@ -100,6 +132,10 @@
 {% block css %}
 {% addtoblock "css" %}
 <style>
+    h5 a {
+        color: #000000;
+    }
+
     th h5 {
         margin-top: 5px;
     }
