@@ -93,17 +93,17 @@
         <div class="pagination">
             <ul>
                 {% if thread_list.has_previous %}
-                <li><a href="?page={{ thread_list.previous_page_number }}"><i class="icon-chevron-left"></i></a>
+                <li><a href="?page={{ thread_list.previous_page_number }}{% determine_sort_filter %}"><i class="icon-chevron-left"></i></a>
                 </li>
                 {% else %}
                 <li class="disabled"><a href="#"><i class="icon-chevron-left"></i></a></li>
                 {% endif %}
                 {% for p in thread_list.paginator.num_pages|get_range_plus_one %}
-                <li class="{% if p == thread_list.number %}active{% endif %}"><a href="?page={{ p }}">{{ p }}</a>
+                <li class="{% if p == thread_list.number %}active{% endif %}"><a href="?page={{ p }}{% determine_sort_filter %}">{{ p }}</a>
                 </li>
                 {% endfor %}
                 {% if thread_list.has_next %}
-                <li><a href="?page={{ thread_list.next_page_number }}"><i class="icon-chevron-right"></i></a></li>
+                <li><a href="?page={{ thread_list.next_page_number }}{% determine_sort_filter %}"><i class="icon-chevron-right"></i></a></li>
                 {% else %}
                 <li class="disabled"><a href="#"><i class="icon-chevron-right"></i></a></li>
                 {% endif %}

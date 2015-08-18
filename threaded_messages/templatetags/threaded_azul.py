@@ -63,3 +63,23 @@ def message_table(context, *args, **kwargs):
         'active_sort': context['active_sort'],
         'django_url': context['django_url'],
     }
+
+@register.simple_tag(name="determine_sort_filter", takes_context=True)
+def determiner(context,*args, **kwargs):
+    only_unread = context['only_unread']
+    only_read = context['only_read']
+    active_sort = context['active_sort']
+    list_to_join = []
+    if active_sort == 'sent_ascending':
+        list_to_join.append('&sort_sent=1')
+    elif active_sort == 'subject_ascending':
+        list_to_join.append('&sort_subject=1')
+    elif active_sort == 'subject_descending':
+        list_to_join.append('&sort_subject=2')
+
+    if only_read:
+        list_to_join.append('&only_read=1')
+    elif only_unread:
+        list_to_join.append('&only_unread=1')
+
+    return "".join(list_to_join)
