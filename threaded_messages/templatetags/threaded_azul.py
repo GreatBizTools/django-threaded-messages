@@ -2,6 +2,7 @@ from django import template
 from django.contrib.humanize.templatetags.humanize import naturaltime
 
 from datetime import timedelta, date as date_module
+from django.utils import timezone
 from bleach import clean
 
 register = template.Library()
@@ -13,12 +14,13 @@ def date_prettifier(date):
     :param date:
     :return: humanized date
     """
+    date = timezone.localtime(date)
     if date.date() == date_module.today(): #if it's today
         return naturaltime(date)
     elif date.date() == date_module.today() + timedelta(days=-1): #if it's yesterday
-        return "Yesterday at " + date.strftime("%I:%M %p")
+        return "Yesterday, " + date.strftime("%I:%M %p")
     else:
-        return date.strftime("%m/%d/%y at %I:%M %p")
+        return date.strftime("%m/%d/%y %I:%M %p")
 
 
 @register.filter(name='clean_with_bleach')
