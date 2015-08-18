@@ -33,8 +33,9 @@
         <table class="inbox table table-striped table-hover message-table">
             <thead>
                 <tr class="message message-header">
-                    <th class="sender span5"><h5>{% trans "Sender" %}</h5></th>
-                    <th class="subject span6"><h5>{% trans "Subject" %}</h5></th>
+                    <th class="sender span2"><h5>{% trans "Participants" %}</h5></th>
+                    <th class="date span2"><h5>{% trans "Date" %}</h5></th>
+                    <th class="subject span7"><h5>{% trans "Subject" %}</h5></th>
                     <!--<th class="subject span1"></th>-->
                 </tr>
             </thead>
@@ -42,7 +43,7 @@
             {% for thread in thread_results %}
                 {% with thread.object as thread %}
               <tr class="{% if thread.participants.new %}info{% endif %}" data-url="{{ thread.get_absolute_url }}">
-                  <td class="clickablerow sender span5">
+                  <td class="clickablerow sender span2">
                        {% for p in thread.participants.all %}
                           {% if forloop.counter < 3 %}
                           <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
@@ -53,9 +54,9 @@
                               {% endif %}
                           {% endif %}
                       {% endfor %}
-                    <span class="date"><em>{{ thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span>
                   </td>
-                  <td class="clickablerow subject span6">
+                  <td class="clickablerow date span2"><span class="date"><em>{{ thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span></td>
+                  <td class="clickablerow subject span7">
                     <a href="{{ thread.get_absolute_url }}">{% if thread.participants.new %}<b>{% endif %}
                         {{ thread.subject|truncchar:30|clean_with_bleach }}{% if thread.participants.new %}</b>{% endif %}</a>
                     <span class="message-tease muted hidden-phone hidden-tablet">{{thread.latest_msg.body|truncatewords:8|clean_with_bleach}}</span>

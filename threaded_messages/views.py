@@ -171,7 +171,7 @@ def outbox(request, template_name='django_messages/outbox.html'):
 
     return render_to_response(template_name, {
         'thread_list': paginated_list,
-        'header': 'Sent Participants',
+        'header': 'Participants',
         'only_read': only_read,
         'only_unread': only_unread,
         'only_unreplied': only_unreplied,
