@@ -75,7 +75,7 @@
                   <td class="clickablerow subject">
                     <a href="{{ message.thread.get_absolute_url }}">{% if message.new %}
                         <strong>{% endif %}{{ message.thread.subject|truncchar:30|safe }}{% if message.new %}</strong>{% endif %}</a>
-                    <span class="message-tease muted">{{ message.thread.latest_msg.body|truncatewords:6|clean_with_bleach|safe }}</span>
+                    <span class="message-tease muted hidden-phone hidden-tablet">{{ message.thread.latest_msg.body|truncatewords:6|clean_with_bleach|safe }}</span>
                     <span class="pull-right label">{{ message.thread.all_msgs.count }}</span>
                   </td>
                   {% if message.replied %}{% endif %}

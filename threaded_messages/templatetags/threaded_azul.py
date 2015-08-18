@@ -61,4 +61,5 @@ def message_table(context, *args, **kwargs):
         'only_unread': context['only_unread'],
         'only_unreplied': context['only_unreplied'],
         'active_sort': context['active_sort'],
+        'django_url': context['django_url'],
     }

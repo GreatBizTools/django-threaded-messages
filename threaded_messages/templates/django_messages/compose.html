@@ -156,7 +156,11 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.form.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-         /* Ensure that active search filter is passed to search page on search */
+        $('.ui-autocomplete-input, #id_subject').keypress(function(e){
+            if ( e.which == 13 ) e.preventDefault();
+        });
+
+        /* Ensure that active search filter is passed to search page on search */
         $('#qs').attr('placeholder', "Search messages");
         $('.search-filter').on('click', function() {
             var filterValue = $(this).attr('id');
