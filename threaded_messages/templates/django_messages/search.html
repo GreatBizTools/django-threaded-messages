@@ -58,7 +58,7 @@
                   <td class="clickablerow subject span6">
                     <a href="{{ thread.get_absolute_url }}">{% if thread.participants.new %}<b>{% endif %}
                         {{ thread.subject|truncchar:30|clean_with_bleach }}{% if thread.participants.new %}</b>{% endif %}</a>
-                    <span class="message-tease">{{thread.latest_msg.body|truncatewords:8|clean_with_bleach}}</span>
+                    <span class="message-tease muted hidden-phone hidden-tablet">{{thread.latest_msg.body|truncatewords:8|clean_with_bleach}}</span>
                     <span class="pull-right label">{{ thread.all_msgs.count }}</span>
                   </td>
 
@@ -88,12 +88,14 @@
                 {% else %}
                 <li class="disabled"><a href="#"><i class="icon-chevron-left"></i></a></li>
                 {% endif %}
+
                 {% for p in thread_results.paginator.num_pages|get_range_plus_one%}
                 <li class="{% if p == thread_results.number %}active{% endif %}"><a href="?search={{ search_filter }}&qs={{ search_term }}&page={{ p }}">{{ p }}</a>
                 </li>
                 {% endfor %}
+
                 {% if thread_results.has_next %}
-                <li><a href="?search={{ search_filter }}?qs={{ search_term }}??page={{ thread_results.next_page_number }}"><i class="icon-chevron-right"></i></a></li>
+                <li><a href="?search={{ search_filter }}&qs={{ search_term }}&page={{ thread_results.next_page_number }}"><i class="icon-chevron-right"></i></a></li>
                 {% else %}
                 <li class="disabled"><a href="#"><i class="icon-chevron-right"></i></a></li>
                 {% endif %}

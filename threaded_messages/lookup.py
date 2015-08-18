@@ -53,7 +53,7 @@ class UserLookup(LookupChannel):
             else:
                 return obj.username
 
-    def check_auth(self,request):
+    def check_auth(self, request):
         if not request.user.is_authenticated():
             raise PermissionDenied
 

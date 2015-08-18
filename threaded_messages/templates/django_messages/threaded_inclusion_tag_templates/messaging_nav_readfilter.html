@@ -16,19 +16,38 @@
                   {% if not only_unread %}<a href="{% url 'tm:messages_inbox' %}?only_unread=1" class="btn btn-small">unread</a>{% else %}<div class="btn btn-small active">unread</div>{% endif %}
               </div>
             </div>
-            <!--<button class="btn btn-small btn-default dropdown-toggle" data-toggle="dropdown">Show<strong>-->
-                <!--{% if only_unread %} unread {% elif only_read %} read {% else %} all {% endif %}-->
-                <!--<span class="caret"></span></strong></button>-->
-            <!--<ul class="dropdown-menu">-->
-                <!--<li>{% if only_unread or only_read %}<a href="{{ django_url }}">all</a>-->
-                    <!--{% else %}<a href="#"><strong>all</strong></a>{% endif %}</li>-->
-                <!--<li>{% if not only_read %}<a href="{{ django_url }}?only_read=1">read</a>-->
-                    <!--{% else %}<a href="#"><strong>read</strong></a>{% endif %}</li>-->
-                <!--<li>{% if not only_unread %}<a href="{{ django_url }}?only_unread=1">unread</a>-->
-                    <!--{% else %}<a href="#"><strong>unread</strong></a>{% endif %}</li>-->
-            <!--</ul>-->
+
+             <div class="float-left visible-phone visible-tablet">
+            <form class="msg-nav-search" action="{% url 'tm:messages_search' %}" method="GET">
+                <label class="hidden" for="filter"></label><input type="text" style="width: 1px;" class="hidden" id="filter" name="search" value="all" />
+                    <div style="width: 100%;">
+                        <span class="btn-group input-append input-prepend">
+                        <!--<input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />-->
+                        <!--<button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>-->
+                        <span class="dropdown btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span id="search-filter-text">all</span>&nbsp;
+                                <span class="caret"></span>
+                            </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="search-filter" name="search" id="all">all</a></li>
+                                    <li><a class="search-filter" name="search" id="inbox">inbox</a></li>
+                                    <li><a class="search-filter" name="search" id="sent">sent</a></li>
+                                    <li><a class="search-filter" name="search" id="archives">archive</a></li>
+                                </ul>
+                        </span>
+                        <input type="text" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
+                        <button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>
+                        </span><span>&nbsp;</span>
+                        <div><a href="{% url 'tm:messages_compose' %}" class="btn btn-success" style="margin-bottom: 10px;">
+                            <i class="icon-plus-sign icon-white" ></i>&nbsp;New message</a></div>
+                    </div>
+            </form>
+
+        </div>
+
         </span>&nbsp;
-        <div class="pull-right">
+        <div class="pull-right hidden-phone hidden-tablet">
             <form class="msg-nav-search" action="{% url 'tm:messages_search' %}" method="GET">
                 <label class="hidden" for="filter"></label><input type="text" class="hidden" id="filter" name="search" value="all" />
                     <span style="width: 100%;">
@@ -36,7 +55,7 @@
                         <!--<input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />-->
                         <!--<button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>-->
                         <span class="dropdown btn-group">
-                            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                 <span id="search-filter-text">all</span>&nbsp;
                                 <span class="caret"></span>
                             </button>
@@ -55,7 +74,7 @@
                     </span>
             </form>
 
-        </div>&nbsp;
+        </div>
     </div>
 
 

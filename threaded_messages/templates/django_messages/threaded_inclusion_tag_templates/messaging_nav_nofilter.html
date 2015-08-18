@@ -6,21 +6,17 @@
     <li id="archive-tab"><a href="{% url 'tm:messages_trash' %}"><h4 style="display: inline;">ARCHIVE</h4></a></li>
     <li class="active"><a href="#"><h4 style="display: inline;">{{ page_type|upper }}</h4></a></li>
 </ul>
- <span class="nav-buttons" style="margin-top: 10px; width: 100%;">
-        <span class="pull-right">
-            <span class="input-append input-prepend" style="margin: 0;">
-                <form class="msg-nav-search" action="{% url 'tm:messages_search' %}" method="GET">
-                     <label class="hidden" for="filter"></label><input type="text" class="hidden" id="filter"
-                                                                       name="search" value="all" />
-                    <span class="btn-group">
-                        <input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs"
-                               class="message-search forum-search" />
-                        <button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success">
-                            <i class="icon-search icon-white"></i></button>
+
+       <div class="float-left visible-phone visible-tablet">
+            <form class="msg-nav-search" action="{% url 'tm:messages_search' %}" method="GET">
+                    <div style="width: 100%;">
+                        <span class="btn-group input-append input-prepend">
+                        <!--<input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />-->
+                        <!--<button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>-->
                         <span class="dropdown btn-group">
-                            <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"
-                                    style="padding-left: 4px; padding-right: 4px;">
-                                <span class="caret" style="border-top-color: #ffffff; border-bottom-color: #ffffff;"></span>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span id="search-filter-text">all</span>&nbsp;
+                                <span class="caret"></span>
                             </button>
                                 <ul class="dropdown-menu">
                                     <li><a class="search-filter" name="search" id="all">all</a></li>
@@ -29,12 +25,44 @@
                                     <li><a class="search-filter" name="search" id="archives">archive</a></li>
                                 </ul>
                         </span>
-                    </span>
-                </form>
-            </span>
-                   <a href="{% url 'tm:messages_compose' %}" class="btn btn-success pull-right">
-            <i class="icon-plus-sign icon-white"></i>&nbsp;New message</a>
+                            <input type="text" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
+                            <button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>
+                        </span>
+                        <label class="hidden" for="filter"></label><input type="text" style="width: 1px;" class="hidden" id="filter" name="search" value="all" />
+                        <span>&nbsp;</span>
+                        <div><a href="{% url 'tm:messages_compose' %}" class="btn btn-success" style="margin-bottom: 10px;">
+                            <i class="icon-plus-sign icon-white" ></i>&nbsp;New message</a></div>
+                    </div>
+            </form>
+
+        </div>
+
         </span>&nbsp;
-    </span>
+        <div class="pull-right hidden-phone hidden-tablet">
+            <form class="msg-nav-search" action="{% url 'tm:messages_search' %}" method="GET">
+                <label class="hidden" for="filter"></label><input type="text" class="hidden" id="filter" name="search" value="all" />
+                    <span style="width: 100%;">
+                        <span class="btn-group input-append input-prepend">
+                        <!--<input type="text" style="width: 60%;" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />-->
+                        <!--<button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>-->
+                        <span class="dropdown btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span id="search-filter-text">all</span>&nbsp;
+                                <span class="caret"></span>
+                            </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="search-filter" name="search" id="all">all</a></li>
+                                    <li><a class="search-filter" name="search" id="inbox">inbox</a></li>
+                                    <li><a class="search-filter" name="search" id="sent">sent</a></li>
+                                    <li><a class="search-filter" name="search" id="archives">archive</a></li>
+                                </ul>
+                        </span>
+                        <input type="text" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
+                        <button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>
+                        </span><span>&nbsp;</span>
+                        <a href="{% url 'tm:messages_compose' %}" class="btn btn-success" style="margin-bottom: 10px;">
+                            <i class="icon-plus-sign icon-white" ></i>&nbsp;New message</a>
+                    </span>
+            </form>
 
-
+        </div>
