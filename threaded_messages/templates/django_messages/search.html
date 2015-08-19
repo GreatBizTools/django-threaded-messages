@@ -33,8 +33,9 @@
         <table class="inbox table table-striped table-hover message-table">
             <thead>
                 <tr class="message message-header">
-                    <th class="sender span5"><h5>{% trans "Sender" %}</h5></th>
-                    <th class="subject span6"><h5>{% trans "Subject" %}</h5></th>
+                    <th class="sender span2"><h5>{% trans "Participants" %}</h5></th>
+                    <th class="date span2"><h5>{% trans "Date" %}</h5></th>
+                    <th class="subject span7"><h5>{% trans "Subject" %}</h5></th>
                     <!--<th class="subject span1"></th>-->
                 </tr>
             </thead>
@@ -42,7 +43,7 @@
             {% for thread in thread_results %}
                 {% with thread.object as thread %}
               <tr class="{% if thread.participants.new %}info{% endif %}" data-url="{{ thread.get_absolute_url }}">
-                  <td class="clickablerow sender span5">
+                  <td class="clickablerow sender span2">
                        {% for p in thread.participants.all %}
                           {% if forloop.counter < 3 %}
                           <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
@@ -53,9 +54,9 @@
                               {% endif %}
                           {% endif %}
                       {% endfor %}
-                    <span class="date"><em>{{ thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span>
                   </td>
-                  <td class="clickablerow subject span6">
+                  <td class="clickablerow date span2"><span class="date"><em>{{ thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span></td>
+                  <td class="clickablerow subject span7">
                     <a href="{{ thread.get_absolute_url }}">{% if thread.participants.new %}<b>{% endif %}
                         {{ thread.subject|truncchar:30|clean_with_bleach }}{% if thread.participants.new %}</b>{% endif %}</a>
                     <span class="message-tease muted hidden-phone hidden-tablet">{{thread.latest_msg.body|truncatewords:8|clean_with_bleach}}</span>
@@ -72,7 +73,7 @@
 
                 {% empty %}
                 <tr class="message unread">
-                    <td class="no-message"><em>{% trans "No messages found." %}{% if search_term|length < 2 %}<br />Please choose a search term over 1 character long.{% endif %}</em></td><td></em></td><td></td>
+                    <td></td><td></td><td class="no-message"><em>{% trans "No messages found." %}{% if search_term|length < 2 %}<br />Please choose a search term over 1 letter long.{% endif %}</em></td>
                 </tr>
 
             {% endfor %}
@@ -111,16 +112,17 @@
     $(document).ready(function () {
        /* Identify any existing search filter and display accordingly */
         existingSearchFilter = $('#existing-filter').data('filter');
+
         console.log("existingSearchFilter: ", existingSearchFilter);
         //$('#filter_' + existingSearchFilter).addClass('active');
-        $('#qs').attr('placeholder', "Search " + existingSearchFilter);
-        $('#filter').val(existingSearchFilter);
+        $('#qs, #qs-mobile').attr('placeholder', "Search " + existingSearchFilter);
+        $('#filter, #filter-mobile').val(existingSearchFilter);
 
         /* Ensure that active search filter is passed to search page on search */
         $('.search-filter').on('click', function() {
             var filterValue = $(this).attr('id');
-            $('#filter').val(filterValue);
-            $('#qs').attr('placeholder', "Search " + filterValue);
+            $('#filter, #filter-mobile').val(filterValue);
+            $('#qs, #qs-mobile').attr('placeholder', "Search " + filterValue);
             console.log("filtervalue set to " + filterValue);
         });
 

@@ -11,13 +11,13 @@
             <div class="inbox-action-box">
               <div style="float: left;" class="btn-group">
                   <div class="btn btn-small btn-primary disabled"><strong>Show</strong></div>
-                  {% if only_unread or only_read %}<a href="{% url 'tm:messages_inbox' %}" class="btn btn-small">all</a>{% else %}<div class="btn btn-small active">all</div>{% endif %}
-                  {% if not only_read %}<a href="{% url 'tm:messages_inbox' %}?only_read=1"  class="btn btn-small">read</a>{% else %}<div class="btn btn-small active">read</div>{% endif %}
-                  {% if not only_unread %}<a href="{% url 'tm:messages_inbox' %}?only_unread=1" class="btn btn-small">unread</a>{% else %}<div class="btn btn-small active">unread</div>{% endif %}
+                  {% if only_unread or only_read %}<a href="{{ django_url }}" class="btn btn-small">all</a>{% else %}<div class="btn btn-small active">all</div>{% endif %}
+                  {% if not only_read %}<a href="{{ django_url }}?only_read=1"  class="btn btn-small">read</a>{% else %}<div class="btn btn-small active">read</div>{% endif %}
+                  {% if not only_unread %}<a href="{{ django_url }}?only_unread=1" class="btn btn-small">unread</a>{% else %}<div class="btn btn-small active">unread</div>{% endif %}
               </div>
             </div>
 
-             <div class="float-left visible-phone visible-tablet">
+            <div class="float-left visible-phone visible-tablet">
             <form class="msg-nav-search" action="{% url 'tm:messages_search' %}" method="GET">
                 <label class="hidden" for="filter"></label><input type="text" style="width: 1px;" class="hidden" id="filter" name="search" value="all" />
                     <div style="width: 100%;">
@@ -26,18 +26,18 @@
                         <!--<button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>-->
                         <span class="dropdown btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                <span id="search-filter-text">all</span>&nbsp;
+                                <span id="search-filter-text-mobile">all</span>&nbsp;
                                 <span class="caret"></span>
                             </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="search-filter" name="search" id="all">all</a></li>
-                                    <li><a class="search-filter" name="search" id="inbox">inbox</a></li>
-                                    <li><a class="search-filter" name="search" id="sent">sent</a></li>
-                                    <li><a class="search-filter" name="search" id="archives">archive</a></li>
+                                    <li><a class="search-filter" name="search" id="all-mobile">all</a></li>
+                                    <li><a class="search-filter" name="search" id="inbox-mobile">inbox</a></li>
+                                    <li><a class="search-filter" name="search" id="sent-mobile">sent</a></li>
+                                    <li><a class="search-filter" name="search" id="archives-mobile">archive</a></li>
                                 </ul>
                         </span>
-                        <input type="text" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
-                        <button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>
+                        <input type="text" title="Search Messages" id="qs-mobile" name="qs" class="message-search forum-search" />
+                        <button type="submit" value="Go" title="Search Messages" id="go-mobile" class="btn btn-success"><i class="icon-search icon-white"></i></button>
                         </span><span>&nbsp;</span>
                         <div><a href="{% url 'tm:messages_compose' %}" class="btn btn-success" style="margin-bottom: 10px;">
                             <i class="icon-plus-sign icon-white" ></i>&nbsp;New message</a></div>
@@ -68,7 +68,7 @@
                         </span>
                         <input type="text" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
                         <button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>
-                        </span><span>&nbsp;</span>
+                        </span><span>&nbsp;&nbsp;</span>
                         <a href="{% url 'tm:messages_compose' %}" class="btn btn-success" style="margin-bottom: 10px;">
                             <i class="icon-plus-sign icon-white" ></i>&nbsp;New message</a>
                     </span>

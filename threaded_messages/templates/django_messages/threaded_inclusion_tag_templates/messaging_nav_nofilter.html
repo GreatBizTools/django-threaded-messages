@@ -15,7 +15,7 @@
                         <!--<button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>-->
                         <span class="dropdown btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                <span id="search-filter-text">all</span>&nbsp;
+                                <span id="search-filter-text-mobile">all</span>&nbsp;
                                 <span class="caret"></span>
                             </button>
                                 <ul class="dropdown-menu">
@@ -25,10 +25,10 @@
                                     <li><a class="search-filter" name="search" id="archives">archive</a></li>
                                 </ul>
                         </span>
-                            <input type="text" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
+                            <input type="text" title="Search Messages" id="qs-mobile" name="qs" class="message-search forum-search" />
                             <button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>
                         </span>
-                        <label class="hidden" for="filter"></label><input type="text" style="width: 1px;" class="hidden" id="filter" name="search" value="all" />
+                        <label class="hidden" for="filter"></label><input type="text" style="width: 1px;" class="hidden" id="filter-mobile" name="search" value="all" />
                         <span>&nbsp;</span>
                         <div><a href="{% url 'tm:messages_compose' %}" class="btn btn-success" style="margin-bottom: 10px;">
                             <i class="icon-plus-sign icon-white" ></i>&nbsp;New message</a></div>
@@ -59,7 +59,7 @@
                         </span>
                         <input type="text" title="Search Messages" id="qs" name="qs" class="message-search forum-search" />
                         <button type="submit" value="Go" title="Search Messages" id="go" class="btn btn-success"><i class="icon-search icon-white"></i></button>
-                        </span><span>&nbsp;</span>
+                        </span><span>&nbsp;&nbsp;</span>
                         <a href="{% url 'tm:messages_compose' %}" class="btn btn-success" style="margin-bottom: 10px;">
                             <i class="icon-plus-sign icon-white" ></i>&nbsp;New message</a>
                     </span>

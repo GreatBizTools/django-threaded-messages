@@ -2,6 +2,7 @@ from django import template
 from django.contrib.humanize.templatetags.humanize import naturaltime
 
 from datetime import timedelta, date as date_module
+from django.utils import timezone
 from bleach import clean
 
 register = template.Library()
@@ -13,19 +14,20 @@ def date_prettifier(date):
     :param date:
     :return: humanized date
     """
+    date = timezone.localtime(date)
     if date.date() == date_module.today(): #if it's today
         return naturaltime(date)
     elif date.date() == date_module.today() + timedelta(days=-1): #if it's yesterday
-        return "Yesterday, at " + date.strftime("%I:%M %p")
+        return "Yesterday, " + date.strftime("%I:%M %p")
     else:
-        return date
+        return date.strftime("%m/%d/%y %I:%M %p")
 
 
 @register.filter(name='clean_with_bleach')
 def html_cleaner(html):
-    allowed_tags = ['span', 'h1', 'h2', 'h3', 'h4', 'h5','h6','small','tt','u','ul','li','ol','kbd','del','ins','code', 'br', 'b', 'em', 's', 'table', 'hr', 'img', 'pre', 'q', 'cite', 'a', 'div', 'address','thead','th','td','tbody','tr']
-    allowed_attributes = ['style', 'src', 'alt', 'title', 'dir', 'href','border', 'cellpadding', 'cellspacing']
-    styles = ['color','background-color','width','height', 'border', 'padding','background']
+    allowed_tags = []
+    allowed_attributes = []
+    styles = []
     return clean(html, tags=allowed_tags, attributes=allowed_attributes, styles=styles,strip=True, strip_comments=True)
 
 

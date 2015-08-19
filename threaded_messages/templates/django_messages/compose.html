@@ -168,39 +168,7 @@
             $('#qs').attr('placeholder', "Search " + filterValue);
             console.log("filtervalue set to " + filterValue);
         });
-
-//        var recipient =  $("#id_recipient").val();
-//        $("#id_recipient").val("")
-//
-//        var parameters = {
-//            classes: {
-//                tokenList: "token-input-list",
-//                token: "token-input-token",
-//                tokenDelete: "token-input-delete-token",
-//                selectedToken: "token-input-selected-token",
-//                highlightedToken: "token-input-highlighted-token",
-//                dropdown: "token-input-dropdown",
-//                dropdownItem: "token-input-dropdown-item",
-//                dropdownItem2: "token-input-dropdown-item2",
-//                selectedDropdownItem: "token-input-selected-dropdown-item",
-//                inputToken: "token-input-input-token"
-//            },
-//
-//            hintText: "{% trans "Type in a search term" %}",
-//            noResultsText: "{% trans "No results" %}",
-//            searchingText: "{% trans "Searching" %}...",
-//            queryParam: "term"
-//        };
-//
-//        if(recipient){
-//            parameters["prePopulate"] = [{id:recipient, name:"{{ form.recipient.first_name }} {{ form.recipient.last_name }}"}]
-//        }
-//
-//        $("#id_recipient").tokenInput("{% url 'tm:recipient_search' %}?format=json", parameters);
-//
-//        $("#id_recipient").focus()
-//
-//    });
+    });
 </script>
         {% endaddtoblock %}
         {% endblock %}
