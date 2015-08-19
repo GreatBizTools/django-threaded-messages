@@ -3,7 +3,7 @@ from .models import Thread
 
 
 class ThreadIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
+    text = indexes.EdgeNgramField(document=True, use_template=True)
     participants = indexes.MultiValueField()
     participant_last_names = indexes.MultiValueField()
     participant_archived = indexes.MultiValueField()
