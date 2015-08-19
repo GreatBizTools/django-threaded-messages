@@ -92,7 +92,7 @@ def search(request, template_name="django_messages/search.html"):
     search_filter = request.GET.get("search")
 
     results = SearchQuerySet().filter(participants=request.user.pk).filter(
-        SQ(content=search_term) | SQ(participant_last_names__istartswith=search_term)
+        SQ(content__icontains=search_term) | SQ(participant_last_names__istartswith=search_term)
     ).order_by('-last_message')
 
     if request.GET.get('search')==u'sent':
