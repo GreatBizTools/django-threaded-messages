@@ -28,7 +28,7 @@
                         <button id="undelete-btn" type="submit" name="action" value="undelete" class="hidden"></button>
                     </th>
                     <th class="sender span2"><h5>{{header}}</h5></th>
-                    <th class="span2">
+                    <th class="span3">
                         <h5><a href="#" id="sort-sent" data-sort="{{ active_sort }}">Date</a>
                         {% if active_sort == 'sent_ascending' %}
                         <i class="icon-arrow-up"></i>
@@ -36,7 +36,7 @@
                         <i class="icon-arrow-down"></i>
                         {% endif %}</h5></th>
 
-                    <th class="subject span7">
+                    <th class="subject span6">
                         <h5><a href="#"  id="sort-subject" data-sort="{{ active_sort }}">Subject</a>
                         {% if active_sort == 'subject_ascending' %}
                         <i class="icon-arrow-up"></i>
@@ -63,10 +63,10 @@
                         {% endif %}
 
                         {% for p in message.others %}
-                            {% if forloop.counter < 4 %}
+                            {% if forloop.counter < 3 %}
                               <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>{% if forloop.last or forloop.counter == 3 %} {% else %}, {% endif %}
-                            {% elif forloop.counter == 4 %}
-                                  <span class="participant others">+ {{ forloop.counter|add:"-3" }} others</span>
+                            {% elif forloop.counter == 3 %}
+                                  <span class="participant others">+ {{ forloop.counter|add:"-2" }} others</span>
                             {% endif %}
                         {% endfor %}
                       {% endif %}

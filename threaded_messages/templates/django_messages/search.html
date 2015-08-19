@@ -6,9 +6,7 @@
 
 {% block content %}
 <ul class="breadcrumb">
-    <li><i class="icon-chevron-right" style="margin-top: 0;"></i>
-    <li>
-        <a href="/">Home</a> <span class="divider">/</span>
+    <li><i class="icon-chevron-right" style="margin-top: 0;"></i></li> <li>&nbsp;<a href="/">Home</a> <span class="divider">/</span>
     </li>
     <li>
         <a href="{% url 'portal:dashboard_trainee' %}">Dashboard</a><span class="divider">/</span>
@@ -34,8 +32,8 @@
             <thead>
                 <tr class="message message-header">
                     <th class="sender span2"><h5>{% trans "Participants" %}</h5></th>
-                    <th class="date span2"><h5>{% trans "Date" %}</h5></th>
-                    <th class="subject span7"><h5>{% trans "Subject" %}</h5></th>
+                    <th class="date span3"><h5>{% trans "Date" %}</h5></th>
+                    <th class="subject span6"><h5>{% trans "Subject" %}</h5></th>
                     <!--<th class="subject span1"></th>-->
                 </tr>
             </thead>
@@ -55,8 +53,8 @@
                           {% endif %}
                       {% endfor %}
                   </td>
-                  <td class="clickablerow date span2"><span class="date"><em>{{ thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span></td>
-                  <td class="clickablerow subject span7">
+                  <td class="clickablerow date span3"><span class="date"><em>{{ thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span></td>
+                  <td class="clickablerow subject span6">
                     <a href="{{ thread.get_absolute_url }}">{% if thread.participants.new %}<b>{% endif %}
                         {{ thread.subject|truncchar:30|clean_with_bleach }}{% if thread.participants.new %}</b>{% endif %}</a>
                     <span class="message-tease muted hidden-phone hidden-tablet">{{thread.latest_msg.body|truncatewords:8|clean_with_bleach}}</span>
@@ -79,7 +77,7 @@
             {% endfor %}
             </tbody>
         </table>
-    </form>
+    </div>
  <div class="messages-footer">
         <div class="pagination">
             <ul>
@@ -117,6 +115,7 @@
         //$('#filter_' + existingSearchFilter).addClass('active');
         $('#qs, #qs-mobile').attr('placeholder', "Search " + existingSearchFilter);
         $('#filter, #filter-mobile').val(existingSearchFilter);
+        $('#search-filter-text, #search-filter-text-mobile').text(filterValue);
 
         /* Ensure that active search filter is passed to search page on search */
         $('.search-filter').on('click', function() {

@@ -67,12 +67,11 @@
             {% for e in form.body.errors %}
             <div class="alert alert-error">{{ e }}</div>
             {% endfor %}
+            <a href="{% url 'tm:messages_inbox' %}" class="back btn btn-default">
+            <i class="icon-chevron-left"></i>&nbsp;{% trans "Back to inbox" %}</a>
           <button type="submit" class="btn btn-success pull-right">{% trans "Reply" %}</button>
         </form>
       </div>
-      <a href="{% url 'tm:messages_inbox' %}" class="back">
-        &lt; {% trans "back to inbox" %}
-      </a>
     </div>
 </div>
     </div>
@@ -84,11 +83,18 @@
     {{ form.media }}
     <script>
         /* Ensure that active search filter is passed to search page on search */
-        $('#qs').attr('placeholder', "Search messages");
+        $('#qs, #qs-mobile').attr('placeholder', "Search messages");
         $('.search-filter').on('click', function() {
-            filterValue = $(this).attr('id');
-            $('#filter').val(filterValue);
-            $('#qs').attr('placeholder', "Search " + filterValue);
+            /*Because boostrap 2 requires one set of search inputs each for mobile and not-mobile (hidden and
+            * visible, respectively, based on screen size), we needed to create two sets of ids, n and n-mobile.
+            * The code below accounts for both; note the split and shift methods that ensure only the relevant portion
+            * of the ID is shown to the user in the dynamic dropdown.
+            * */
+
+            var filterValue = $(this).attr('id').split("-").shift();
+            $('#filter, #filter-mobile').val(filterValue);
+            $('#qs, #qs-mobile').attr('placeholder', "Search " + filterValue);
+            $('#search-filter-text, #search-filter-text-mobile').text(filterValue);
             console.log("filtervalue set to " + filterValue);
         });
     </script>
