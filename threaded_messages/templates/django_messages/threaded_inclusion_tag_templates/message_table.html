@@ -64,7 +64,7 @@
 
                         {% for p in message.others %}
                             {% if forloop.counter < 3 %}
-                              <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>{% if forloop.last or forloop.counter == 3 %} {% else %}, {% endif %}
+                              <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>{% if forloop.last or forloop.counter == 2 %} {% else %}, {% endif %}
                             {% elif forloop.counter == 3 %}
                                   <span class="participant others">+ {{ forloop.counter|add:"-2" }} others</span>
                             {% endif %}
@@ -83,7 +83,7 @@
               </tr>
             {% empty %}
                 <tr class="message unread">
-                    <td class="no-message"><em>{% trans "No messages found" %}</em></td><td></td><td></td>
+                    <td></td><td class="no-message"><em>{% trans "No messages found." %}</em></td><td></td><td></td>
                 </tr>
             {% endfor %}
             </tbody>

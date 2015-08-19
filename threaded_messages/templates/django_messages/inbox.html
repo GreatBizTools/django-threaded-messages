@@ -30,6 +30,11 @@
 
 <script>
     $(document).ready(function () {
+        /* Enable jQuery tooltips */
+        $(function () {
+            $(document).tooltip();
+        });
+
         /* set appropriate active tab */
         $('#inbox-tab').addClass('active');
 
@@ -82,15 +87,6 @@
                 submitButt.attr("disabled", true);
             }
         });
-
-        /* Enable jQuery tooltips */
-        $(function () {
-            $(document).tooltip();
-        });
-
-        /* What was this code doing? TODO: Ask Peter */
-        //watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
-
 
         /* On click of batch action dropdown option (archive, mark as read) click corresponding hidden submit button.
         * Convention for dropdown & button IDs is (respectively): delete-li, delete-btn. */

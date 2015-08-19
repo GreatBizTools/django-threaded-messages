@@ -43,14 +43,11 @@
               <tr class="{% if thread.participants.new %}info{% endif %}" data-url="{{ thread.get_absolute_url }}">
                   <td class="clickablerow sender span2">
                        {% for p in thread.participants.all %}
-                          {% if forloop.counter < 3 %}
-                          <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>{% if forloop.last %}&nbsp;{% else %}, {% endif %}
-                          {% elif forloop.last %}
-                          <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>
-                              {% if forloop.counter != 3 %}
-                              <span class="participant others"> + {{ forloop.counter|add:"-3" }} others</span>
-                              {% endif %}
-                          {% endif %}
+                        {% if forloop.counter < 3 %}
+                              <span class="participant" title="{{ p.user.full_name }}">{{ p.user.first_name }}</span>{% if forloop.last or forloop.counter == 2 %} {% else %}, {% endif %}
+                            {% elif forloop.counter == 3 %}
+                                  <span class="participant others">+ {{ forloop.counter|add:"-2" }} others</span>
+                            {% endif %}
                       {% endfor %}
                   </td>
                   <td class="clickablerow date span3"><span class="date"><em>{{ thread.latest_msg.sent_at|date:_("DATETIME_FORMAT") }}</em></span></td>
@@ -113,65 +110,30 @@
 
         console.log("existingSearchFilter: ", existingSearchFilter);
         //$('#filter_' + existingSearchFilter).addClass('active');
-        $('#qs, #qs-mobile').attr('placeholder', "Search " + existingSearchFilter);
-        $('#filter, #filter-mobile').val(existingSearchFilter);
-        $('#search-filter-text, #search-filter-text-mobile').text(filterValue);
 
-        /* Ensure that active search filter is passed to search page on search */
+  /* Ensure that active search filter is passed to search page on search */
+        $('#qs, #qs-mobile').attr('placeholder', "Search messages");
         $('.search-filter').on('click', function() {
-            var filterValue = $(this).attr('id');
+            /*Because boostrap 2 requires one set of search inputs each for mobile and not-mobile (hidden and
+            * visible, respectively, based on screen size), we needed to create two sets of ids, n and n-mobile.
+            * The code below accounts for both; note the split and shift methods that ensure only the relevant portion
+            * of the ID is shown to the user in the dynamic dropdown.
+            * */
+
+            var filterValue = $(this).attr('id').split("-").shift();
             $('#filter, #filter-mobile').val(filterValue);
             $('#qs, #qs-mobile').attr('placeholder', "Search " + filterValue);
+            $('#search-filter-text, #search-filter-text-mobile').text(filterValue);
             console.log("filtervalue set to " + filterValue);
         });
 
-
-        //watchButtonsRadio('#search_chooser_btn_group', '#search_chooser');
-
+        /* On click of a clickable row, locate corresponding message URL and redirect accordingly.  */
         $('.message-table').on('click', '.clickablerow', function(){
-            console.log("Clickable row activated");
-            console.log("this: ", this);
             var href = $(this).parent().data("url");
-            console.log("href= " + href);
             if(typeof href != 'undefined') {
                 window.location = href;
-            }else{
-                window.location = $(this).siblings().find('a').attr('href');
             }
         });
-
-        $('#bulkDelete').click(function () {
-
-            if (window.confirm("Do you want to delete these messages?")) {
-                var selectedCheckBoxes = $('input[name="pks"]:checked').serializeArray();
-
-                $.post('/messaging/delete/', selectedCheckBoxes
-                ).success(function () {
-                            for (var i = 0; i < selectedCheckBoxes.length; i++) {
-                                var item = "#message-" + $.trim(selectedCheckBoxes[i].value);
-                                $(item).remove();
-                            }
-                        }).fail(function () {
-                            alert("There was a problem")
-                        })
-            }
-        });
-
-        $('#bulkArchive').click(function () {
-            var selectedCheckBoxes = $('input[name="pks"]:checked').serializeArray();
-            $.post('/messaging/archive/',
-                    selectedCheckBoxes
-            ).success(function () {
-                        for (var i = 0; i < selectedCheckBoxes.length; i++) {
-                            var item = "#message-" + $.trim(selectedCheckBoxes[i].value);
-                            $(item).remove();
-                        }
-                    }).fail(function () {
-                        alert("There was a problem")
-                    });
-        });
-
-        //$("body").highlight("{{ search_term }}", { element: 'span', className: 'highlighted'});
 
     });
 
@@ -188,7 +150,6 @@
         max-width:100%;
     }
     .clickableRow:hover {
-        cursor: pointer;
         cursor: hand;
     }
 
