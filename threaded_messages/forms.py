@@ -4,7 +4,6 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import strip_tags
-from ckeditor.widgets import CKEditorWidget
 from ajax_select.fields import AutoCompleteSelectMultipleField, AutoCompleteSelectMultipleWidget
 
 from .models import *
@@ -12,7 +11,7 @@ from .fields import CommaSeparatedUserField
 from .utils import reply_to_thread, now
 from .signals import message_composed
 
-from tms.models import Classroom,Trainee
+
 
 if sendgrid_settings.THREADED_MESSAGES_USE_SENDGRID:
     from sendgrid_parse_api.utils import create_reply_email
@@ -38,7 +37,6 @@ class ComposeForm(forms.Form):
         self.fields['recipient'].widget = AutoCompleteSelectMultipleWidget('all')
         self.fields['recipient'].widget.attrs.update({'placeholder':'Search by first name, last name, or class number', 'style': 'width: 95.5%;'})
         self.fields['subject'].widget.attrs.update({'style': 'width: 98.75%'})
-        self.fields['body'].widget = CKEditorWidget(config_name='default')
         self.fields['body'].widget.attrs.update({'style': 'width: 100%'})
         if recipient_filter is not None:
             self.fields['recipient']._recipient_filter = recipient_filter
@@ -47,20 +45,8 @@ class ComposeForm(forms.Form):
         recipients = self.cleaned_data['recipient']
         subject = self.cleaned_data['subject']
         body = self.cleaned_data['body']
-        recipients_cleaned = []
-        for r in recipients:
-            if r.split("_")[0]==u"class":
-                class_id = int(r.split("_")[1])
-                classroom_object = Classroom.objects.get(id=class_id)
-                trainers_ids = [int(trainer['id']) for trainer in classroom_object.trainers.values()]
 
-                trainee_ids = [int(trainee.user.id) for trainee in Trainee.objects.filter(classroom_id=class_id)]
-                recipients_cleaned.extend(trainers_ids)
-                recipients_cleaned.extend(trainee_ids)
-            else:
-                user_id = int(r.split("_")[1])
-                recipients_cleaned.append(user_id)
-        recipients_cleaned = list(set(recipients_cleaned))
+        recipients_cleaned = list(set(recipients))
         recipients = [User.objects.get(pk=key) for key in recipients_cleaned]
         new_message = Message.objects.create(body=body, sender=sender)
 
@@ -115,5 +101,4 @@ class ReplyForm(forms.Form):
 class NewReplyForm(ReplyForm):
       def __init__(self, *args, **kwargs):
         super(NewReplyForm, self).__init__(*args, **kwargs)
-        self.fields['body'].widget = CKEditorWidget()
         self.fields['body'].widget.attrs.update({'id': 'reply-body', 'name' : 'editor1'})

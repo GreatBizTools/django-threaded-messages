@@ -1,5 +1,5 @@
 from django.db import models
-from account.models import User
+from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import F, Q
@@ -10,7 +10,7 @@ from .listeners import start_listening
 
 from .settings import INBOX_MESSAGE_CACHE, INBOX_MESSAGE_CACHE_TIME
 
-from azul_shared.utils import ellipsis
+
 
 start_listening()
 
@@ -245,7 +245,7 @@ def inbox_count_for(user):
 
 def inbox_messages_for(user):
     count = inbox_count_for(user)
-    unread_messages = [{'subject': ellipsis(p.thread.subject, 10), 'sender': p.thread.latest_msg.sender.full_name(),'thread_id': p.thread.id, 'message_count':count} for p in
+    unread_messages = [{'subject': p.thread.subject, 'sender': p.thread.latest_msg.sender.full_name(),'thread_id': p.thread.id, 'message_count':count} for p in
                            Participant.objects.inbox_for(user,read=False)[0:3]]#having the indexing on the Model object causes the ORM to issue a LIMIT sql query
 
     unread_messages.reverse()

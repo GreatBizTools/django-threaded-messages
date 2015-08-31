@@ -2,24 +2,21 @@
 import logging
 import json
 
-from django.contrib.auth import login, BACKEND_SESSION_KEY
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from account.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_noop
 from django.core.urlresolvers import reverse
-from django.db.models import Q
-from django.conf import settings
-from django.template.loader import render_to_string
-from haystack.query import SearchQuerySet, SQ
 
-from avatar.templatetags.avatar_tags import avatar_url
-from azul_shared.utils import ellipsis
+import settings
+if hasattr(settings,'USE_HAYSTACK'):
+    from haystack.query import SearchQuerySet, SQ
+
+
+
 
 from .models import *
 from .forms import ComposeForm, NewReplyForm
@@ -442,23 +439,23 @@ def message_ajax_reply(request, thread_id,
             return HttpResponse(status=400, content="Invalid Form")
 
 
-@login_required
-def recipient_search(request):
-    term = request.GET.get("term")
-    users = User.objects.filter(Q(first_name__icontains=term) |
-                                Q(last_name__icontains=term) |
-                                Q(username__icontains=term) |
-                                Q(email__icontains=term))
-    if request.GET.get("format") == "json":
-        data = []
-        for user in users:
-            avatar_img_url = avatar_url(user, size=50)
-            data.append({"id": user.username,
-                         "name": "%s %s"%(user.first_name, user.last_name),
-                         "img": avatar_img_url})
-
-        return HttpResponse(json.dumps(data),
-                            content_type='application/json')
+# @login_required
+# def recipient_search(request):
+#     term = request.GET.get("term")
+#     users = User.objects.filter(Q(first_name__icontains=term) |
+#                                 Q(last_name__icontains=term) |
+#                                 Q(username__icontains=term) |
+#                                 Q(email__icontains=term))
+#     if request.GET.get("format") == "json":
+#         data = []
+#         for user in users:
+#             avatar_img_url = avatar_url(user, size=50)
+#             data.append({"id": user.username,
+#                          "name": "%s %s"%(user.first_name, user.last_name),
+#                          "img": avatar_img_url})
+#
+#         return HttpResponse(json.dumps(data),
+#                             content_type='application/json')
 
 def update_navbarView(request):
     if request.method == 'GET':
