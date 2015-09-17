@@ -1,5 +1,5 @@
-{% load i18n avatar_tags pagination_tags truncchar_tag %}
-{% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
+{% load i18n truncchar_tag %}
+{% load sekizai_tags threaded_azul %}
     <form id="batch-update" action="{% url 'tm:messages_batch_update' %}" method="post">
         {% csrf_token %}
         <table id="message_table-table" class="inbox table table-striped table-hover" data-read="{{ only_read }}" data-unread="{{ only_unread }}">

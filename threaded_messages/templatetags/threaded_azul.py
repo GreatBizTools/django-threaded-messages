@@ -85,3 +85,24 @@ def determiner(context,*args, **kwargs):
         list_to_join.append('&only_unread=1')
 
     return "".join(list_to_join)
+
+
+@register.simple_tag(takes_context=True)
+def messages(context):
+    """
+    Takes the django.contrib.messages (flash messages) and displays
+    a nice Twitter Bootstrap alert div.
+    """
+    render = ''
+    messages = context['messages']
+
+    if messages:
+        render += '<div class="alert alert-success alert-block alert-large" id="alert-messages">'
+        render += '<button type="button" class="close" data-dismiss="alert">&times;</button>'
+        render += '<ul class="unstyled" style="padding-bottom:0;">'
+        for m in messages:
+            render += '<li><i class="icon-info-sign"></i> %s</li>' % (m, )
+        render += '</ul>'
+        render += '</div>'
+
+    return render
