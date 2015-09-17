@@ -1,11 +1,12 @@
 {% load staticfiles %}
 
-<html>
+<!DOCTYPE HTML>
+ <html>
     <head>
         {% block title %}{% endblock %}
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <link href="{% static 'css/bootstrap.css' %}">
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+        <link type="text/css" rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
 
     </head>
     <body>
@@ -14,5 +15,7 @@
 
 {% block content %}
 {% endblock %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
     </body>
 </html>

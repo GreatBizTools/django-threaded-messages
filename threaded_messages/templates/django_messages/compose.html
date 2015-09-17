@@ -1,20 +1,11 @@
-{% extends 'azul_cms_custom/cms_basic.html' %}
-{% load i18n avatar_tags pagination_tags truncchar_tag uni_form_tags %}
-{% load cms_tags sekizai_tags shared_azul shared_verde threaded_azul %}
+{% extends 'django_messages/base.html' %}
+{% load i18n truncchar_tag %}
+{% load sekizai_tags threaded_azul %}
 
 {%block title %}{{ thread.subject }}{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="{{ STATIC_URL }}css/token-input.css" type="text/css" />
-<ul class="breadcrumb">
-    <li><i class="icon-chevron-right" style="margin-top: 0;"></i></li><li>&nbsp;<a href="/">Home</a><span class="divider">&nbsp;/</span>
-    </li>
-    <li>
-        <a href="{% url 'portal:dashboard_trainee' %}">Dashboard</a><span class="divider">&nbsp;/</span>
-    </li>
-    <li class="active"><a href="{% url 'tm:messages_inbox' %}">Inbox</a><span class="divider">&nbsp;/</span></li>
-    <li class="active"><a href="{% url 'tm:messages_compose' %}">New Message</a></li>
-</ul>
 {% messages %}
 <div>
     <div class="navWrapper">
