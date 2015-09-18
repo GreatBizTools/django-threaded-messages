@@ -11,7 +11,7 @@ class UserLookup(LookupChannel):
     model = User
 
     def get_query(self, q, request):
-        return User.filter(Q(username__icontains = q) | Q(firstname__icontains = q) | Q(lastname__icontains = q))
+        return User.objects.filter(Q(username__icontains = q) | Q(first_name__icontains = q) | Q(last_name__icontains = q))
 
 AJAX_LOOKUP_CHANNELS = {
     'all' : ('threaded_messages.lookup', 'UserLookup'),

@@ -1,21 +1,25 @@
-{% load staticfiles %}
+{% load staticfiles sekizai_tags %}
 
 <!DOCTYPE HTML>
  <html>
     <head>
-        {% block title %}{% endblock %}
+        <title>{% block title %}{% endblock %}</title>
 
         <link type="text/css" rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
 
-
+        {% render_block 'css' %}{% block css %}{% endblock %}
     </head>
     <body>
 
 
 
-{% block content %}
-{% endblock %}
+    {% block content %}
+    {% endblock %}
+
+    {% render_block 'js' %}{% block js %}{% endblock %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     </body>
 </html>
+
+

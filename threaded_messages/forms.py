@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import strip_tags
-from ajax_select.fields import AutoCompleteSelectMultipleField, AutoCompleteSelectMultipleWidget
+from ajax_select.fields import AutoCompleteSelectMultipleWidget
 
 from .models import *
 from .fields import CommaSeparatedUserField
